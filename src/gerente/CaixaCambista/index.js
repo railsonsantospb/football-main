@@ -277,13 +277,21 @@ export default function Dashboard() {
         comissao = 0;
 
         for (let datas of dataAux) {
-            entradas += parseFloat(datas[4]);
+
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[8]));
-            let valor = (datas[3].status != 'Cancelado' ?
-            (result == true && st != 'Aberto' ?
-            (st.indexOf('Perdeu') != -1 ? 'Perdeu' : 'Ganhou') : 'Aberto') :
-            'Cancelado');
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+            
+            if(valor != 'Cancelado'){
+                entradas += parseFloat(datas[4]);
+                comissao += parseFloat(datas[5]);
+            }
+            
             if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
             } else if (valor == 'Ganhou') {
@@ -291,7 +299,7 @@ export default function Dashboard() {
             } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-            comissao += parseFloat(datas[5]);
+            
         }
 
         if((totalEntrada[banca]) != undefined) {
@@ -303,7 +311,7 @@ export default function Dashboard() {
             setSaidas(saidas);
             comissoes[banca] = comissoes[banca]+comissao
             setComissoes(comissoes);
-            total[banca] = total[banca]+((perdeu - ganhos - comissao));
+            total[banca] = total[banca]+((entradas - ganhos - comissao));
             setTotal(total);
         } else {
             totalEntrada[banca]=entradas;
@@ -314,7 +322,7 @@ export default function Dashboard() {
             setSaidas(saidas);
             comissoes[banca]=comissao;
             setComissoes(comissoes);
-            total[banca]=((perdeu - ganhos - comissao));
+            total[banca]=((entradas - ganhos - comissao));
             setTotal(total);
         }
 

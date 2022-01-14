@@ -28,7 +28,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
 import InboxIcon from '@material-ui/icons/Inbox';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
@@ -42,8 +41,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import {api} from "../../pages/Constantes";
+import { api } from "../../pages/Constantes";
 
 
 let tab;
@@ -275,7 +273,7 @@ export default function Dashboard() {
         for (let datas of dataAux) {
 
             let d = datas[2].split(' ')[0].split('/');
-            d[2] = "20"+d[2]
+            d[2] = "20" + d[2]
             let dateReverse = new Date(d.reverse().join('/'));
 
             if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
@@ -303,7 +301,7 @@ export default function Dashboard() {
 
     function setStatusBilhete(id) {
 
-        api.put('/api/updatebilhete/' + id, {status: 'Cancelado'})
+        api.put('/api/updatebilhete/' + id, { status: 'Cancelado' })
             .then(res => {
                 try {
                     if (res.data) {
@@ -313,8 +311,8 @@ export default function Dashboard() {
 
                 }
             }).catch(error => {
-            console.log(error)
-        });
+                console.log(error)
+            });
 
     }
 
@@ -373,19 +371,19 @@ export default function Dashboard() {
                         if (res.data) {
                             setBilhetes(res.data);
                             res.data.bilhetes.map((b) => {
-                                l.push([<Button component={Link} to={'/bilhetegerente/'+b.codigo}>{b.codigo}</Button>,
-                                    b.nomeBanca,
-                                    b.dataDaAposta,
-                                    b.status == 'Aberto' ? <b style={{color: 'blue'}}>{b.status}</b> :
-                                        b.status == 'Cancelado' ? <b style={{color: 'gold'}}>{b.status}</b> :
-                                            b.status == 'Perdeu' ? <b style={{color: 'red'}}>{b.status}</b> :
-                                                b.status == 'Ganhou' ? <b style={{color: 'green'}}>{b.status}</b> : b.status,
-                                    b.valorDeEntrada.toFixed(2),
-                                    b.comissao.toFixed(2),
-                                    b.cotacao.toFixed(2),
-                                    b.valorDeSaida.toFixed(2),
-                                    b.tipoSimplesouMultiplo,
-                                    b.tipoDeJogo]);
+                                l.push([<Button component={Link} to={'/bilhetegerente/' + b.codigo}>{b.codigo}</Button>,
+                                b.nomeBanca,
+                                b.dataDaAposta,
+                                b.status == 'Aberto' ? <b style={{ color: 'blue' }}>{b.status}</b> :
+                                    b.status == 'Cancelado' ? <b style={{ color: 'gold' }}>{b.status}</b> :
+                                        b.status == 'Perdeu' ? <b style={{ color: 'red' }}>{b.status}</b> :
+                                            b.status == 'Ganhou' ? <b style={{ color: 'green' }}>{b.status}</b> : b.status,
+                                b.valorDeEntrada.toFixed(2),
+                                b.comissao.toFixed(2),
+                                b.cotacao.toFixed(2),
+                                b.valorDeSaida.toFixed(2),
+                                b.tipoSimplesouMultiplo,
+                                b.tipoDeJogo]);
                             });
                         }
                         l.reverse();
@@ -394,8 +392,8 @@ export default function Dashboard() {
 
                     }
                 }).catch(error => {
-                console.log(error);
-            });
+                    console.log(error);
+                });
 
         }
         getDateAll();
@@ -430,7 +428,7 @@ export default function Dashboard() {
                     </Typography>
 
                     <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                       {sessionStorage.getItem('nomeGerente')} <br />
+                        {sessionStorage.getItem('nomeGerente')} <br />
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -613,7 +611,7 @@ export default function Dashboard() {
 
 
                     <MUIDataTable
-                       
+
                         data={dataAux}
                         columns={columns}
                         options={options}
