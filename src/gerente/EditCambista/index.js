@@ -1,62 +1,28 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useParams} from "react-router";
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { api } from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
+import Menu from '../Menu/index';
 
 export default function Dashboard() {
     let {id} = useParams();
 
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
-    const [date, setDate] = useState([]);
-    const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
     const [nomeBanca, setNomeBanca] = useState("");
     const [limitG, setLimitG] = useState("");
     const [limitS, setLimitS] = useState("");
@@ -72,12 +38,6 @@ export default function Dashboard() {
     const [status, setStatus] = useState(false);
     const [idCambista, setidCambista] = useState(0);
     
-
-    
-
-
-
-
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -169,21 +129,6 @@ export default function Dashboard() {
             flexShrink: 0,
         }
     }));
-
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
-
     
     const validationSchema = yup.object({
         password1: yup
@@ -200,49 +145,6 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = index => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    }
-
-
-
-    const handleDrawerOpen = () => {
-        if (document.getElementById('drawer').style.display == 'none' || document.getElementById('drawer').style.display == '') {
-            document.getElementById('drawer').style.display = 'block';
-            document.getElementById('drawer').style.marginLeft = '40px';
-        } else if (document.getElementById('drawer').style.display == 'block') {
-            document.getElementById('drawer').style.display = 'none';
-            document.getElementById('drawer').style.marginLeft = '0px';
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById('drawer').style.display = 'none';
-    };
 
     function close(e) {
 
@@ -256,10 +158,6 @@ export default function Dashboard() {
 
     }
 
-    function exit() {
-        sessionStorage.removeItem('manage');
-        history.push('/login');
-    }
 
     const formik = useFormik({
         initialValues: {
@@ -423,105 +321,7 @@ export default function Dashboard() {
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
-
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, false && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>XBETS198</b>
-                    </Typography>
-
-
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixa'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixa'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenha"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-
-            </Drawer>
-
+            <Menu/>
             <main className={classes.content}>
 
                 <div className={classes.appBarSpacer} />
@@ -538,6 +338,7 @@ export default function Dashboard() {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     value={nomeBanca}
+                                    disabled
                                     required
                                     id="name"
                                     name="name"
@@ -594,6 +395,7 @@ export default function Dashboard() {
 
                                 <TextField
                                     value={comissaoPreJogo}
+                                    disabled
                                     id="filled-multiline-static"
                                     label="Comissão (Pré-Jogo)"
                                     multiline
@@ -614,6 +416,7 @@ export default function Dashboard() {
                                 <br />
                                 <TextField
                                     value={comissaoAoVivo}
+                                    disabled
                                     id="filled-multiline-static"
                                     label="Comissão (Ao Vivo)"
                                     multiline

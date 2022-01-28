@@ -1,63 +1,29 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { images, auxCountry, auxItens, cc } from '../Constantes/index';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import {api} from "../../pages/Constantes";
+import Menu from '../Menu/index';
 
 
-
-let tab;
 let date = [];
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
 
 
 export default function Dashboard() {
@@ -65,21 +31,11 @@ export default function Dashboard() {
     let history = useHistory();
     let { campId } = useParams();
     var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
-    const [client, setClient] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
     const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [dataAux, setAux] = useState([]);
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
@@ -101,8 +57,6 @@ export default function Dashboard() {
             console.log(dataToState);
         }
     };
-
-
 
 
     const useStyles = makeStyles((theme) => ({
@@ -199,71 +153,14 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
-
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
-
-    function exit() {
-        sessionStorage.removeItem('manage');
-        history.push('/login');
-    }
 
 
     const onClickHandler = () => {
@@ -389,105 +286,7 @@ export default function Dashboard() {
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
-
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>SONHOBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                       {sessionStorage.getItem('nomeGerente')} <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>

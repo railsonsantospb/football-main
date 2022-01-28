@@ -21,7 +21,6 @@ import HomeIcon from '@material-ui/icons/Home';
 import InboxIcon from '@material-ui/icons/Inbox';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
@@ -236,91 +235,7 @@ export default function Dashboard() {
             history.push('/login')
         }
 
-        let unmounted = false;
-        async function homeAll() {
-
-
-            axios.get('https://cds-api.sportingbet.com/bettingoffer/counts?x-bwin-accessid=MjcxNjZlZTktOGZkNS00NWJjLTkzYzgtODNkNThkNzZhZDg2&lang=pt-br&country=BR&userCountry=BR&state=PreMatch&tagTypes=Region&sortBy=Tags&extendedTags=&sportIds=4',
-                {
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache',
-                        'Expires': '0',
-                    }
-                }).then(res => {
-                    try {
-
-                        res.data.map(fix => {
-
-
-                            dic[fix.tag.id] = fix.tag.name.value;
-
-
-                        });
-                        if (!unmounted) {
-                            setDic(dic);
-                        }
-
-
-
-                    } catch (e) {
-                    }
-                }).catch(error => {
-                    console.log(error)
-                });
-
-        }
-
-
-        async function competitionAll() {
-
-
-            axios.get('https://cds-api.sportingbet.com/bettingoffer/counts?x-bwin-accessid=' +
-                'MjcxNjZlZTktOGZkNS00NWJjLTkzYzgtODNkNThkNzZhZDg2&lang=pt-br&country=BR&userCountry=' +
-                'BR&state=PreMatch&tagTypes=Competition&sportIds=4&sortBy=Tags&extendedTags=',
-                {
-                    headers: {
-                        'Cache-Control': 'no-cache',
-                        'Pragma': 'no-cache',
-                        'Expires': '0',
-                    },
-                }).then(res => {
-                    let a = res.data;
-                    a.map(fix => {
-                        if ([42, 6, 7, 9, 11, 234, 233].indexOf(fix.tag.parentId) !== -1 && images[6][1].indexOf(fix.tag.name.value) === -1 &&
-                            (fix.tag.name.value.includes('Simulated') + '') !== 'true' && (fix.tag.name.value.includes('Price Boost') + '') !== 'true' &&
-                            (fix.tag.name.value.includes('Combi+') + '') !== 'true' && images[6][2].indexOf(fix.tag.id) === -1 && fix.preMatch > 0
-                            && fix.tag.statistics === true) {
-                            images[6][1].push(fix.tag.name.value.replace('Woman', 'Feminino')
-                                .replace('South Zone', 'Zona Sul').replace('North Zone', 'Zona Norte').replace('U21', 'Sub-21'));
-                            images[6][2].push(fix.tag.id);
-
-                        }
-                        if (images[fix.tag.parentId] && (fix.tag.name.value.includes('Simulated') + '') !== 'true' && (fix.tag.name.value.includes('Price Boost') + '') !== 'true' &&
-                            (fix.tag.name.value.includes('Combi+') + '') !== 'true' && fix.tag.statistics === true) {
-                            if (images[fix.tag.parentId][1].indexOf(fix.tag.name.value) === -1 &&
-                                images[fix.tag.parentId][2].indexOf(fix.tag.id) === -1 && fix.tag.parentId !== 6) {
-                                images[fix.tag.parentId][1].push(fix.tag.name.value);
-                                images[fix.tag.parentId][2].push(fix.tag.id);
-                            }
-
-                        }
-                        if (ids.indexOf(fix.tag.parentId) === -1 && [42, 6, 7, 9, 11, 234, 233].indexOf(fix.tag.parentId) === -1) {
-                            ids.push(fix.tag.parentId);
-                        }
-
-                    });
-                    if (!unmounted) {
-                        setIds(ids);
-                    }
-
-                }).catch(error => {
-                    console.log(error)
-                });
-
-        }
-
-
+ 
         async function getDateAll() {
             
                 try {
@@ -347,10 +262,10 @@ export default function Dashboard() {
                     d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
                     d2.getDate()]);
 
-                    if (!unmounted) {
-                        setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                        console.log([d.getDay(), d1.getDay(), d2.getDay()]);
-                    }
+                    
+                    setDay([d.getDay(), d1.getDay(), d2.getDay()]);
+                    console.log([d.getDay(), d1.getDay(), d2.getDay()]);
+                    
 
 
 
@@ -410,13 +325,8 @@ export default function Dashboard() {
         setDataAux(d);
         getDateAll();
         getBancasAPI(); 
-        homeAll();
-        competitionAll();
 
 
-        return () => {
-            unmounted = true
-        };
 
     }, []);
 

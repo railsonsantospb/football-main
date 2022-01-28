@@ -7,50 +7,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
-import LockIcon from '@material-ui/icons/Lock';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { Box } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useReactToPrint } from 'react-to-print';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {images, auxCountry, auxItens, cc, api} from '../Constantes/index';
+import {api} from '../Constantes/index';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import EditIcon from "@material-ui/icons/Edit";
+import Menu from '../Menu/index';
 
 
 
@@ -70,20 +42,10 @@ const StyledTableCell = withStyles((theme) => ({
 export default function Dashboard() {
 
     let history = useHistory();
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [regionName, setRegionName] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
-    const [data, setData] = useState([]);
     const [totalEntrada, setTotalEntrada] = useState({});
     const [entradasAbertas, setEntradasAbertas] = useState({});
     const [saidas, setSaidas] = useState({});
@@ -202,62 +164,11 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
-
+  
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
@@ -341,10 +252,6 @@ export default function Dashboard() {
         }
     }
 
-    function exit() {
-        sessionStorage.removeItem('manage');
-        history.push('/login');
-    }
 
     let d = [];
     useEffect(() => {
@@ -353,7 +260,6 @@ export default function Dashboard() {
             history.push('/login')
         }
 
-        let unmounted = false;
 
         async function getDateAll() {
             axios.get('http://worldclockapi.com/api/json/utc/now',
@@ -439,11 +345,6 @@ export default function Dashboard() {
         setDataCambista(d);
         setDataAux(d);
         getBancasAPI();
-        //loadCaixa();
-
-        return () => {
-            unmounted = true;
-        };
 
 
     }, []);
@@ -500,13 +401,20 @@ export default function Dashboard() {
                         //console.log(res.data);
                         res.data.bilhetes.map((b) => {
 
-                            entradas += parseFloat(b.valorDeEntrada);
                             let st = b.replaceAll('{', '').replaceAll('}', '');
                             let result = ((st.split(',').length == b.quantidadeJogos));
-                            let valor = (b.status != 'Cancelado' ?
-                            (result == true && st != 'Aberto' ?
-                            (st.indexOf('Perdeu') != -1 ? 'Perdeu' : 'Ganhou') : 'Aberto') :
-                            'Cancelado');
+                            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+                            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+                            
+                            if(valor != 'Cancelado'){
+                                entradas += parseFloat(b.valorDeEntrada);
+                                comissao += parseFloat(b.comissao);
+                            }
+                            
                             if (valor == 'Aberto') {
                                 abertos += parseFloat(b.valorDeEntrada);
                             } else if (valor == 'Ganhou') {
@@ -514,8 +422,7 @@ export default function Dashboard() {
                             } else if (valor == 'Perdeu') {
                                 perdeu += parseFloat(b.valorDeEntrada);
                             }
-                            comissao += parseFloat(b.comissao);
-                            console.log(total);
+
                             if((totalEntrada[b.nomeBanca]) != undefined) {
                                 totalEntrada[b.nomeBanca] = totalEntrada[b.nomeBanca]+entradas
                                 setTotalEntrada(totalEntrada);
@@ -525,7 +432,7 @@ export default function Dashboard() {
                                 setSaidas(saidas);
                                 comissoes[b.nomeBanca] = comissoes[b.nomeBanca]+comissao
                                 setComissoes(comissoes);
-                                total[b.nomeBanca] = total[b.nomeBanca]+((perdeu -  ganhos - comissao));
+                                total[b.nomeBanca] = total[b.nomeBanca]+((entradas - ganhos - comissao));
                                 setTotal(total);
                             } else {
                                 totalEntrada[b.nomeBanca]=entradas;
@@ -536,7 +443,7 @@ export default function Dashboard() {
                                 setSaidas(saidas);
                                 comissoes[b.nomeBanca]=comissao;
                                 setComissoes(comissoes);
-                                total[b.nomeBanca]=((perdeu - ganhos - comissao));
+                                total[b.nomeBanca]=((entradas - ganhos - comissao));
                                 setTotal(total);
                             }
 
@@ -562,105 +469,7 @@ export default function Dashboard() {
         <div className={classes.root} onClick={close}>
             <CssBaseline />
 
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>SONHOBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                       {sessionStorage.getItem('nomeGerente')} <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-               
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
@@ -756,7 +565,7 @@ export default function Dashboard() {
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                            {saidas[banca] > total[banca] ? <Typography variant="h5">
+                                                            {saidas[banca] > totalEntrada[banca] ? <Typography variant="h5">
                                                                 <b style={{ color: 'red' }}>R$ -{Math.abs(total[banca]).toFixed(2)}</b>
                                                             </Typography> : <Typography variant="h5">
                                                                 <b style={{ color: 'green' }}>R$ {Math.abs(total[banca]).toFixed(2)}</b>

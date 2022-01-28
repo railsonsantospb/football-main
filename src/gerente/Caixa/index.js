@@ -7,50 +7,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
-import LockIcon from '@material-ui/icons/Lock';
 import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { Box } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useReactToPrint } from 'react-to-print';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {images, auxCountry, auxItens, api} from '../Constantes/index';
+import {api} from '../Constantes/index';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import EditIcon from "@material-ui/icons/Edit";
+import Menu from '../Menu/index';
 
 
 let tab;
@@ -69,25 +41,10 @@ const StyledTableCell = withStyles((theme) => ({
 export default function Dashboard() {
 
     let history = useHistory();
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [regionName, setRegionName] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
-    const [data, setData] = useState([]);
-    const [totalEntrada, setTotalEntrada] = useState(0);
-    const [entradasAbertas, setEntradasAbertas] = useState(0);
-    const [saidas, setSaidas] = useState(0);
-    const [comissoes, setComissoes] = useState(0);
-    const [total, setTotal] = useState(0);
     const [dataAux, setDataAux] = useState([]);
 
 
@@ -200,92 +157,16 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
-
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
-    // const dataAux = [
-    //     ["S6T3-YT5G", "madara", "01/04/2021 08:09:23", "Aberto", "30.00", "3.00", "160.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["S9G3-HW5G", "tobi", "02/04/2021 01:09:23", "Aberto", "30.00", "3.00", "160.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SDE3-HN5G", "hidan", "05/04/2021 10:09:23", "Aberto", "30.00", "3.00", "260.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SI73-KJ5G", "deidara", "04/04/2021 12:29:23", "Ganhou", "10.00", "1.00", "140.00",
-    //         "60.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Aberto", "20.00", "2.00", "100.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    // ];
+
 
 
 
@@ -307,8 +188,6 @@ export default function Dashboard() {
             
             let dateReverse = new Date(d.join('-'));
 
-            console.log(dateReverse);
-            
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[10]));
 
@@ -498,106 +377,7 @@ export default function Dashboard() {
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
-
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>SONHOBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                       {sessionStorage.getItem('nomeGerente')} <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-               
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>

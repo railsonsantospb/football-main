@@ -1,19 +1,11 @@
-import {withStyles, makeStyles, useTheme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import React, {useState, useEffect, useRef, useMemo} from "react";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import {
     Dialog,
@@ -22,88 +14,31 @@ import {
     DialogTitle,
 } from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import axios from "axios";
-import LockIcon from "@material-ui/icons/Lock";
-import {useHistory, Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {useParams} from "react-router";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import {Box} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {useReactToPrint} from "react-to-print";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import HomeIcon from "@material-ui/icons/Home";
-import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
-import InboxIcon from "@material-ui/icons/Inbox";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import DescriptionIcon from "@material-ui/icons/Description";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Collapse from "@material-ui/core/Collapse";
-import LiveTvIcon from "@material-ui/icons/LiveTv";
-import Taca from "../Home/taca.jpg";
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {images, auxCountry, auxItens, cc, regions, api} from "../Constantes/index";
-import football from "../Home/football";
-import Hidden from "@material-ui/core/Hidden";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AnchorLink from 'react-anchor-link-smooth-scroll';
+import {images, api, cc} from "../Constantes/index";
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
 import useWindowDimensions from '../Size/index';
 import Menu from '../Menu/index';
 
-
-
 let date = [];
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-        padding: 5,
-    },
-}))(TableCell);
 
 export default function Dashboard(props) {
     const codigo = cc.generate().split('-').slice(1).join('-');
     let history = useHistory();
-    const theme = useTheme();
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
-    let auxChamp = [];
     let {dateId} = useParams();
-    var tab = false;
-    var tab1 = false;
     var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
-    const [cotacaoValue, setCotacaoValue] = useState(1);
     const [message, setMessage] = useState("");
     const [client, setClient] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
-    const [openWith, setOpenWith] = useState(40);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [home, setHome] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
-    const [champs, setChamps] = useState([]);
     const [bilhetes, setBilhetes] = useState([]);
     const [gerenteId, setGerenteId] = useState(0);
     const [bancaId, setBancaId] = useState(0);
@@ -112,26 +47,12 @@ export default function Dashboard(props) {
     const [nomeBanca, setNomeBanca] = useState("");
     const [datas, setDatas] = useState([]);
     const [country, setCountry] = useState([]);
-    const [dateD, setDateD] = useState('');
-    const [dateAfter, setDateAfter] = useState('');
     const [clientes, setClientes] = useState([]);
     const [campeonato, setCampeonato] = useState([]);
-    const [titulo, setTitulo] = useState([]);
     const { height, width } = useWindowDimensions();
     
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
-    const container = window !== undefined ? () => window().document.body : undefined;
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
-    const StyledTableRow = withStyles((theme) => ({
-        root: {
-            "&:nth-of-type(odd)": {
-                backgroundColor: theme.palette.action.hover,
-            },
-        },
-    }))(TableRow);
 
     const drawerWidth = 240;
 
@@ -180,17 +101,6 @@ export default function Dashboard(props) {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-        } else {
-            setOpenNavA(index);
-        }
-    };
 
     const handleClickOpenURL = () => {
         setOpenURL(true);
@@ -216,15 +126,6 @@ export default function Dashboard(props) {
     setTimeout(() => {
         cotacaoHandler();
     }, 1000);
-
-    // var events = ['click', 'keypress'];
-    // events.forEach(function(event) {
-    //     window.addEventListener(event, setActive);
-    // });
-    // function setActive(){
-    //     history.push('/');
-    // }
-
 
     function InitOdds() {
         if (localStorage.getItem("betsAll2") === null) {
@@ -394,9 +295,8 @@ export default function Dashboard(props) {
         document.getElementById('header').innerHTML = '\n' +
             '                    <div >\n' +
             '\n' +
-            '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">XBETS198</h4></center>\n' +
+            '                        <center><h2 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">SONHOBETS</h2></center>\n' +
             '\n' +
-            '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">8399104-6816</h4></center>\n' +
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '\n' +
@@ -410,9 +310,9 @@ export default function Dashboard(props) {
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '\n' +
-            '                        <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
+            '                        <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
             '\n' +
-            '                        <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
+            '                        <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
         '\n';
@@ -438,12 +338,12 @@ export default function Dashboard(props) {
                 '\n' +
                 '                                    <b><span>' + typeBets.split('--')[0] + '</span></b><br>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">' + typeBets.split('--')[1] + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">' + typeBets.split('--')[1] + '</span></div>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + value + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + value + '</span></div>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + "Aberto" + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + "Aberto" + '</span></div>\n' +
                 '\n' +
                 '                                    <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                 '\n' +
@@ -456,21 +356,21 @@ export default function Dashboard(props) {
             '                            \n' +
             '\n' +
             '                        <div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Quantidade de Jogos:</span></div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + (localStorage.getItem('betsAll2').split("=").length - 1) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Quant. Jogos:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + (localStorage.getItem('betsAll2').split("=").length - 1) + '</span></div>\n' +
             '                            \n' +
             '                            <div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span  style="display: inline-block">' + parseFloat(document.getElementById('cotacao').innerHTML).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span  style="display: inline-block">' + parseFloat(document.getElementById('cotacao').innerHTML).toFixed(2) + '</span></div>\n' +
             '\t\t\t\t\t\t\t</div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Possível Retorno:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">R$ ' + parseFloat(document.getElementById('retorno').innerHTML).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">R$ ' + parseFloat(document.getElementById('retorno').innerHTML).toFixed(2) + '</span></div>\n' +
             '                            \n' +
             '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '                        </div>\n' +
@@ -478,7 +378,7 @@ export default function Dashboard(props) {
             '                        <div>\n' +
             '                            <div style="display: inline-block; width: 100%; text-align: center;"><span style="display: inline-block">BILHETE</span></div>\n' +
             '                            <div style="display: inline-block; width: 100%; text-align: center;">\n' +
-            '                                <h4 style="font-weight:bold" class="H3">' + codigo + '</h4>                  \n' +
+            '                                <h2 style="font-weight:bold" class="H3">' + codigo + '</h2>                  \n' +
             '                            </div>\n' +
             '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '                        </div>\n' +
@@ -504,6 +404,7 @@ export default function Dashboard(props) {
                         break
                     }
                 }
+            
 
 
                 api.post('/api/addbilhete',
@@ -570,6 +471,7 @@ export default function Dashboard(props) {
                     }).catch(error => {
                         console.log(error);
                     });
+                
             }).catch(error => {
                 console.log(error);
             });
@@ -590,8 +492,10 @@ export default function Dashboard(props) {
             } else {
                 resultCotaca = 0;
             }
-            let cotacao = sessionStorage.getItem('cotacaoAdmin');    
-            document.getElementById('cotacao').innerHTML = (resultCotaca > cotacao ? cotacao : resultCotaca).toFixed(2);
+            let cotacao = sessionStorage.getItem('cotacaoAdmin');  
+            // console.log(cotacao < resultCotaca);   
+            document.getElementById('cotacao').innerHTML = parseFloat(resultCotaca > Number(cotacao) ?
+             Number(cotacao) : resultCotaca).toFixed(2);
         } catch (e) {
 
         }
@@ -867,16 +771,16 @@ export default function Dashboard(props) {
     }
 
     function onClickHandler() {
-        if(1){
+
+        let qtd = localStorage.getItem('betsAll2').split("=").length;
+        console.log(qtd);
+        if(qtd <= 20){
         document.getElementById('bilheteP').innerHTML = '';
         const team = localStorage.getItem('click2');
                 document.getElementById("retorno").innerHTML = '0.00';
         try {
             let betsGame = team.split("=");
-            console.log(betsGame);
-            console.log(betsGame[2] + betsGame.slice(-1)[0]);
-
-            console.log(betsGame);
+ 
             var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
             var hourMinute =
                 ((date.getHours() + "").length === 1
@@ -946,16 +850,9 @@ export default function Dashboard(props) {
             console.log(e);
         }
     } else {
-        alert('Apostas Pre-Jogo Desativadas. Fale com seu gerente!');
+        alert('Você passou o número máximo de 20 jogos por apostas!');
     }
     };
-
-    
-    function exit(){
-            sessionStorage.removeItem('login');
-            history.push('/');
-    }
-    
 
     useEffect(() => {
         if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
@@ -1395,7 +1292,7 @@ export default function Dashboard(props) {
                                             id={"valuesBets"}>
                                     Cotação: R$ <b id={"cotacao"}></b><br/>
                                     Possível Retorno:
-                                    R$<b id={"retorno"}> 0.00</b><br/>
+                                    R$ <b id={"retorno"}></b><br/>
                                     Valor da Aposta:<b></b><br/><br/>
                                 </Typography>
                                 <center>
@@ -1512,9 +1409,8 @@ export default function Dashboard(props) {
 
                     <Grid item xs={12} md={4} sm={12}>
                         <div style={{
-                            width: 'calc(100% - 20px)',
-                            margin: '10px',
-                            padding: '10px',
+                            width: 'calc(100% - 15%)',
+                            fontSize: 12,
                             backgroundColor: 'rgb(248, 236, 194)',
                             color: 'black',
                             boxSizing: 'border-box'

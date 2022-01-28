@@ -397,9 +397,8 @@ export default function Dashboard1(props) {
         document.getElementById('header').innerHTML = '\n' +
             '                    <div >\n' +
             '\n' +
-            '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">XBETS198</h4></center>\n' +
+            '                        <center><h2 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">SONHOBETS</h2></center>\n' +
             '\n' +
-            '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">8399104-6816</h4></center>\n' +
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '\n' +
@@ -413,9 +412,9 @@ export default function Dashboard1(props) {
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '\n' +
-            '                        <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
+            '                        <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
             '\n' +
-            '                        <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
+            '                        <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
             '\n' +
             '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
         '\n';
@@ -441,12 +440,12 @@ export default function Dashboard1(props) {
                 '\n' +
                 '                                    <b><span>' + typeBets.split('--')[0] + '</span></b><br>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">' + typeBets.split('--')[1] + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">' + typeBets.split('--')[1] + '</span></div>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + value + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + value + '</span></div>\n' +
                 '\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
-                '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + "Aberto" + '</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
+                '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + "Aberto" + '</span></div>\n' +
                 '\n' +
                 '                                    <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                 '\n' +
@@ -459,21 +458,21 @@ export default function Dashboard1(props) {
             '                            \n' +
             '\n' +
             '                        <div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Quantidade de Jogos:</span></div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + (localStorage.getItem('betsAll2').split("=").length - 1) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Quant. de Jogos:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + (localStorage.getItem('betsAll2').split("=").length - 1) + '</span></div>\n' +
             '                            \n' +
             '                            <div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span  style="display: inline-block">' + parseFloat(document.getElementById('cotacao').innerHTML).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span  style="display: inline-block">' + parseFloat(document.getElementById('cotacao').innerHTML).toFixed(2) + '</span></div>\n' +
             '\t\t\t\t\t\t\t</div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Possível Retorno:</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">R$ ' + parseFloat(document.getElementById('retorno').innerHTML).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">R$ ' + parseFloat(document.getElementById('retorno').innerHTML).toFixed(2) + '</span></div>\n' +
             '                            \n' +
             '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '                        </div>\n' +
@@ -481,7 +480,7 @@ export default function Dashboard1(props) {
             '                        <div>\n' +
             '                            <div style="display: inline-block; width: 100%; text-align: center;"><span style="display: inline-block">BILHETE</span></div>\n' +
             '                            <div style="display: inline-block; width: 100%; text-align: center;">\n' +
-            '                                <h4 style="font-weight:bold" class="H3">' + codigo + '</h4>                  \n' +
+            '                                <h2 style="font-weight:bold" class="H3">' + codigo + '</h2>                  \n' +
             '                            </div>\n' +
             '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
             '                        </div>\n' +
@@ -594,11 +593,13 @@ export default function Dashboard1(props) {
             } else {
                 resultCotaca = 0;
             }
-           
+            
             let cotacao = sessionStorage.getItem('cotacaoAdmin');    
-            document.getElementById('cotacao').innerHTML = (resultCotaca > cotacao ? cotacao : resultCotaca).toFixed(2);
+            
+           document.getElementById('cotacao').innerHTML = parseFloat(resultCotaca > Number(cotacao) ?
+             Number(cotacao) : resultCotaca).toFixed(2);
         } catch (e) {
-
+            console.log(e);
         }
 
     }
@@ -870,17 +871,17 @@ export default function Dashboard1(props) {
 
 
 
-    function onClickHandler () {
-        
+    function onClickHandler() {
+
+        let qtd = localStorage.getItem('betsAll2').split("=").length;
+        console.log(qtd);
+        if(qtd <= 20){
         document.getElementById('bilheteP').innerHTML = '';
         const team = localStorage.getItem('click2');
                 document.getElementById("retorno").innerHTML = '0.00';
         try {
             let betsGame = team.split("=");
-            console.log(betsGame);
-            console.log(betsGame[2] + betsGame.slice(-1)[0]);
-
-            console.log(betsGame);
+ 
             var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
             var hourMinute =
                 ((date.getHours() + "").length === 1
@@ -949,7 +950,9 @@ export default function Dashboard1(props) {
         } catch (e) {
             console.log(e);
         }
-    
+    } else {
+        alert('Você passou o número máximo de 20 jogos por apostas!');
+    }
     };
 
     function close(e) {
@@ -1211,14 +1214,14 @@ export default function Dashboard1(props) {
                                                             '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + fora + '\')">'+
                                                             '<b class="button" id="'+idFora+'">'+valorFora+'</b></td>'+
 
-                                                            '<td id="ocultar" ><a href="/sonhobets/#/maispre/'+live.id+'-'+live.data+'"'+ 
+                                                            '<td id="ocultar" ><a href="/#/maispre/'+live.id+'-'+live.data+'"'+ 
                                                             'class="buttonM"><p style="font-size: 26px;">'+"+"+'</p></a></td>'+
                                                             '</tr>'
                                                         }else{
 
                                                             document.getElementById('preJogos')
                                                             .innerHTML += '<tr id="bets1">' +
-                                                            '<td class="times"><a style="text-decoration: none; color: black" href="/sonhobets/#/maispre/'+live.id+'-'+live.data+'"'+ 
+                                                            '<td class="times"><a style="text-decoration: none; color: black" href="/#/maispre/'+live.id+'-'+live.data+'"'+ 
                                                             '>'+live.casa + '<br/>' + live.fora+ '</a><br/>'+
                                                             '<p>'+date.split(' ')[0]+'</p>'+
                                                             '<p>'+date.split(' ')[1]+'</p>'+
@@ -1492,9 +1495,8 @@ export default function Dashboard1(props) {
 
                     <Grid item xs={12} md={4} sm={12}>
                         <div style={{
-                            width: 'calc(100% - 20px)',
-                            margin: '10px',
-                            padding: '10px',
+                            width: 'calc(100% - 15%)',
+                            fontSize: 12,
                             backgroundColor: 'rgb(248, 236, 194)',
                             color: 'black',
                             boxSizing: 'border-box'

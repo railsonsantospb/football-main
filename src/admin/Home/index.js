@@ -1,56 +1,27 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
-
 import { api } from '../Constantes/index';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Menu from '../Menu/index';
-
-//let aux = [];
+import MenuAdmin from '../Menu/index';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 export default function Dashboard() {
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
     const [date, setDate] = useState([]);
     const [dataAux, setDataAux] = useState([]);
     const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
@@ -145,6 +116,17 @@ export default function Dashboard() {
         }
     }));
 
+    const getMuiTheme = () => createTheme({
+        overrides: {
+          MUIDataTableBodyCell: {
+            root: {
+              color: "#FF0000",
+            },
+           
+          }
+        }
+      })
+
     const options = {
         rowsPerPage: 50,
         filter: true,
@@ -153,46 +135,56 @@ export default function Dashboard() {
         tableBodyHeight,
         tableBodyMaxHeight,
         selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
+   
+        textLabels: {
+            body: {
+              noMatch: "Nenhum dado encontrado",
+              toolTip: "Ordenar",
+              columnHeaderTooltip: column => `Ordenar por ${column.label}`
+            },
+            pagination: {
+              next: "Próxima Página",
+              previous: "Página Anterior",
+              rowsPerPage: "Linha por página:",
+              displayRows: "de",
+            },
+            toolbar: {
+              search: "Procurar",
+              downloadCsv: "Download CSV",
+              print: "Print",
+              viewColumns: "View Columns",
+              filterTable: "Filter Table",
+            },
+            filter: {
+              all: "Tudo",
+              title: "FILTERS",
+              reset: "RESET",
+            },
+            viewColumns: {
+              title: "Mostrar Colunas",
+              titleAria: "Show/Hide Table Columns",
+            },
+            selectedRows: {
+              text: "row(s) selected",
+              delete: "Delete",
+              deleteAria: "Delete Selected Rows",
+            },
+          }
+
+          
+        // onRowClick: (rowData, rowMeta) => {
+        //     const dataToState = rowData;
+        //     console.log(dataToState);
+        // }
     };
    
 
-    const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
-        "APOSTAS", "STATUS", "PRÉ-JOGO", "AO VIVO", "EDITAR"];
+    const columns = ["GERENTE", "STATUS", "CRIAR CAMBISTA", "REIMPRIMIR", "STATUS CAMBISTA", "ALTERAR LIMITES",
+        "CANCELAR APOSTAS", "APOSTAS CAMBISTA", "EDITAR"];
 
 
     const classes = useStyles();
 
-
-
-    const handleClickA = index => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    }
-
-
-
-    
-
-    
 
     function close(e) {
 
@@ -205,10 +197,6 @@ export default function Dashboard() {
         }
     }
 
-    function exit() {
-        sessionStorage.removeItem('admin');
-        history.push('/adm');
-    }
 
     let d = [];
     useEffect(() => {
@@ -216,9 +204,6 @@ export default function Dashboard() {
         if (sessionStorage.getItem('admin') == null || sessionStorage.getItem('admin') == "") {
             history.push('/adm');
         }
-
-        let unmounted = false;
-
 
 
         async function getDateAll() {
@@ -247,10 +232,10 @@ export default function Dashboard() {
                     d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
                     d2.getDate()]);
 
-                    if (!unmounted) {
-                        setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                        console.log([d.getDay(), d1.getDay(), d2.getDay()]);
-                    }
+        
+                    setDay([d.getDay(), d1.getDay(), d2.getDay()]);
+                    console.log([d.getDay(), d1.getDay(), d2.getDay()]);
+                    
 
 
 
@@ -262,29 +247,70 @@ export default function Dashboard() {
 
         
         
-        async function getBancasAPI() {
+        async function getGerentesAPI() {
             
-            api.get('/api/getbancas')
+            api.get('/api/getgerencia')
                 .then(res => {
                     try {
                         if (res.data) {
-                           
-                            res.data.bancas.map((b) => {
+                           console.log(res.data);
+                            res.data.gerencias.map((b) => {
                                 dataAux.push([
                                     b.nome, 
-                                    'R$ '+(b.saldoGeral).toFixed(2), 
-                                    'R$ '+(b.saldoSimples).toFixed(2), 
-                                    b.comissaoPreJogo,
-                                    b.comissaoAoVivo,
-                                    b.ativarApostas == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CancelIcon /></Button>,
                                     b.status == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarStatus(b.id, b.status)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarStatus(b.id, b.status)}><CancelIcon /></Button>,
-                                    b.ativarApostasPreJogo == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CancelIcon /></Button>,
-                                    b.ativarApostasAoVivos == 1 ? 
-                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CancelIcon /></Button>,
-                                    <Button  variant="outlined" style={{ color: 'blue', borderColor: 'blue' }} component={Link} to={'/editcambista/'+b.id}><EditIcon /></Button>,]);
+                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarStatus(b.id, b.status)}><CheckCircleIcon /></Button>
+                                      : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }}
+                                       onClick={() => atualizarStatus(b.id, b.status)}><CancelIcon /></Button>,
+
+                                    b.criarCambista == 1 ? 
+                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarCriarCambista(b.id, b.criarCambista)}><CheckCircleIcon /></Button>
+                                      : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }}
+                                       onClick={() => atualizarCriarCambista(b.id, b.criarCambista)}><CancelIcon /></Button>,
+
+                                    b.reiprimirApostas == 1 ? 
+                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarReiprimirApostas(b.id, b.reiprimirApostas)}>
+                                         <CheckCircleIcon /></Button> : <Button variant="outlined"
+                                          style={{ color: 'red', borderColor: 'red' }} onClick={() => 
+                                            atualizarReiprimirApostas(b.id, b.reiprimirApostas)}>
+                                                <CancelIcon /></Button>,
+
+                                    b.alterarStatusCambista == 1 ? 
+                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarAlterarStatusCambista(b.id, b.alterarStatusCambista)}>
+                                         <CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }}
+                                          onClick={() => atualizarAlterarStatusCambista(b.id, b.alterarStatusCambista)}><CancelIcon /></Button>,
+                                   
+                                    
+                                    b.alterarLimitesApostas == 1 ? 
+                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarAlterarLimitesApostas(b.id, b.alterarLimitesApostas)}>
+                                         <CheckCircleIcon /></Button> : <Button variant="outlined"
+                                          style={{ color: 'red', borderColor: 'red' }} onClick={() =>
+                                             atualizarAlterarLimitesApostas(b.id, b.alterarLimitesApostas)}>
+                                                 <CancelIcon /></Button>,
+
+                                    b.cancelarApostaCambista == 1 ? 
+                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                     onClick={() => atualizarCancelarApostaCambista(b.id, b.cancelarApostaCambista)}>
+                                         <CheckCircleIcon /></Button> : <Button variant="outlined"
+                                          style={{ color: 'red', borderColor: 'red' }} onClick={() =>
+                                             atualizarCancelarApostaCambista(b.id, b.cancelarApostaCambista)}>
+                                                 <CancelIcon /></Button>,
+
+                                    b.ativaApostasCambistas == 1 ? 
+                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }}
+                                    onClick={() => atualizarAtivaApostasCambistas(b.id, b.ativaApostasCambistas)}>
+                                        <CheckCircleIcon /></Button> : <Button variant="outlined"
+                                        style={{ color: 'red', borderColor: 'red' }} onClick={() =>
+                                            atualizarAtivaApostasCambistas(b.id, b.ativaApostasCambistas)}>
+                                                <CancelIcon /></Button>,
+                               
+                    
+                                    <Button  variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}
+                                     component={Link} to={'/editgerente/'+b.id}><EditIcon /></Button>,]);
                             })
                             setDataAux(dataAux);
                             
@@ -300,25 +326,21 @@ export default function Dashboard() {
         }
         
         setDataAux(d);
-        getBancasAPI();
+        getGerentesAPI();
         getDateAll();
 
 
 
-        return () => {
-            unmounted = true
-        };
-
     }, []);
 
-    function atualizarApostasAoVivo(id, apostasAoVivo){
-        if(apostasAoVivo){
-            apostasAoVivo = false;
+    function atualizarReiprimirApostas(id, reiprimirApostas){
+        if(reiprimirApostas){
+            reiprimirApostas = false;
         } else {
-            apostasAoVivo = true;
+            reiprimirApostas = true;
         }
-        api.put('/api/updatebanca/'+id, {
-            "ativarApostasAoVivos": apostasAoVivo,
+        api.put('/api/updategerencia/'+id, {
+            "reiprimirApostas": reiprimirApostas,
         })
             .then(res => {
                 history.go(0);
@@ -327,14 +349,14 @@ export default function Dashboard() {
         });
     }
 
-    function atualizarAtivarApostasPreJogo(id, ativarApostasPreJogo){
-        if(ativarApostasPreJogo){
-            ativarApostasPreJogo = false;
+    function atualizarCriarCambista(id, criarCambista){
+        if(criarCambista){
+            criarCambista = false;
         } else {
-            ativarApostasPreJogo = true;
+            criarCambista = true;
         }
-        api.put('/api/updatebanca/'+id, {
-            "ativarApostasPreJogo": ativarApostasPreJogo,
+        api.put('/api/updategerencia/'+id, {
+            "criarCambista": criarCambista,
         })
             .then(res => {
                 history.go(0);
@@ -343,14 +365,14 @@ export default function Dashboard() {
         });
     }
 
-    function atualizarAtivarApostas(id, ativarApostas){
-        if(ativarApostas){
-            ativarApostas = false;
+    function atualizarAtivaApostasCambistas(id, ativaApostasCambistas){
+        if(ativaApostasCambistas){
+            ativaApostasCambistas = false;
         } else {
-            ativarApostas = true;
+            ativaApostasCambistas = true;
         }
         api.put('/api/updatebanca/'+id, {
-            "ativarApostas": ativarApostas,
+            "ativaApostasCambistas": ativaApostasCambistas,
         })
             .then(res => {
                 history.go(0);
@@ -365,7 +387,7 @@ export default function Dashboard() {
         } else {
             status = true;
         }
-        api.put('/api/updatebanca/'+id, {
+        api.put('/api/updategerencia/'+id, {
             "status": status,
         })
             .then(res => {
@@ -375,16 +397,61 @@ export default function Dashboard() {
         });
     }
 
-    
+    function atualizarAlterarStatusCambista(id, alterarStatusCambista){
+        if(alterarStatusCambista){
+            alterarStatusCambista = false;
+        } else {
+            alterarStatusCambista = true;
+        }
+        api.put('/api/updategerencia/'+id, {
+            "alterarStatusCambista": alterarStatusCambista,
+        })
+            .then(res => {
+                history.go(0);
+            }).catch(error => {
+            console.log(error)
+        });
+    }
 
-    const fixedHeightPaper = clsx(classes.paper);
+    function atualizarAlterarLimitesApostas(id, alterarLimitesApostas){
+        if(alterarLimitesApostas){
+            alterarLimitesApostas = false;
+        } else {
+            alterarLimitesApostas = true;
+        }
+        api.put('/api/updategerencia/'+id, {
+            "alterarLimitesApostas": alterarLimitesApostas,
+        })
+            .then(res => {
+                history.go(0);
+            }).catch(error => {
+            console.log(error)
+        });
+    }
+
+    function atualizarCancelarApostaCambista(id, cancelarApostaCambista){
+        if(cancelarApostaCambista){
+            cancelarApostaCambista = false;
+        } else {
+            cancelarApostaCambista = true;
+        }
+        api.put('/api/updategerencia/'+id, {
+            "cancelarApostaCambista": cancelarApostaCambista,
+        })
+            .then(res => {
+                history.go(0);
+            }).catch(error => {
+            console.log(error)
+        });
+    }
+
 
 
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
 
-            <Menu/>
+            <MenuAdmin/>
 
             <main className={classes.content}>
 
@@ -395,14 +462,15 @@ export default function Dashboard() {
                     <br />
                     {dataAux.length > 0 ? 
                     <React.Fragment>
+                        <ThemeProvider theme={getMuiTheme()}>
                         <MUIDataTable
                             title={<Grid container direction={'row'}>
                                 
                                 <br/>
                                 <Grid item style={{ paddingLeft: '10px' }}></Grid>
                                 <Grid item>
-                                    <Button variant="contained" color="primary" component={Link} to={'/cadcambista'}>
-                                        CADASTRAR CAMBISTA
+                                    <Button variant="contained" color="primary" component={Link} to={'/cadgerente'}>
+                                        CADASTRAR GERENTE
                                     </Button>
                                 </Grid>
                             </Grid>}
@@ -411,7 +479,16 @@ export default function Dashboard() {
                             options={options}
 
                         />
-                    </React.Fragment> : <LinearProgress />}
+                        </ThemeProvider>
+                    </React.Fragment> : <Typography component="h4" color="inherit" align="center">
+                            <Grid item>
+                                <Button variant="contained" color="primary" component={Link} to={'/cadgerente'}>
+                                    CADASTRAR GERENTE
+                                </Button>
+                            </Grid>
+                            <Grid item style={{ marginBottom: '10px' }}></Grid>
+                       Nenhum Gerente Cadastrado!
+                    </Typography>}
                 </Container>
 
                 <div>

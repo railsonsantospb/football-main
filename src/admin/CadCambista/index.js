@@ -1,75 +1,44 @@
 import { makeStyles } from '@material-ui/core/styles';
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
 import Button from '@material-ui/core/Button';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { api } from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
 import Menu from '../Menu/index';
-
+import Autocomplete from '@material-ui/lab/Autocomplete';
 //let aux = [];
 
 export default function Dashboard() {
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
     const [date, setDate] = useState([]);
     const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
     const [nomeBanca, setNomeBanca] = useState("");
+    const [bancas, setBancas] = useState("");
     const [limitG, setLimitG] = useState("");
     const [limitS, setLimitS] = useState("");
     const [telefone, setTelefone] = useState("");
     const [comissaoAoVivo, setComissaoAoVivo] = useState("");
     const [email, setEmail] = useState("");
     const [comissaoPreJogo, setComissaoPreJogo] = useState("");
-    const [senha, setSenha] = useState("");
     const [apostasAoVivo, setApostasAoVivo] = useState(false);
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
     const [imprimir, setImprimir] = useState(false);
     const [apostas, setApostas] = useState(false);
     const [status, setStatus] = useState(false);
+    const [manage, setManage] = useState({});
+    const [ba, setB] = useState(-1);
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -162,78 +131,10 @@ export default function Dashboard() {
         }
     }));
 
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
 
-    const dataAux = [
-        ["ELETRONICA", "R$ 1000.00", "R$ 1000.00", "1:5;5:10", "1:5;5:10",
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}><EditIcon /></Button>,],
-    ];
-
-    const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
-        "APOSTAS", "STATUS", "PRÉ-JOGO", "AO VIVO", "EDITAR"];
 
 
     const classes = useStyles();
-
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = index => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    }
-
-
-
-    const handleDrawerOpen = () => {
-        if (document.getElementById('drawer').style.display == 'none' || document.getElementById('drawer').style.display == '') {
-            document.getElementById('drawer').style.display = 'block';
-            document.getElementById('drawer').style.marginLeft = '40px';
-        } else if (document.getElementById('drawer').style.display == 'block') {
-            document.getElementById('drawer').style.display = 'none';
-            document.getElementById('drawer').style.marginLeft = '0px';
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById('drawer').style.display = 'none';
-    };
 
     function close(e) {
 
@@ -256,10 +157,6 @@ export default function Dashboard() {
             
     });
 
-    function exit() {
-        sessionStorage.removeItem('admin');
-        history.push('/adm');
-    }
 
     const formik = useFormik({
         initialValues: {
@@ -274,6 +171,7 @@ export default function Dashboard() {
                 "senha": values.password1,
                 "telefone": telefone,
                 "email": email,
+                "habilitarImpressao": imprimir,
                 "comissaoPreJogo": comissaoPreJogo,
                 "comissaoAoVivo": comissaoAoVivo,
                 "saldoSimples": limitS,
@@ -282,13 +180,18 @@ export default function Dashboard() {
                 "ativarApostasPreJogo": apostasPreJogo,
                 "ativarApostas": apostas,
                 "status": status,
-                "gerente_id": sessionStorage.getItem('manage'),
+                "gerente_id": ba,
     
             })
                 .then(res => {
                     try {
                         if (res.data) {
-                            history.push("/gerente");
+                            if(res.data.bancas == ""){
+                                alert('Nome da banca já existe!');
+                            } else {
+                                history.push("/cadastrarbancadmin");
+                            }
+                            
                         }   
                     } catch (e) {
     
@@ -298,6 +201,21 @@ export default function Dashboard() {
                 });
         },
     });
+
+    function verifyBancaHandler(e) {
+
+        let banca =
+            typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
+                e.target.innerText.length > 0 ? e.target.innerText : '';
+        
+        bancas.map((b) => {
+            if(b.nome == banca){
+                setB(manage[b.nome]);
+            }
+        })
+        
+
+    }
 
     function handlerChangeApostasAovivo() {
         if(apostasAoVivo){
@@ -398,6 +316,36 @@ export default function Dashboard() {
 
         getDateAll();
 
+        async function getGerenteAPI() {
+            let gerentes = {};
+            let ba = [];
+            api.get('/api/getgerencia')
+                .then(res => {
+                    try {
+                        if (res.data) {
+                             
+                           res.data.gerencias.map((b) => {
+                               gerentes[b.nome] = b.id;
+                               ba.push({'nome': b.nome});
+                               console.log(ba);
+                           });
+                           
+                           
+                           setBancas(ba);
+                           setManage(gerentes);    
+                        }   
+                        
+                    } catch (e) {
+
+                    }
+                }).catch(error => {
+                    console.log(error)
+                });
+
+        }
+
+        getGerenteAPI();
+
 
 
         return () => {
@@ -439,6 +387,24 @@ export default function Dashboard() {
                                     onChange={e => setNomeBanca(e.target.value)}
                                 />
                             </Grid>
+                            <Grid item xs={12} sm={6}>
+                            <Autocomplete
+                                
+                                id={"resetField2"}
+                                freeSolo
+                                fullWidth
+                                onChange={verifyBancaHandler}
+                                options={bancas}
+                                getOptionLabel={(option) => option.nome}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+
+                                        label="Gerente"
+                                        variant="outlined" />}
+                                />
+                            </Grid>
+                            
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     value={email}

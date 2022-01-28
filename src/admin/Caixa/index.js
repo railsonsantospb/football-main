@@ -25,13 +25,8 @@ import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
-import LockIcon from '@material-ui/icons/Lock';
 import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { Box } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useReactToPrint } from 'react-to-print';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -46,12 +41,8 @@ import {images, auxCountry, auxItens, api} from '../Constantes/index';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import EditIcon from "@material-ui/icons/Edit";
-
+import Menu from '../Menu/index';
 
 let tab;
 let date = [];
@@ -70,17 +61,12 @@ export default function Dashboard() {
 
     let history = useHistory();
     const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
     const [openNav, setOpenNav] = useState(false);
     const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [regionName, setRegionName] = useState([]);
-    const [ids, setIds] = useState([]);
     const [openNavB, setOpenNavB] = useState("");
     const [data, setData] = useState([]);
     const [totalEntrada, setTotalEntrada] = useState(0);
@@ -294,15 +280,31 @@ export default function Dashboard() {
         let perdeu = 0;
         let comissao = 0;
         for (let datas of dataAux) {
-            entradas += parseFloat(datas[4]);
-            if (datas[3] == 'Aberto') {
+            
+            let st = datas[3].replaceAll('{', '').replaceAll('}', '');
+            let result = ((st.split(',').length == datas[10]));
+
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+
+            if(valor != 'Cancelado'){
+                entradas += parseFloat(datas[4]);
+                comissao += parseFloat(datas[5]);
+            }
+        
+
+            if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
-            } else if (datas[3] == 'Ganhou') {
+            } else if (valor == 'Ganhou') {
                 ganhos += parseFloat(datas[7]);
-            } else if (datas[3] == 'Perdeu') {
+            } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-            comissao += parseFloat(datas[5]);
+            
         }
         setTotalEntrada(entradas);
         setEntradasAbertas(abertos);
@@ -327,7 +329,23 @@ export default function Dashboard() {
             let dateReverse = new Date('20'+(datas[2].split(' ')[0]).split('/').reverse().join('-'));
 
             if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-                entradas += parseFloat(datas[4]);
+               
+                let st = datas[3].replaceAll('{', '').replaceAll('}', '');
+                let result = ((st.split(',').length == datas[10]));
+
+                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+
+                if(valor != 'Cancelado'){
+                    entradas += parseFloat(datas[4]);
+                    comissao += parseFloat(datas[5]);
+                }
+        
+
                 if (datas[3] == 'Aberto') {
                     abertos += parseFloat(datas[4]);
                 } else if (datas[3] == 'Ganhou') {
@@ -335,7 +353,7 @@ export default function Dashboard() {
                 } else if (datas[3] == 'Perdeu') {
                     perdeu += parseFloat(datas[4]);
                 }
-                comissao += parseFloat(datas[5]);
+                
                 init = 1;
             }
         }
@@ -415,7 +433,7 @@ export default function Dashboard() {
 
         async function getBancasAPI() {
 
-            api.get('/api/getbilhetesgerente/'+sessionStorage.getItem('manage'))
+            api.get('/api/getbilhetes')
                 .then(res => {
                     try {
                         if (res.data) {
@@ -468,111 +486,7 @@ export default function Dashboard() {
         <div className={classes.root} onClick={close}>
             <CssBaseline />
 
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>XBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                        <b>Gerencia:</b> eletronica <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/cotacao'}>
-                        <ListItemIcon>
-                            <MonetizationOnIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Cotação" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-               
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="lg" className={classes.container}>
@@ -629,7 +543,6 @@ export default function Dashboard() {
                                             <Table stickyHeader aria-label="sticky table" >
                                                 <TableHead >
                                                     <TableRow>
-                                                        <StyledTableCell align={"center"}><b>GERENCIA</b></StyledTableCell>
                                                         <StyledTableCell align={"center"}><b>TOTAL DE ENTRADAS</b></StyledTableCell>
                                                         <StyledTableCell align={"center"}><b>ENTRADAS EM ABERTO</b></StyledTableCell>
                                                         <StyledTableCell align={"center"}><b>SAÍDAS</b></StyledTableCell>
@@ -641,11 +554,7 @@ export default function Dashboard() {
                                                 <TableBody>
 
                                                     <StyledTableRow >
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                            <Typography variant="h5">
-                                                                {sessionStorage.getItem('nomeGerente')}
-                                                            </Typography>
-                                                        </StyledTableCell>
+                                                       
                                                         <StyledTableCell align={"center"} style={{ width: '10px' }}>
                                                             <Typography variant="h5">
                                                                 R$ {totalEntrada.toFixed(2)}

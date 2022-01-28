@@ -1,46 +1,13 @@
 import { makeStyles, useTheme  } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardContent from '@material-ui/core/CardContent';
 import Taca from './taca.jpg';
-import World from './world.jpg';
-import { images, auxCountry, auxItens, weeks, api } from '../Constantes/index';
+import { images, weeks, api } from '../Constantes/index';
 import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import Hidden from '@material-ui/core/Hidden';
-import PersonIcon from '@material-ui/icons/Person';
-import Button from '@material-ui/core/Button';
-import football from './football';
 import Menu from '../Menu/index';
 
 
@@ -49,19 +16,10 @@ import Menu from '../Menu/index';
 export default function Dashboard(props) {
 
     let history = useHistory();
-    const theme = useTheme();
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     let values = [];
     const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
     const [date, setDate] = useState([]);
     const [day, setDay] = useState([]);
-    const [dateAfter, setDateAfter] = useState('');
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [aux, setAux] = useState(false);
     const [country, setCountry] = useState([]);
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
@@ -75,12 +33,7 @@ export default function Dashboard(props) {
             display: 'flex',
             
         },
-        drawer: {
-            [theme.breakpoints.up('sm')]: {
-                width: drawerWidth,
-                flexShrink: 0,
-            },
-        },
+       
         appBar: {
             [theme.breakpoints.up('sm')]: {
                 width: `calc(100% - ${drawerWidth}px)`,
@@ -108,40 +61,6 @@ export default function Dashboard(props) {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = index => {
-        console.log(index);
-        if (openNavA === index) {
-            setOpenNavA("");
-        } else {
-            setOpenNavA(index);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    }
-
-    function close(e) {
-
-        try {
-            if (e.clientX > 250) {
-                document.getElementById('drawer').style.display = 'none';
-            }
-        } catch (e) {
-            //console.log(e);
-        }
-
-    }
-    
-
 
 
     useEffect(() => {
@@ -153,7 +72,6 @@ export default function Dashboard(props) {
             sessionStorage.setItem('minutos', new Date().getMinutes());
         }
 
-        
 
         async function getPaisesCampeonatos() {
             api.get('/api/gethome').then(res => {
@@ -184,6 +102,7 @@ export default function Dashboard(props) {
             api.get('/api/getdate').then(res => {
 
                     try {
+                    
                         let d = Date(res.data.date);
                         d = new Date(d);
                         d = d.setDate(d.getDate());
@@ -264,10 +183,12 @@ export default function Dashboard(props) {
 
 
     return (
+        
         <div className={classes.root}>
-            <CssBaseline />
-
             <Menu/>
+           
+
+            
             <main className={classes.content}>
 
                 <div className={classes.appBarSpacer} />
@@ -277,14 +198,14 @@ export default function Dashboard(props) {
                     {country.length > 0 ?
 
 
-                        <div>
+                        <div><fieldset style={{padding: 20}}>
                             <Grid item={true} xs={12} container spacing={2}>
 
                                 <Grid container align="center" >
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} >
                                             <Typography variant="h5" >
-                                                <b style={{ color: '#428bca' }}>SONHOBETS198</b>
+                                                <b style={{ color: '#428bca' }}>SONHOBETS</b>
                                             </Typography>
                                             <Typography variant="h6" >
                                                 <b>VEM VIVER A EMOÇÃO DO FUTEBOL</b>
@@ -462,7 +383,7 @@ export default function Dashboard(props) {
 
             })}
         </div>
-                        </div>
+        </fieldset></div>
 
 
                         : <LinearProgress />}

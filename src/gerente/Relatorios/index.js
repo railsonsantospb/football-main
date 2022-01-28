@@ -2,52 +2,22 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, PureComponent } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
-import Taca from "../Home/taca.jpg";
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {images, auxCountry, auxItens, cc, api} from '../Constantes/index';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
+import {api} from '../Constantes/index';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -58,9 +28,8 @@ import TableRow from '@material-ui/core/TableRow';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import Menu from '../Menu/index';
 
-let tab;
 let date = [];
 
 const StyledTableCell = withStyles((theme) => ({
@@ -84,22 +53,10 @@ const StyledTableRow = withStyles((theme) => ({
 export default function Dashboard() {
 
     let history = useHistory();
-    let { campId } = useParams();
-    var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [totalEntrada, setTotalEntrada] = useState({});
     const [totalEntradaP, setTotalEntradaP] = useState(0);
     const [totalEntradaV, setTotalEntradaV] = useState(0);
@@ -122,6 +79,7 @@ export default function Dashboard() {
     const [dataAuxB, setDataAuxB] = useState([]);
     const [balanco, setBalanco] = useState(0);
     const [done, setDone] = useState(0);
+    const [graph, setGraph] = useState(0);
     const [selectedDate1, handleDateChange1] = useState(new Date());
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
@@ -139,13 +97,6 @@ export default function Dashboard() {
     const handleOpenS = () => {
         setOpenS(true);
     };
-
-
-
-
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -239,7 +190,7 @@ export default function Dashboard() {
     const relatorios = [
         {
             "name": "Entradas",
-            "Pré-Jogo": 0,
+            "Pré-Jogo": totalEntradaP,
             "Ao Vivo": totalEntradaV,
 
         },
@@ -272,72 +223,16 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
 
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
-
-    function exit() {
-        sessionStorage.removeItem('manage');
-        history.push('/login');
-    }
 
 
         let b = 0;
@@ -356,13 +251,18 @@ export default function Dashboard() {
 
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[8]));
-            let valor = (b.status != 'Cancelado' ?
-            (result == true && st != 'Aberto' ?
-            (st.indexOf('Perdeu') != -1 ? 'Perdeu' : 'Ganhou') : 'Aberto') :
-            'Cancelado');
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
             if(datas[0] == 'Pre-Jogo'){
-                entradas += parseFloat(datas[4]);
+                if(valor != 'Cancelado'){
+                    entradas += parseFloat(datas[4]);
+                    comissao += parseFloat(datas[5]);
+                }
                 if (valor == 'Aberto') {
                     abertos += parseFloat(datas[4]);
                 } else if (valor == 'Ganhou') {
@@ -370,9 +270,12 @@ export default function Dashboard() {
                 } else if (valor == 'Perdeu') {
                     perdeu += parseFloat(datas[4]);
                 }
-                comissao += parseFloat(datas[5]);
+                
             } else {
-                entradasV += parseFloat(datas[4]);
+                if(valor != 'Cancelado'){
+                    entradasV += parseFloat(datas[4]);
+                    comissaoV += parseFloat(datas[5]);
+                }
                 if (valor == 'Aberto') {
                     abertosV += parseFloat(datas[4]);
                 } else if (valor == 'Ganhou') {
@@ -380,40 +283,22 @@ export default function Dashboard() {
                 } else if (valor == 'Perdeu') {
                     perdeuV += parseFloat(datas[4]);
                 }
-                comissaoV += parseFloat(datas[5]);
             }
-            relatorios[0]['Pré-Jogo'] = entradas;
-            relatorios[0]['Ao Vivo'] = entradasV;
+            relatorios[0]['Pré-Jogo'] = entradas.toFixed(2);
+            relatorios[0]['Ao Vivo'] = entradasV.toFixed(2);
 
-            relatorios[1]['Pré-Jogo'] = abertos;
-            relatorios[1]['Ao Vivo'] = abertosV;
+            relatorios[1]['Pré-Jogo'] = abertos.toFixed(2);
+            relatorios[1]['Ao Vivo'] = abertosV.toFixed(2);
 
-            relatorios[2]['Pré-Jogo'] = ganhos;
-            relatorios[2]['Ao Vivo'] = ganhosV;
+            relatorios[2]['Pré-Jogo'] = ganhos.toFixed(2);
+            relatorios[2]['Ao Vivo'] = ganhosV.toFixed(2);
 
-            relatorios[3]['Pré-Jogo'] = comissao;
-            relatorios[3]['Ao Vivo'] = comissaoV;
+            relatorios[3]['Pré-Jogo'] = comissao.toFixed(2);
+            relatorios[3]['Ao Vivo'] = comissaoV.toFixed(2);
 
-            relatorios[4]['Pré-Jogo'] = (((perdeu + (entradas - ganhos - comissao))));
-            relatorios[4]['Ao Vivo'] = (((perdeuV + (entradasV - ganhosV - comissaoV))));
-            b = ((perdeu+perdeuV) + ((entradas+entradasV)- (ganhos+ganhosV) - (comissao+comissaoV)));
-
-            
-            // setTotalEntradaP(totalEntradaP+entradas);
-            // setEntradasAbertasP(entradasAbertasP+abertos);
-            // setSaidasP(saidasP+ganhos);
-            // setTotalP(((perdeu + (entradas - ganhos - comissao)))+totalP)
-            // setComissoesP(comissoesP+comissao);
-
-            // setTotalEntradaV(totalEntradaV+entradasV);
-            // setEntradasAbertasV(entradasAbertasV+abertosV);
-            // setSaidasV(saidasV+ganhosV);
-            // setTotalV(((perdeuV + (entradasV - ganhosV - comissaoV)))+totalV)
-            // setComissoesV(comissoesV+comissaoV);
-
-
-            // setBalanco((perdeu+perdeuV) + ((entradas+entradasV)
-            //     - (ganhos+ganhosV) - (comissao+comissaoV)));
+            relatorios[4]['Pré-Jogo'] = ((((entradas - ganhos - comissao)))).toFixed(2);
+            relatorios[4]['Ao Vivo'] = ((((entradasV - ganhosV - comissaoV)))).toFixed(2);
+            b = (((entradas+entradasV)- (ganhos+ganhosV) - (comissao+comissaoV)));
 
         }
 
@@ -429,16 +314,23 @@ export default function Dashboard() {
         ganhos = 0;
         perdeu = 0;
         comissao = 0;
-
+        
         for (let datas of dataAux) {
-            entradas += parseFloat(datas[4]);
+
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[8]));
-            let valor = (b.status != 'Cancelado' ?
-            (result == true && st != 'Aberto' ?
-            (st.indexOf('Perdeu') != -1 ? 'Perdeu' : 'Ganhou') : 'Aberto') :
-            'Cancelado');
-
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+            
+            if(valor != 'Cancelado'){
+                entradas += parseFloat(datas[4]);
+                comissao += parseFloat(datas[5]);
+            }
+            
             if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
             } else if (valor == 'Ganhou') {
@@ -446,42 +338,38 @@ export default function Dashboard() {
             } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-
-
-            comissao += parseFloat(datas[5]);
+            
         }
-
 
         if((totalEntrada[banca]) != undefined) {
             totalEntrada[banca] = totalEntrada[banca]+entradas
-           
+            setTotalEntrada(totalEntrada);
             entradasAbertas[banca] = entradasAbertas[banca]+abertos;
-          
+            setEntradasAbertas(entradasAbertas);
             saidas[banca] = saidas[banca]+ganhos;
-   
+            setSaidas(saidas);
             comissoes[banca] = comissoes[banca]+comissao
-
-            total[banca] = total[banca]+((perdeu - ganhos - comissao));
-
+            setComissoes(comissoes);
+            total[banca] = total[banca]+((entradas - ganhos - comissao));
+            setTotal(total);
         } else {
             totalEntrada[banca]=entradas;
- 
+            setTotalEntrada(totalEntrada);
             entradasAbertas[banca]=abertos;
-
+            setEntradasAbertas(entradasAbertas);
             saidas[banca]=ganhos;
-
+            setSaidas(saidas);
             comissoes[banca]=comissao;
-
-            total[banca]=((perdeu - ganhos - comissao));
-
+            setComissoes(comissoes);
+            total[banca]=((entradas - ganhos - comissao));
+            setTotal(total);
         }
+
         let v = 0;
         for(let i in total){
             v += total[i];
         }
         setDone(v);
-
-
 
     }
 
@@ -504,8 +392,6 @@ export default function Dashboard() {
         if (sessionStorage.getItem('manage') == null || sessionStorage.getItem('manage') == "") {
             history.push('/login')
         }
-
-        let unmounted = false;
 
         async function getDateAll() {
             axios.get('http://worldclockapi.com/api/json/utc/now',
@@ -556,9 +442,10 @@ export default function Dashboard() {
                             // ];
 
                             res.data.bilhetes.map((b) => {
+                                console.log(b);
                                 nomesBancas.add(b.nomeBanca);
                                 nomesAux.add(b.nomeBanca);
-
+                                
                                 dataAux.push([
                                     b.tipoDeJogo,
                                     b.nomeCliente,
@@ -603,13 +490,6 @@ export default function Dashboard() {
         setDataCambista(d);
         setDataAux(d);
         getBancasAPI();
-
-
-        
-
-        return () => {
-            unmounted = true;
-        };
 
 
     }, []);
@@ -675,11 +555,12 @@ export default function Dashboard() {
                 
                     comissoes[banca]=comissao;
                
-                    total[banca]=((perdeu - ganhos - comissao));
-                  
+                    total[banca]=((entradas - ganhos - comissao));
+                    setDone(total[banca]);
 
 
             })
+
 
 
           
@@ -687,14 +568,9 @@ export default function Dashboard() {
             api.get('/api/getbilhetesgerentedates/'+sessionStorage.getItem('manage')+'/'+auxDate1+'/'+auxDate2+'/'+n)
                 .then(res => {
                     try {
+                        console.log(res.data);
 
                         if (res.data) {
-                            //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-                            //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-                            //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-                            // ];
-                            //console.log(auxDate1);
-                            //console.log(res.data);
 
                             res.data.bilhetes.map((b) => {
                                 entradas = 0;
@@ -703,18 +579,30 @@ export default function Dashboard() {
                                 perdeu = 0;
                                 comissao = 0;
 
+                                let st = b.status.replaceAll('{', '').replaceAll('}', '');
+                                let result = ((st.split(',').length == b.quantidadeJogos));
+                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+                                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
-                                entradas += parseFloat(b.valorDeEntrada);
-                                if (b.status == 'Aberto') {
+
+                                if(valor != 'Cancelado'){
+                                    entradas += parseFloat(b.valorDeEntrada);
+                                    comissao += parseFloat(b.comissao);
+                                }
+                                if (valor == 'Aberto') {
                                     abertos += parseFloat(b.valorDeEntrada);
-                                } else if (b.status == 'Ganhou') {
+                                } else if (valor == 'Ganhou') {
                                     ganhos += parseFloat(b.valorDeSaida);
-                                } else if (b.status == 'Perdeu') {
+                                } else if (valor == 'Perdeu') {
                                     perdeu += parseFloat(b.valorDeEntrada);
 
                                 }
-                                comissao += parseFloat(b.comissao);
-                                soma += ((perdeu + (entradas - ganhos - comissao)));
+                                
+                                soma += ((entradas - ganhos - comissao));
 
                                 if((totalEntrada[b.nomeBanca]) != undefined) {
                                     totalEntrada[b.nomeBanca] = totalEntrada[b.nomeBanca]+entradas
@@ -725,8 +613,8 @@ export default function Dashboard() {
                                    
                                     comissoes[b.nomeBanca] = comissoes[b.nomeBanca]+comissao
                                    
-                                    total[b.nomeBanca] = total[b.nomeBanca]+((perdeu - ganhos - comissao));
-                                 
+                                    total[b.nomeBanca] = total[b.nomeBanca]+((entradas - ganhos - comissao));
+                                   
 
 
                                 } else {
@@ -739,13 +627,15 @@ export default function Dashboard() {
                                 
                                     comissoes[b.nomeBanca]=comissao;
                                
-                                    total[b.nomeBanca]=((perdeu - ganhos - comissao));
-                            
+                                    total[b.nomeBanca]=((entradas - ganhos - comissao));
+                                                                        
 
 
                                 }
+                              
+                                setDone(soma);
                                 if(b.tipoDeJogo == 'Pre-Jogo'){
-                                    somaP += ((perdeu - ganhos - comissao));
+                                    somaP += ((entradas - ganhos - comissao));
                                     entradasP += entradas;
                                     abertosP += abertos;
                                     comissaoP += comissao;
@@ -757,22 +647,15 @@ export default function Dashboard() {
                                     // setTotalP(somaP);
                                     // setComissoesP(comissaoP);
                                     relatorios[0]['Pré-Jogo'] = entradasP;
-                                    
-
                                     relatorios[1]['Pré-Jogo'] = abertosP;
-                                    
-
                                     relatorios[2]['Pré-Jogo'] = saidaP;
-                                    
-
                                     relatorios[3]['Pré-Jogo'] = comissaoP;
-                                    
-
                                     relatorios[4]['Pré-Jogo'] = somaP;
+                                 
                                     
                                     
                                 } else {
-                                    somaV += ((perdeu + (entradas - ganhos - comissao)));
+                                    somaV += ((entradas - ganhos - comissao));
                                     entradasV += entradas;
                                     abertosV += abertos;
                                     comissaoV += comissao;
@@ -789,15 +672,14 @@ export default function Dashboard() {
                                     // setTotalP(somaV);
                                     // setComissoesV(comissaoV);
                                 }
-                                b = soma;
+                                
 
 
 
-
-                                setDataAux([]);
+                               
 
                             })
-
+                            setGraph(relatorios);
                         }
                     } catch (e) {
                         console.log(e);
@@ -817,105 +699,7 @@ export default function Dashboard() {
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
-
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>SONHOBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                       {sessionStorage.getItem('nomeGerente')} <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-            </Drawer>
+            <Menu/>    
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
@@ -999,7 +783,7 @@ export default function Dashboard() {
                                         <Grid item>
 
                                                 <ResponsiveContainer width='100%' height={400}>
-                                                    <BarChart data={relatorios}>
+                                                    <BarChart data={graph == 0 ? relatorios : graph}>
                                                         <CartesianGrid strokeDasharray="3 3" />
                                                         <XAxis dataKey="name" />
                                                         <YAxis />
@@ -1031,6 +815,7 @@ export default function Dashboard() {
                                                     <TableBody>
 
                                                         {[...nomesBancas].map((banca) => (
+                                                            console.log(saidas[banca], total[banca] ),
                                                             <StyledTableRow >
                                                                 <StyledTableCell align={"center"} style={{ width: '10px' }}>
                                                                     <Typography variant="h5">
@@ -1058,7 +843,7 @@ export default function Dashboard() {
                                                                     </Typography>
                                                                 </StyledTableCell>
                                                                 <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                    {saidas[banca] > total[banca] ? <Typography variant="h5">
+                                                                    {saidas[banca] > totalEntrada[banca] ? <Typography variant="h5">
                                                                         <b style={{ color: 'red' }}>R$ -{Math.abs(total[banca]).toFixed(2)}</b>
                                                                     </Typography> : <Typography variant="h5">
                                                                         <b style={{ color: 'green' }}>R$ {Math.abs(total[banca]).toFixed(2)}</b>

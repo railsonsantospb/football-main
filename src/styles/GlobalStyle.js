@@ -166,6 +166,70 @@ export const GlobalStyle = createGlobalStyle `
       margin: 4px 2px;
 
     }
+
+    .buttonGold {
+      background-color: gold;
+      border: none;
+      color: white;
+      width: 130px;
+      padding: 10px 22px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 4px 2px;
+
+    }
+
+    .buttonBlue {
+      background-color: blue;
+      border: none;
+      color: white;
+      width: 130px;
+      padding: 10px 22px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 4px 2px;
+
+    }
+
+    .buttonRed {
+      background-color: red;
+      border: none;
+      color: white;
+      width: 130px;
+      padding: 10px 22px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 4px 2px;
+
+    }
+
+    .buttonGreen {
+      background-color: green;
+      border: none;
+      color: white;
+      width: 130px;
+      padding: 10px 22px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 4px 2px;
+
+    }
  
   @media print {
     @page { size: auto auto; margin: 0; }
@@ -175,6 +239,7 @@ export const GlobalStyle = createGlobalStyle `
     #ocultar {
       display: none;
     }
+
     #bets1 {
       
       display: block;

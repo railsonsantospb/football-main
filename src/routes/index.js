@@ -10,6 +10,7 @@ import Init from '../pages/Init';
 import Caixa from '../pages/Caixa';
 import Bilhetes from '../pages/Bilhetes';
 import Bilhete from '../pages/Bilhete';
+import VerificarBilhete from '../pages/VerificarBilhete';
 import Clients from '../pages/Clients';
 import Login from '../pages/Login';
 import LoginMange  from '../gerente/Login';
@@ -20,7 +21,6 @@ import ManageBilhetes from '../gerente/Bilhetes';
 import ManageBilhete from '../gerente/Bilhete';
 import ManageClients from '../gerente/Clients';
 import CadCambista from '../gerente/CadCambista';
-import ManageSaldos from '../gerente/GerenciarSaldos';
 import EditCambista from '../gerente/EditCambista';
 import Relatorios from '../gerente/Relatorios';
 import ManageCaixaCambista from '../gerente/CaixaCambista';
@@ -33,8 +33,9 @@ import ManageBilhetesA from '../admin/Bilhetes';
 import ManageBilheteA from '../admin/Bilhete';
 import ManageClientsA from '../admin/Clients';
 import CadCambistaA from '../admin/CadCambista';
-import ManageSaldosA from '../admin/GerenciarSaldos';
+import CadGerente from '../admin/CadGerente';
 import EditCambistaA from '../admin/EditCambista';
+import EditGerente from '../admin/EditGerente';
 import RelatoriosCambistasA from '../admin/RelatoriosCambistas';
 import ManageCaixaCambistaA from '../admin/CaixaCambista';
 import NovaSenhaGerenteA from '../admin/NovaSenha';
@@ -42,6 +43,8 @@ import ManageCotacaoA from '../admin/Cotacao';
 import ManageCotacaoAoVivo from '../admin/CotacaoAoVivo';
 import ValidarBilhete from '../admin/ValidarBilhete';
 import ValidarDados from '../admin/Propriedades';
+import Bancas from '../admin/Bancas';
+import Regulamento from '../pages/Regulamento';
 
 
 export default function Routes() {
@@ -61,8 +64,10 @@ export default function Routes() {
             <Route exact path="/caixa" component={Caixa}/>
             <Route exact path="/bilhetes" component={Bilhetes}/>
             <Route exact path="/bilhete/:codigoBilhete" component={Bilhete}/>
+            <Route exact path="/verificarBilhete/:codigoBilhete" component={VerificarBilhete}/>
             <Route exact path="/clientes" component={Clients}/>
             <Route exact path="/novasenha" component={NovaSenha}/>
+            <Route exact path="/regulamento" component={Regulamento}/>
             
             <Route exact path="/gerente" component={ManageHome}/>
             <Route exact path="/cambista" component={ManageHome}/>
@@ -73,7 +78,6 @@ export default function Routes() {
             <Route exact path="/clientesgerente" component={ManageClients}/>
             <Route exact path="/cadcambistagerente" component={CadCambista}/>
             <Route exact path="/editcambistagerente/:id" component={EditCambista}/>
-            <Route exact path="/saldosgerente" component={ManageSaldos}/>
             <Route exact path="/relatorios" component={Relatorios}/>
             <Route exact path="/novasenhagerente" component={NovaSenhaGerente}/>
             
@@ -87,14 +91,17 @@ export default function Routes() {
             <Route exact path="/bilheteA/:codigoBilhete" component={ManageBilheteA}/>
             <Route exact path="/clientesA" component={ManageClientsA}/>
             <Route exact path="/cadcambista" component={CadCambistaA}/>
+            <Route exact path="/cadgerente" component={CadGerente}/>
             <Route exact path="/editcambista/:id" component={EditCambistaA}/>
-            <Route exact path="/saldos" component={ManageSaldosA}/>
+            <Route exact path="/editgerente/:id" component={EditGerente}/>
             <Route exact path="/relatoriosc" component={RelatoriosCambistasA}/>
             <Route exact path="/cotacaoAovivo" component={ManageCotacaoAoVivo}/>
             <Route exact path="/cotacao" component={ManageCotacaoA}/>
             <Route exact path="/validarBilhete" component={ValidarBilhete}/>
             <Route exact path="/validarDados" component={ValidarDados}/>
             <Route exact path="/novasenhaadmin" component={NovaSenhaGerenteA}/>
+            <Route exact path="/cadastrargerente" component={ManageHomeA}/>
+            <Route exact path="/cadastrarbancadmin" component={Bancas}/>
             
         </HashRouter>
     );

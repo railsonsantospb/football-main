@@ -92,7 +92,7 @@ export default function Dashboard(props) {
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
-    const [clientes, setClientes] = useState([]);
+    const [dataB, setDataB] = useState([]);
     const [comissao, setComissao] = useState([]);
     const [dataAux, setAux] = useState([]);
     const [count, setCount] = useState([]);
@@ -129,7 +129,7 @@ export default function Dashboard(props) {
             { field: 'Comissao', headerName: 'Comissão', width: 90, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>) },
 
-            { field: 'Cotacao', headerName: 'Cotação', width: 80, align: 'center',
+            { field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>) },
 
             { field: 'Retorno', headerName: 'Retorno', width: 80, align: 'center', 
@@ -318,6 +318,7 @@ export default function Dashboard(props) {
         if(dataAux.length != count.length){
             setAux(count);
         }
+        
     };
 
     function close(e) {
@@ -373,20 +374,47 @@ export default function Dashboard(props) {
             api.get('/api/getbilhetes/' + sessionStorage.getItem('login'))
                 .then(res => {
                     let l = [];
+                    let ax = [];
                     try {
                         if (res.data) {
                             setBilhetes(res.data);
                             res.data.bilhetes.map((b) => {
+                                let d1 = new Date(b.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+                                b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+                                b.dataDaAposta.split(' ')[0].split('/')[2]);
+
+                                let d2 = new Date(sessionStorage.getItem('date').split('/')[1] + '/' +
+                                sessionStorage.getItem('date').split('/')[0] + '/' + 
+                                sessionStorage.getItem('date').split('/')[2]);
+
+                                var difference= d2.getTime()-d1.getTime();
+                                console.log(d2.getDay(), d1.getDay());
+                                let days = difference/(1000 * 3600 * 24);
+
                                 let st = b.status.replaceAll('{', '').replaceAll('}', '');
-                                let result = ((st.split(',').length == b.quantidadeJogos));
-                                let valor = (st.indexOf('Perdeu') != -1 ||
-                                st.indexOf('Ganhou') != -1 || st.indexOf('Perdeu') != -1 ?
-                                    (result == true && st != 'Aberto' ?
-                                        (st.indexOf('Perdeu') != -1 ? 'Perdeu' : 'Ganhou') : 'Aberto') :
-                                    'Cancelado');
-                                
-                              
-                                l.push({id: b.id, Cupom: b.codigo,
+                                let result = ((st.split(',').length == b.quantidadeDeJogos));
+
+                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+                                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+
+                                if(days <= 6 && d2.getDay() >= d1.getDay()){
+                                    
+                                    l.push({id: b.id, Cupom: b.codigo,
+                                        Cliente: b.nomeCliente, 
+                                        Data: b.dataDaAposta, 
+                                        Situacao: valor,
+                                        Entrada: b.valorDeEntrada.toFixed(2),
+                                        Comissao: b.comissao.toFixed(2),
+                                        Cotacao: b.cotacao.toFixed(2),
+                                        Retorno: b.valorDeSaida.toFixed(2),
+                                        Tipo: b.tipoSimplesouMultiplo,
+                                        Aposta: b.tipoDeJogo, Cancelar: b.codigo});
+                                }
+                                ax.push({id: b.id, Cupom: b.codigo,
                                     Cliente: b.nomeCliente, 
                                     Data: b.dataDaAposta, 
                                     Situacao: valor,
@@ -396,6 +424,7 @@ export default function Dashboard(props) {
                                     Retorno: b.valorDeSaida.toFixed(2),
                                     Tipo: b.tipoSimplesouMultiplo,
                                     Aposta: b.tipoDeJogo, Cancelar: b.codigo});
+                                
                             });
   
                             
@@ -404,7 +433,9 @@ export default function Dashboard(props) {
                         }
                         l.reverse();
                         setAux(l);
-                        setCount(l);
+                        setCount(ax);
+
+                        
                        
                     } catch (e) {
                         console.log(e);

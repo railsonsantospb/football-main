@@ -41,6 +41,7 @@ import { api } from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
 import Menu from '../Menu/index';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 export default function Dashboard() {
     let {id} = useParams();
@@ -72,6 +73,10 @@ export default function Dashboard() {
     const [apostas, setApostas] = useState(false);
     const [status, setStatus] = useState(false);
     const [idCambista, setidCambista] = useState(0);
+    const [manage, setManage] = useState({});
+    const [ba, setB] = useState(-1);
+    const [nome, setNome] = useState("");
+    const [bancas, setBancas] = useState("");
     
 
     
@@ -171,20 +176,6 @@ export default function Dashboard() {
         }
     }));
 
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
-
     
     const validationSchema = yup.object({
         password1: yup
@@ -201,49 +192,6 @@ export default function Dashboard() {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = index => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    }
-
-
-
-    const handleDrawerOpen = () => {
-        if (document.getElementById('drawer').style.display == 'none' || document.getElementById('drawer').style.display == '') {
-            document.getElementById('drawer').style.display = 'block';
-            document.getElementById('drawer').style.marginLeft = '40px';
-        } else if (document.getElementById('drawer').style.display == 'block') {
-            document.getElementById('drawer').style.display = 'none';
-            document.getElementById('drawer').style.marginLeft = '0px';
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById('drawer').style.display = 'none';
-    };
 
     function close(e) {
 
@@ -257,10 +205,6 @@ export default function Dashboard() {
 
     }
 
-    function exit() {
-        sessionStorage.removeItem('admin');
-        history.push('/adm');
-    }
 
     const formik = useFormik({
         initialValues: {
@@ -275,6 +219,7 @@ export default function Dashboard() {
                 "senha": values.password1 != '' ? values.password1 : senha,
                 "telefone": telefone,
                 "email": email,
+                "habilitarImpressao": imprimir,
                 "comissaoPreJogo": comissaoPreJogo,
                 "comissaoAoVivo": comissaoAoVivo,
                 "saldoSimples": limitS,
@@ -283,13 +228,14 @@ export default function Dashboard() {
                 "ativarApostasPreJogo": apostasPreJogo,
                 "ativarApostas": apostas,
                 "status": status,
+                "gerente_id": ba,
     
             })
                 .then(res => {
                     try {
                         if (res.data) {
                             console.log(res.data);
-                            history.push("/admin");
+                            history.push("/cadastrarbancadmin");
                         }   
                     } catch (e) {
     
@@ -299,6 +245,21 @@ export default function Dashboard() {
                 });
         },
     });
+
+    function verifyBancaHandler(e) {
+
+        let banca =
+            typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
+                e.target.innerText.length > 0 ? e.target.innerText : '';
+        
+        bancas.map((b) => {
+            if(b.nome == banca){
+                setB(manage[b.nome]);
+            }
+        })
+        
+
+    }
 
 
     useEffect(() => {
@@ -369,6 +330,38 @@ export default function Dashboard() {
                             setEmail(res.data.bancas.email);
                             setSenha(res.data.bancas.senha);
                             setidCambista(res.data.bancas.id);
+                            setB(res.data.bancas.gerente);
+
+                            
+                                let gerentes = {};
+                                let ban = [];
+                                api.get('/api/getgerencia')
+                                    .then(res => {
+                                        try {
+                                            if (res.data) {
+                                                 
+                                               res.data.gerencias.map((b) => {
+                                                   gerentes[b.id] = b.nome;
+                                                   gerentes[b.nome] = b.id;
+                                                   ban.push({'nome': b.nome});
+                                                   console.log(ban);
+                                               });
+                                               
+                                               
+                                               setBancas(ban);
+                                               setManage(gerentes); 
+                                                      
+                                            }   
+                                            
+                                        } catch (e) {
+                    
+                                        }
+                                    }).catch(error => {
+                                        console.log(error)
+                                    });
+                    
+                      
+                            
                         }   
                     } catch (e) {
 
@@ -379,6 +372,8 @@ export default function Dashboard() {
 
         }
 
+        
+
         getBancaAPI();
         getDateAll();
 
@@ -388,7 +383,7 @@ export default function Dashboard() {
         };
 
     }, []);
-
+    
     
     function handlerChangeApostasAovivo() {
         if(apostasAoVivo){
@@ -436,13 +431,13 @@ export default function Dashboard() {
             .then(res => {
                 try {
                     if (res.data) {
-                        history.push("/gerenteReload");
+                        history.push("/cadastrarbancadmin");
                     }   
                 } catch (e) {
-                    history.push("/gerenteReload");
+                    history.push("/cadastrarbancadmin");
                 }
             }).catch(error => {
-                history.push("/gerenteReload");
+                history.push("/cadastrarbancadmin");
                 console.log(error);
                 
             });
@@ -474,6 +469,7 @@ export default function Dashboard() {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     value={nomeBanca}
+                                    disabled
                                     required
                                     id="name"
                                     name="name"
@@ -481,6 +477,22 @@ export default function Dashboard() {
                                     fullWidth
                                     autoComplete="given-name"
                                     onChange={e => setNomeBanca(e.target.value)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                            <Autocomplete
+                                id={"resetField2"}
+                                freeSolo
+                                fullWidth
+                                onChange={verifyBancaHandler}
+                                options={bancas}
+                                getOptionLabel={(option) => option.nome}
+                                renderInput={(params) =>
+                                    <TextField
+                                        {...params}
+
+                                        label={manage[ba]}
+                                        variant="outlined" />}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>

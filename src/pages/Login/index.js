@@ -16,7 +16,7 @@ import {
     DialogContent,
     DialogTitle,
 } from "@material-ui/core";
-import Conan from './football';
+import Conan from './football.png';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
@@ -29,7 +29,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="https://material-ui.com/">
-        SONHOBETS198
+        SONHOBETS
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     backgroundImage: `url(${Conan})`,
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+
     width: theme.spacing(8),
     height: theme.spacing(8),
   },
@@ -166,19 +166,16 @@ export default function SignInSide() {
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
-          <Avatar alt="xbets198" src={Conan} className={classes.avatar} />
+          <img src={Conan} width="150"/>
           <Typography variant="h4" >
-            <b style={{ textShadow: '5px 2px 2px black', color: '#428bca' }}>SONHOBETS198</b>
           </Typography>
-          <Typography variant="caption">
-            <b>VEM VIVER A EMOÇÃO DO FUTEBOL</b>
-          </Typography>
+
           <form className={classes.form} onSubmit={formik.handleSubmit}>
             <TextField
               fullWidth
               id="user"
               name="user"
-              label="Usuário"
+              label="Banca"
               value={formik.values.user}
               onChange={formik.handleChange}
               error={formik.touched.user && Boolean(formik.errors.user)}

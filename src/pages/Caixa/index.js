@@ -7,59 +7,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import clsx from 'clsx';
+import React, { useState, useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
-import LockIcon from '@material-ui/icons/Lock';
 import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
-import { Box } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { useReactToPrint } from 'react-to-print';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
-import Taca from "../Home/taca.jpg";
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { images, auxCountry, auxItens, api } from '../Constantes/index';
+import { api } from '../Constantes/index';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
-import football from "../Home/football";
-import Hidden from "@material-ui/core/Hidden";
 import Menu from '../Menu/index';
 
-
-let tab;
 let date = [];
 
 const StyledTableCell = withStyles((theme) => ({
@@ -75,9 +38,6 @@ const StyledTableCell = withStyles((theme) => ({
 export default function Dashboard(props) {
 
     let history = useHistory();
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
-    const theme = useTheme();
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const [message, setMessage] = useState("");
@@ -85,22 +45,11 @@ export default function Dashboard(props) {
     const [openLoading, setOpenLoading] = React.useState(false);
     const [openNav, setOpenNav] = useState(false);
     const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [regionName, setRegionName] = useState([]);
-    const [ids, setIds] = useState([]);
     const [openNavB, setOpenNavB] = useState("");
-    const [data, setData] = useState([]);
-    const [totalEntrada, setTotalEntrada] = useState(0);
-    const [entradasAbertas, setEntradasAbertas] = useState(0);
-    const [saidas, setSaidas] = useState(0);
-    const [comissoes, setComissoes] = useState(0);
-    const [total, setTotal] = useState(0);
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [dateAfter, setDateAfter] = useState('');
     const [nomeBanca, setNomeBanca] = useState("");
-    const [bilhetes, setBilhetes] = useState([]);
     const [count, setCount] = useState([]);
     const [dataAux, setDataAux] = useState([]);
     // let dataAux = [];
@@ -112,13 +61,6 @@ export default function Dashboard(props) {
             },
         },
     }))(TableRow);
-
-    const container = window !== undefined ? () => window().document.body : undefined;
-
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
     const drawerWidth = 240;
 
@@ -164,44 +106,16 @@ export default function Dashboard(props) {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-        } else {
-            setOpenNavA(index);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
-
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
     
-
     const onClickHandler = () => {
         let init = 0;
         
@@ -256,7 +170,7 @@ export default function Dashboard(props) {
                     document.getElementById('total').innerHTML = '<span style="color: green">R$ '+
                     (entradas - ganhos - comissao).toFixed(2)+'</span>';
                 } else {
-                    document.getElementById('total').innerHTML = '<span style="color: red">R$ -'+
+                    document.getElementById('total').innerHTML = '<span style="color: red">R$ '+
                     (entradas - ganhos - comissao).toFixed(2)+'</span>';
                 }
                 
@@ -432,28 +346,40 @@ export default function Dashboard(props) {
     let comissao = 0;
 
     for (let datas of dataAux) {
-        
-        let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-        let result = ((st.split(',').length == datas[10]));
+        let d1 = new Date(datas[2].split(' ')[0].split('/')[1] + '/' +
+        datas[2].split(' ')[0].split('/')[0] + '/' +
+        datas[2].split(' ')[0].split('/')[2]);
 
-        let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-        st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-        st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+        let d2 = new Date(sessionStorage.getItem('date').split('/')[1] + '/' +
+        sessionStorage.getItem('date').split('/')[0] + '/' + 
+        sessionStorage.getItem('date').split('/')[2]);
 
-        if(valor != 'Cancelado'){
-            entradas += parseFloat(datas[4]);
-            comissao += parseFloat(datas[5]);
-        }
-        
-        if (valor == 'Aberto') {
-            abertos += parseFloat(datas[4]);
-        } else if (valor == 'Ganhou') {
-            ganhos += parseFloat(datas[7]);
-        } else if (valor == 'Perdeu') {
-            perdeu += parseFloat(datas[4]);
+        var difference= d2.getTime()-d1.getTime();
+        let days = difference/(1000 * 3600 * 24);
+
+        if(days <= 6 && d2.getDay() >= d1.getDay()){
+            let st = datas[3].replaceAll('{', '').replaceAll('}', '');
+            let result = ((st.split(',').length == datas[10]));
+
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+
+            if(valor != 'Cancelado'){
+                entradas += parseFloat(datas[4]);
+                comissao += parseFloat(datas[5]);
+            }
+            
+            if (valor == 'Aberto') {
+                abertos += parseFloat(datas[4]);
+            } else if (valor == 'Ganhou') {
+                ganhos += parseFloat(datas[7]);
+            } else if (valor == 'Perdeu') {
+                perdeu += parseFloat(datas[4]);
+            }
         }
         
         

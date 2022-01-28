@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,13 +8,11 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import Conan from './football';
+import Conan from './football.png';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
 import {useHistory, Redirect} from "react-router-dom";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { isEqual } from 'date-fns';
 import { api } from '../Constantes/index';
 
 function Copyright() {
@@ -23,7 +20,7 @@ function Copyright() {
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-                XBETS198
+                SONHOBETS
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -108,13 +105,11 @@ export default function SignInSide() {
             });
         },
     });
-
-    const [login, setLogin] = useState([]);
     const [form, setForm] = useState([]);
 
     useEffect(() => {
-        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
-            history.push('/')
+        if (sessionStorage.getItem('manage') == null || sessionStorage.getItem('manage') == "") {
+            history.push('/login');
         }
 
         async function loginAll() {
@@ -142,14 +137,11 @@ export default function SignInSide() {
             <Grid item xs={false} sm={4} md={7} className={classes.image}/>
 
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-                <Button color={'primary'} href={'/gerente'}><ArrowBackIcon/> INÍCIO</Button>
+                <Button color={'primary'} href={'/#/gerente'}><ArrowBackIcon/> INÍCIO</Button>
                 <div className={classes.paper}>
-                    <Avatar alt="xbets198" src={Conan} className={classes.avatar}/>
+                <img src={Conan} width="150"/>
                     <Typography variant="h4">
                         <b style={{textShadow: '5px 2px 2px black', color: '#428bca'}}>NOVA SENHA</b>
-                    </Typography>
-                    <Typography variant="h6" variant="caption">
-                        <b>VEM VIVER A EMOÇÃO DO FUTEBOL</b>
                     </Typography>
                     <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <TextField

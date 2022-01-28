@@ -1,106 +1,44 @@
-import {images, api} from "../Constantes/index";
 import {withStyles, makeStyles, useTheme} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import React, {useState, useEffect, useRef, useMemo} from "react";
+import React, {useState} from "react";
 import clsx from "clsx";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-} from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import axios from "axios";
-import LockIcon from "@material-ui/icons/Lock";
 import {useHistory, Link} from "react-router-dom";
-import {useParams} from "react-router";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import {Box} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useReactToPrint} from "react-to-print";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import HomeIcon from "@material-ui/icons/Home";
-import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
 import InboxIcon from "@material-ui/icons/Inbox";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
 import DescriptionIcon from "@material-ui/icons/Description";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import Collapse from "@material-ui/core/Collapse";
-import LiveTvIcon from "@material-ui/icons/LiveTv";
-import Taca from "../Home/taca.jpg";
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import football from "../Home/football";
-import Hidden from "@material-ui/core/Hidden";
-import AnchorLink from 'react-anchor-link-smooth-scroll';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import football from "./football.png";
+import SportsSoccerIcon from "@material-ui/icons/SportsSoccer";
 
-export default function Menu(props) {
-  const [country, setCountry] = useState([]);
-  let history = useHistory();
+export default function MenuAdmin(props) {
+    let history = useHistory();
     const theme = useTheme();
   
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    let auxChamp = [];
-    const [open, setOpen] = useState(false);
-    const [openWith, setOpenWith] = useState(40);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [saldoSimples, setSaldoSimples] = useState(0);
-    const [saldoGeral, setSaldoGeral] = useState(0);
-    const [nomeBanca, setNomeBanca] = useState("");
-    const [datas, setDatas] = useState([]);
-    const [dateD, setDateD] = useState('');
-    const [dateAfter, setDateAfter] = useState('');
-    
-    const [apostasPreJogo, setApostasPreJogo] = useState(false);
- 
     
     
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const StyledTableRow = withStyles((theme) => ({
-        root: {
-            "&:nth-of-type(odd)": {
-                backgroundColor: theme.palette.action.hover,
-            },
-        },
-    }))(TableRow);
-
-
-
     const useStyles = makeStyles((theme) => ({
         root: {
             display: 'flex',
-
         },
         nested: {
             paddingLeft: theme.spacing(4),
@@ -168,6 +106,7 @@ export default function Menu(props) {
         container: {
             paddingTop: theme.spacing(4),
             paddingBottom: theme.spacing(4),
+
         },
         paper: {
             padding: theme.spacing(1),
@@ -188,44 +127,6 @@ export default function Menu(props) {
     }));
     const classes = useStyles();
 
-  const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-        } else {
-            setOpenNavA(index);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (document.getElementById('drawer').style.display == 'none' || document.getElementById('drawer').style.display == '') {
-            document.getElementById('drawer').style.display = 'block';
-            document.getElementById('drawer').style.marginLeft = '40px';
-        } else if (document.getElementById('drawer').style.display == 'block') {
-            document.getElementById('drawer').style.display = 'none';
-            document.getElementById('drawer').style.marginLeft = '0px';
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById('drawer').style.display = 'none';
-    };
-
     
     function exit(){
         sessionStorage.removeItem('admin');
@@ -240,14 +141,14 @@ export default function Menu(props) {
                 edge="start"
                 color="inherit"
                 aria-label="open drawer"
-                onClick={handleDrawerOpen}
+                onClick={handleDrawerToggle}
                 className={clsx(classes.menuButton, false && classes.menuButtonHidden)}
             >
                 <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                <b>SONHOBETS198</b>
+                onClick={handleDrawerToggle} style={{ cursor: 'pointer' }}>
+                <b>SONHOBETS</b>
             </Typography>
 
             <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
@@ -256,19 +157,27 @@ export default function Menu(props) {
         </Toolbar>
     </AppBar>
     <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        id={"drawer"}
-        onEscapeKeyDown={handleDrawerClose}
-        onBackdropClick={handleDrawerClose}
+        variant="temporary"
+        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        classes={{
+            paper: classes.drawerPaper,
+        }}
+        ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+        }}
     >
-        <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-                <ChevronLeftIcon />
-            </IconButton>
-        </div>
+  
         <Divider />
         <List>
+        <ListItem alignItems={"center"}>
+                <ListItemIcon  >
+                    <img src={football} width={160}
+                         align="center"
+                    />
+                </ListItemIcon>
+            </ListItem>
             <ListItem button component={Link} to={'/admin'}>
                 <ListItemIcon>
                     <HomeIcon />
@@ -280,13 +189,19 @@ export default function Menu(props) {
                 <ListItemIcon>
                     <InboxIcon />
                 </ListItemIcon>
-                <ListItemText primary="Caixa Gerentes" />
+                <ListItemText primary="Caixa" />
             </ListItem>
-            <ListItem button component={Link} to={'/caixacambistas'}>
+            <ListItem button component={Link} to={'/cadastrarbancadmin'}>
                 <ListItemIcon>
                     <InboxIcon />
                 </ListItemIcon>
-                <ListItemText primary="Caixa Cambistas" />
+                <ListItemText primary="Bancas" />
+            </ListItem>
+            <ListItem button component={Link} to={'/cadastrargerente'}>
+                <ListItemIcon>
+                    <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Gerentes" />
             </ListItem>
             <ListItem button component={Link} to={'/relatoriosc'}>
                 <ListItemIcon>
@@ -323,6 +238,12 @@ export default function Menu(props) {
                     <FileCopyIcon />
                 </ListItemIcon>
                 <ListItemText primary="Validar Dados" />
+            </ListItem>
+            <ListItem button component={Link} to={'/validarDados'}>
+                <ListItemIcon>
+                    <SportsSoccerIcon />
+                </ListItemIcon>
+                <ListItemText primary="Bloquear Jogos" />
             </ListItem>
             <ListItem button component={Link} to={'/clientesA'}>
                 <ListItemIcon>

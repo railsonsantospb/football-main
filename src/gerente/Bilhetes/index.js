@@ -1,307 +1,147 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import React, { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { images, auxCountry, auxItens, cc } from '../Constantes/index';
-import MUIDataTable from "mui-datatables";
+import { api } from '../Constantes/index';
 import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 import { pt } from 'date-fns/locale';
-import { api } from "../../pages/Constantes";
+import { DataGrid, ptBR, GridToolbar } from '@mui/x-data-grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Menu from '../Menu/index';
 
-
-let tab;
-let date = [];
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
+const themeG = createTheme(
+    {
+      palette: {
+        primary: { main: '#1976d2' },
+      },
     },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
+    ptBR,
+  );
 
 
-export default function Dashboard() {
+export default function Dashboard(props) {
 
     let history = useHistory();
-    let { campId } = useParams();
-    var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
+    const { window } = props;
     const [message, setMessage] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
-    const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
     const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [bilhetes, setBilhetes] = useState("");
     const [dataAux, setAux] = useState([]);
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
-
-    const columns = ["CUPOM", "BANCA", "DATA", "SITUAÇÃO", "ENTRADA", "COMISSÕES", "COTAÇÃO", "RETORNO",
-        "TIPO", "APOSTA"];
+    const [count, setCount] = useState([]);
+    const [dateAfter, setDateAfter] = useState('');
 
 
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
+        let s = {'Perdeu' : 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
+        const columns = [
+            { field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>) },
 
+            { field: 'Cupom', headerName: 'Cupom', width: 120, align: 'center',
+            renderCell: (params) => (<Button variant="contained" color="primary" 
+            component={Link} to={'/bilhetegerente/'+params.value}>{params.value}</Button>) },
 
+            { field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Data', headerName: 'Data', width: 140, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Situacao', headerName: 'Situação', width: 115, align: 'center',
+            renderCell: (params) => (<Button variant="contained" style={{background: s[params.value]}}>
+                <p style={{color: 'white'}}>{params.value}</p></Button>) },
+                
+            { field: 'Entrada', headerName: 'Entrada', width: 80, align: 'center', 
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Comissao', headerName: 'Comissão', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Retorno', headerName: 'Retorno', width: 80, align: 'center', 
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Tipo', headerName: 'Tipo', width: 60, align: 'center', 
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Aposta', headerName: 'Aposta', width: 80, align: 'center', 
+            renderCell: (params) => (<b>{params.value}</b>) },
+
+            { field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',
+            renderCell: (params) => (<Button onClick={() => setStatusBilhete(params.value)} 
+            variant="contained" color="secondary"> <CancelIcon /></Button>) },
+
+          ];
+          
+
+    const drawerWidth = 240;
 
     const useStyles = makeStyles((theme) => ({
         root: {
-            display: "flex",
-        },
-        nested: {
-            paddingLeft: theme.spacing(4),
-        },
-        toolbar: {
-            paddingRight: 24, // keep right padding when drawer closed
-        },
-        toolbarIcon: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: "0 8px",
-            ...theme.mixins.toolbar,
-        },
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        appBarShift: {
-            marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        menuButton: {
-            marginRight: 36,
-        },
-        menuButtonHidden: {
-            display: "none",
-        },
-        title: {
-            flexGrow: 1,
-            marginLeft: "-30px",
-        },
-        drawerPaper: {
-            position: "relative",
-            whiteSpace: "nowrap",
-            width: drawerWidth,
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        drawerPaperClose: {
-            overflowX: "hidden",
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            width: theme.spacing(7),
-            [theme.breakpoints.up("sm")]: {
-                width: theme.spacing(9),
-            },
-        },
-        appBarSpacer: theme.mixins.toolbar,
-        content: {
-            flexGrow: 1,
-            overflow: "auto",
-        },
-        container: {
-            paddingTop: theme.spacing(4),
-            paddingBottom: theme.spacing(4),
-        },
-        paper: {
-            padding: theme.spacing(2),
-            display: "flex",
-            overflow: "auto",
-            flexDirection: "column",
-        },
-        fixedHeight: {
-            height: 240,
-        },
-        button: {
-            width: 10,
+            display: 'flex',
         },
         drawer: {
-            display: "none",
-            flexShrink: 0,
+            [theme.breakpoints.up('sm')]: {
+                width: drawerWidth,
+                flexShrink: 0,
+            },
         },
-    }));
+        appBar: {
+            [theme.breakpoints.up('sm')]: {
+                width: `calc(100% - ${drawerWidth}px)`,
+                marginLeft: drawerWidth,
+            },
+        },
+        menuButton: {
+            marginRight: theme.spacing(2),
+            [theme.breakpoints.up('sm')]: {
+                display: 'none',
+            },
+        },
+        // necessary for content to be below app bar
+        toolbar: theme.mixins.toolbar,
+        drawerPaper: {
+            width: drawerWidth,
+        },
+        content: {
+            flexGrow: 1,
+            padding: theme.spacing(3),
+        },
 
+        appBarSpacer: theme.mixins.toolbar,
+    }));
     const [selectedDate1, handleDateChange1] = useState(new Date());
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
 
     const handleCloseURL = () => {
         setOpenURL(false);
-    };
-
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
     };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
-    function exit() {
-        sessionStorage.removeItem('manage');
-        history.push('/login');
-    }
+ 
+    function setStatusBilhete(codigoBilhete) {
 
-
-    const onClickHandler = () => {
-        let listAux = [];
-        let init = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-        for (let datas of dataAux) {
-
-            let d = datas[2].split(' ')[0].split('/');
-            d[2] = "20" + d[2]
-            let dateReverse = new Date(d.reverse().join('/'));
-
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-                listAux.push(datas);
-                init = 1;
-            }
-        }
-
-        if (init == 0) {
-            setAux(dataAux);
-        } else {
-            setAux(listAux);
-        }
-    };
-
-    function close(e) {
-        try {
-            if (e.clientX > 250) {
-                document.getElementById("drawer").style.display = "none";
-            }
-        } catch (e) {
-            //console.log(e);
-        }
-    }
-
-    function setStatusBilhete(id) {
-
-        api.put('/api/updatebilhete/' + id, { status: 'Cancelado' })
+        api.put('/api/updatebilhete/' + codigoBilhete, {status: 'Cancelado'})
             .then(res => {
                 try {
                     if (res.data) {
@@ -311,204 +151,167 @@ export default function Dashboard() {
 
                 }
             }).catch(error => {
-                console.log(error)
-            });
+            console.log(error)
+        });
 
     }
+
+
+    const onClickHandler = () => {
+        let listAux = [];
+        let init = 0;
+        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
+        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
+        
+        
+        console.log(dataAux.length, count.length);
+        for (let datas of dataAux) {
+            
+            let d = datas['Data'].split(' ')[0].split('/');
+            d.reverse();
+            
+            let dateReverse = new Date(d.join('-'));
+            
+            console.log(dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2));
+            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
+                listAux.push(datas);
+                init = 1;
+            }
+        }
+        
+        if (init == 0) {
+            setAux(dataAux);
+        } else {
+            setAux(listAux);
+        }
+        if(dataAux.length != count.length){
+            setAux(count);
+        }
+        
+    };
 
 
 
     useEffect(() => {
 
-        if (sessionStorage.getItem('manage') == null || sessionStorage.getItem('manage') == "") {
-            history.push('/')
-        }
 
-        let unmounted = false;
+        async function getBilhetesAPI() {
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {
-
-                }).then(res => {
+            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
+                .then(res => {
+                    let l = [];
+                    let ax = [];
                     try {
+                        if (res.data) {
+                            setBilhetes(res.data);
+                            res.data.bilhetes.map((b) => {
+                                let d1 = new Date(b.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+                                b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+                                b.dataDaAposta.split(' ')[0].split('/')[2]);
 
-                        let d1 = Date.parse(res.data.currentDateTime);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
+                                let d2 = new Date(sessionStorage.getItem('date').split('/')[1] + '/' +
+                                sessionStorage.getItem('date').split('/')[0] + '/' + 
+                                sessionStorage.getItem('date').split('/')[2]);
 
-                        let d2 = Date.parse(res.data.currentDateTime);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
+                                var difference= d2.getTime()-d1.getTime();
+                                let days = difference/(1000 * 3600 * 24);
 
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
+                                let st = b.status.replaceAll('{', '').replaceAll('}', '');
+                                let result = ((st.split(',').length == b.quantidadeDeJogos));
 
+                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
+                                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
-                        date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                            Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                            (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                                Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
+                                if(days <= 6 && d2.getDay() >= d1.getDay()){
+                                    
+                                    l.push({
+                                        id: b.id, 
+                                        Banca: b.nomeBanca,
+                                        Cupom: b.codigo,
+                                        Cliente: b.nomeCliente, 
+                                        Data: b.dataDaAposta, 
+                                        Situacao: valor,
+                                        Entrada: b.valorDeEntrada.toFixed(2),
+                                        Comissao: b.comissao.toFixed(2),
+                                        Cotacao: b.cotacao.toFixed(2),
+                                        Retorno: b.valorDeSaida.toFixed(2),
+                                        Tipo: b.tipoSimplesouMultiplo,
+                                        Aposta: b.tipoDeJogo, Cancelar: b.codigo});
+                                }
+                                ax.push({id: b.id, Cupom: b.codigo,
+                                    Banca: b.nomeBanca,
+                                    Cliente: b.nomeCliente, 
+                                    Data: b.dataDaAposta, 
+                                    Situacao: valor,
+                                    Entrada: b.valorDeEntrada.toFixed(2),
+                                    Comissao: b.comissao.toFixed(2),
+                                    Cotacao: b.cotacao.toFixed(2),
+                                    Retorno: b.valorDeSaida.toFixed(2),
+                                    Tipo: b.tipoSimplesouMultiplo,
+                                    Aposta: b.tipoDeJogo, Cancelar: b.codigo});
+                                
+                            });
+  
+                            
+                           
+                      
+                        }
+                        l.reverse();
+                        setAux(l);
+                        setCount(ax);
 
-                        localStorage.setItem("date", date);
-
-
-
+                        
+                       
                     } catch (e) {
                         console.log(e);
                     }
                 }).catch(error => {
                     console.log(error);
                 });
-        }
-
-        async function getBilhetesBancas() {
-
-            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
-                .then(res => {
-                    let l = [];
-                    try {
-                        if (res.data) {
-                            setBilhetes(res.data);
-                            res.data.bilhetes.map((b) => {
-                                l.push([<Button component={Link} to={'/bilhetegerente/' + b.codigo}>{b.codigo}</Button>,
-                                b.nomeBanca,
-                                b.dataDaAposta,
-                                b.status == 'Aberto' ? <b style={{ color: 'blue' }}>{b.status}</b> :
-                                    b.status == 'Cancelado' ? <b style={{ color: 'gold' }}>{b.status}</b> :
-                                        b.status == 'Perdeu' ? <b style={{ color: 'red' }}>{b.status}</b> :
-                                            b.status == 'Ganhou' ? <b style={{ color: 'green' }}>{b.status}</b> : b.status,
-                                b.valorDeEntrada.toFixed(2),
-                                b.comissao.toFixed(2),
-                                b.cotacao.toFixed(2),
-                                b.valorDeSaida.toFixed(2),
-                                b.tipoSimplesouMultiplo,
-                                b.tipoDeJogo]);
-                            });
-                        }
-                        l.reverse();
-                        setAux(l);
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
 
         }
-        getDateAll();
-        getBilhetesBancas();
 
-        return () => {
-            unmounted = true;
-        };
+        async function getDateAfter() {
+            api.get('/api/getdateafter').then(res => {
 
+                try {
+
+                    setDateAfter(res.data.date);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            }).catch(error => {
+                console.log(error)
+            });
+        }
+        getDateAfter();
+
+        getBilhetesAPI();
 
     }, []);
 
+    function close(e) {
+
+        try {
+            if (e.clientX > 250) {
+                document.getElementById('drawer').style.display = 'none';
+            }
+        } catch (e) {
+            //console.log(e);
+        }
+
+    }
 
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline />
 
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>SONHOBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                        {sessionStorage.getItem('nomeGerente')} <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/gerente'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixagerentecambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer} />
                 <Container className={classes.container}>
@@ -564,7 +367,7 @@ export default function Dashboard() {
 
                                 </Grid>
                             </Grid>
-                            {1 > 0 ? '' : <LinearProgress />}
+
                         </Grid>
                         {/* Recent Deposits */}
 
@@ -607,20 +410,24 @@ export default function Dashboard() {
                         </DialogActions>
                     </Dialog>
                 </Container>
-                <React.Fragment>
-
-
-                    <MUIDataTable
-
-                        data={dataAux}
-                        columns={columns}
-                        options={options}
-
-                    />
-                </React.Fragment>
+                <br />
+                <ThemeProvider theme={themeG}>
+                <div style={{ height: 400, width: '100%',  }}>
+                <DataGrid
+                    components={{
+                        Toolbar: GridToolbar,
+                    }}
+                    rows={dataAux}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    // checkboxSelection
+                />
+                </div>
+                </ThemeProvider>
 
             </main>
-
+                    
         </div>
 
     );

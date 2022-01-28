@@ -1,43 +1,16 @@
 import {images, api} from "../Constantes/index";
 import {withStyles, makeStyles, useTheme} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
 import React, {useState, useEffect, useRef, useMemo} from "react";
-import clsx from "clsx";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-} from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import axios from "axios";
-import LockIcon from "@material-ui/icons/Lock";
 import {useHistory, Link} from "react-router-dom";
-import {useParams} from "react-router";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import {Box} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useReactToPrint} from "react-to-print";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -54,7 +27,7 @@ import Taca from "../Home/taca.jpg";
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import football from "../Home/football";
+import football from "../Home/football.png";
 import Hidden from "@material-ui/core/Hidden";
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
@@ -64,20 +37,12 @@ export default function Menu(props) {
     const theme = useTheme();
   
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    let auxChamp = [];
-    const [open, setOpen] = useState(false);
-    const [openWith, setOpenWith] = useState(40);
     const [openNav, setOpenNav] = useState(false);
     const [openNavA, setOpenNavA] = useState("");
     const [openNavB, setOpenNavB] = useState("");
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
-    const [datas, setDatas] = useState([]);
-    const [dateD, setDateD] = useState('');
-    const [dateAfter, setDateAfter] = useState('');
-    
-    const [apostasPreJogo, setApostasPreJogo] = useState(false);
  
     
     
@@ -161,6 +126,14 @@ export default function Menu(props) {
     };
 
     useEffect(() => {
+
+        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
+            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
+            history.push('/')
+        } else {
+            sessionStorage.setItem('minutos', new Date().getMinutes());
+        }
+
         async function getLoginAPI() {
 
             api.get('/api/getbanca/' + sessionStorage.getItem('login'))
@@ -217,10 +190,10 @@ export default function Menu(props) {
 
   const drw = (<div >
         <Divider />
-        <List>
+        <fieldset><List>
             <ListItem alignItems={"center"}>
-                <ListItemIcon >
-                    <img src={football} width={120}
+                <ListItemIcon  >
+                    <img src={football} width={160}
                          align="center"
                     />
                 </ListItemIcon>
@@ -318,6 +291,12 @@ export default function Menu(props) {
                 </ListItemIcon>
                 <ListItemText primary="Clientes" />
             </ListItem>
+            <ListItem button component={Link} to={'/regulamento'}>
+                <ListItemIcon>
+                <FileCopyIcon color="secondary"/>
+                </ListItemIcon>
+                <ListItemText primary="Regulamento" />
+            </ListItem>
             <ListItem button component={Link} to={'/bilhete/all'}>
                 <ListItemIcon>
                     <DescriptionIcon />
@@ -342,7 +321,7 @@ export default function Menu(props) {
                 <ListItemText primary="Sair" />
             </ListItem>
 
-        </List>
+        </List></fieldset>
 
     </div>);
 
@@ -359,7 +338,7 @@ export default function Menu(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
-                        <b>SONHOBETS198</b>
+                        <b>SONHOBETS</b>
                     </Typography>
                     <AnchorLink href='#bl'><DescriptionIcon style={{marginLeft: 10, color: 'white'}}/></AnchorLink>
 
@@ -385,15 +364,10 @@ export default function Menu(props) {
                     </Drawer>
                 </Hidden>
                 <Hidden xsDown implementation="css">
-                    <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
-                        open
-                    >
+                    
                         {drw}
-                    </Drawer>
+                    
+                   
                 </Hidden>
         </nav></div>
     

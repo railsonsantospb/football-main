@@ -1,99 +1,35 @@
 import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import React, { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import {
     Dialog, DialogActions, DialogContent, DialogTitle
 } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import LiveTvIcon from '@material-ui/icons/LiveTv';
-import Taca from "../Home/taca.jpg";
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { images, auxCountry, auxItens, api } from '../Constantes/index';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import { api } from '../Constantes/index';
 import PrintIcon from '@material-ui/icons/Print';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
 import { useReactToPrint } from "react-to-print";
 import TextField from '@material-ui/core/TextField';
-import Alert from '@material-ui/lab/Alert';
-import football from "../Home/football";
-import Hidden from "@material-ui/core/Hidden";
+import Box from "@material-ui/core/Box";
 import Menu from '../Menu/index';
-
-
-let tab;
-let date = [];
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
 
 
 export default function Dashboard(props) {
 
     let history = useHistory();
     let { codigoBilhete } = useParams();
-    let reg = new RegExp('^[0-9a-zA-Z]+[-]+[0-9a-zA-Z]+$');
-    const theme = useTheme();
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
-    const [client, setClient] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
-    const [status, setStatus] = useState("");
-    const [validCodigo, setValidCodigo] = useState(false);
     const [dataAux, setAux] = useState([]);
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
@@ -102,19 +38,12 @@ export default function Dashboard(props) {
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
-    const [clientes, setClientes] = useState([]);
     const [comissao, setComissao] = useState([]);
-    const [codigo, setCodigo] = useState("");
+    const [codigoB, setCodigo] = useState(codigoBilhete);
     const [gerenteId, setGerenteId] = useState(0);
-    const [country, setCountry] = useState([]);
-    const [dateAfter, setDateAfter] = useState(''); 
     const [bancaId, setBancaId] = useState(0);
     const [statusB, setStatusB] = useState([]);
     const [impressao, setImpressao] = useState([]);
-    const container = window !== undefined ? () => window().document.body : undefined;
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
 
 
     const drawerWidth = 240;
@@ -172,10 +101,6 @@ export default function Dashboard(props) {
         }
     };
 
-
-    const [selectedDate1, handleDateChange1] = useState(new Date());
-    const [selectedDate2, handleDateChange2] = useState(new Date());
-
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
@@ -183,54 +108,16 @@ export default function Dashboard(props) {
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-        } else {
-            setOpenNavA(index);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
 
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
-
-
-    function close(e) {
-        try {
-            if (e.clientX > 250) {
-                document.getElementById("drawer").style.display = "none";
-            }
-        } catch (e) {
-            //console.log(e);
-            //handlePrint();
-        }
-    }
 
     function print() {
         if(impressao == 1){
@@ -245,15 +132,13 @@ export default function Dashboard(props) {
         document.getElementById('bilhete').innerHTML = '';
         document.getElementById('footer').innerHTML = '';
         bilhete(e.target.value);
+        setCodigo(e.target.value);
     }
 
-    function exit() {
-        sessionStorage.removeItem('login');
-        history.push('/');
-    }
 
     let nb = 0;
     function bilhete(codigo) {
+        document.getElementById('status').innerHTML = '';
         try {
             api.get('/api/getbilhetebanca/' + codigo + '/' + sessionStorage.getItem('login'))
                 .then(res => {
@@ -265,9 +150,8 @@ export default function Dashboard(props) {
                             document.getElementById('header').innerHTML = '\n' +
                                 '                    <div >\n' +
                                 '\n' +
-                                '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">SONHOBETS198</h4></center>\n' +
+                                '                        <center><h2 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">SONHOBETS</h2></center>\n' +
                                 '\n' +
-                                '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;">8399104-6816</h4></center>\n' +
                                 '\n' +
                                 '                        <hr style="width: 100%;border: 0;border-bottom: 2px dashed #292323;">\n' +
                                 '\n' +
@@ -281,9 +165,9 @@ export default function Dashboard(props) {
                                 '\n' +
                                 '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                 '\n' +
-                                '                        <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
+                                '                        <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">APOSTA</span></div>\n' +
                                 '\n' +
-                                '                        <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
+                                '                        <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">COTAÇÃO</span></div>\n' +
                                 '\n' +
                                 '                        <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                 '\n';
@@ -306,7 +190,7 @@ export default function Dashboard(props) {
                             res.data.jogo.map((jogo) => {
                                 nb = jogo.length;
                                 statusB.push(jogo.status);
-                                // setStatusB(statusB);
+
                                 
 
 
@@ -322,30 +206,31 @@ export default function Dashboard(props) {
                                     '\n' +
                                     '                                    <b><span>' + jogo.tipoDeCotacao.split('--')[0] + '</span></b><br>\n' +
                                     '\n' +
-                                    '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">' + jogo.tipoDeCotacao.split('--')[1] + '</span></div>\n' +
+                                    '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">' + jogo.tipoDeCotacao.split('--')[1] + '</span></div>\n' +
                                     '\n' +
-                                    '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + jogo.cotacao.toFixed(2) + '</span></div>\n' +
+                                    '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + jogo.cotacao.toFixed(2) + '</span></div>\n' +
                                     '\n' +
-                                    '                                    <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
-                                    '                                    <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + jogo.status + '</span></div>\n' +
+                                    '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Status:</span></div>\n' +
+                                    '                                    <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + jogo.status + '</span></div>\n' +
                                     '\n' +
                                     '                                    <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                     '\n' +
                                     '                                </div>\n'
                             });
                             
-                            document.getElementById('status').innerHTML = (statusB.indexOf('Aberto') != -1 ?
-                        "<b style='color: blue'>Aberto</b>" : (statusB.filter((x) => x == 'Ganhou' || x == 'Cancelado').length) == statusB.length ?
+                            
+                            document.getElementById('status').innerHTML = statusB.indexOf('Perdeu') != -1 ?
+                            "<b style='color: white' class='buttonRed'>Perdeu</b>" : (statusB.indexOf('Aberto') != -1 ?
+                        "<b style='color: white' class='buttonBlue'>Aberto</b>" : (statusB.filter((x) => x == 'Ganhou' || x == 'Cancelado').length) == statusB.length ?
                         (statusB.filter((x) =>  x == 'Cancelado').length) == statusB.length ? 
-                        "<b style='color: gold'>Cancelado</b>" : "<b style='color: green'>Ganhou</b>" : statusB.indexOf('Perdeu') != -1 ?
-                                "<b style='color: red'>Perdeu</b>" : "<b style='color: gold'>Cancelado</b>");
+                        "<b style='color: white;' class='buttonGold'>Cancelado</b>" : "<b style='color: white' class='buttonGreen'>Ganhou</b>" : "<b style='color: white' class='buttonGold'>Cancelado</b>");
 
                         }
                     } catch (e) {
 
                     }
                 }).catch(error => {
-                console.log(error)
+                console.log(error);
             });
             try {
 
@@ -358,21 +243,21 @@ export default function Dashboard(props) {
                                     '                            \n' +
                                     '\n' +
                                     '                        <div>\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Quantidade de Jogos:</span></div>\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">' + res.data.bilhete[0].quantidadeJogos + '</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Quant. Jogos:</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">' + res.data.bilhete[0].quantidadeJogos + '</span></div>\n' +
                                     '                            \n' +
                                     '                            <div>\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: right;"><span  style="display: inline-block">R$ ' + res.data.bilhete[0].cotacao.toFixed(2) + '</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Cotação:</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: right;"><span  style="display: inline-block">R$ ' + res.data.bilhete[0].cotacao.toFixed(2) + '</span></div>\n' +
                                     '\t\t\t\t\t\t\t</div>\n' +
                                     '\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
                                     '\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + res.data.bilhete[0].valorDeEntrada.toFixed(2) + '</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + res.data.bilhete[0].valorDeEntrada.toFixed(2) + '</span></div>\n' +
                                     '\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: left;"><span style="display: inline-block">Possível Retorno:</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
                                     '\n' +
-                                    '                            <div style="display: inline-block; width: 45%; text-align: right;"><span style="display: inline-block">R$ ' + res.data.bilhete[0].valorDeSaida.toFixed(2) + '</span></div>\n' +
+                                    '                            <div style="display: inline-block; width: 47%; text-align: right;"><span style="display: inline-block">R$ ' + res.data.bilhete[0].valorDeSaida.toFixed(2) + '</span></div>\n' +
                                     '                            \n' +
                                     '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                     '                        </div>\n' +
@@ -380,7 +265,7 @@ export default function Dashboard(props) {
                                     '                        <div>\n' +
                                     '                            <div style="display: inline-block; width: 100%; text-align: center;"><span style="display: inline-block">BILHETE</span></div>\n' +
                                     '                            <div style="display: inline-block; width: 100%; text-align: center;">\n' +
-                                    '                                <h4 style="font-weight:bold" class="H3">'+codigo+'</h4>                  \n' +
+                                    '                                <h2 style="font-weight:bold" class="H1">'+codigo+'</h2>                  \n' +
                                     '                            </div>\n' +
                                     '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                     '                        </div>\n' +
@@ -398,7 +283,7 @@ export default function Dashboard(props) {
 
                         }
                     }).catch(error => {
-                    console.log(error)
+                    console.log(error);
                 });
 
 
@@ -411,34 +296,9 @@ export default function Dashboard(props) {
         }
     }
 
-    function setStatusBilhete() {
-
-        api.put('/api/updatebilhete/' + codigoBilhete, {status: 'Cancelado'})
-            .then(res => {
-                try {
-                    if (res.data) {
-                        history.push('/bilhetes');
-                    }
-                } catch (e) {
-
-                }
-            }).catch(error => {
-            console.log(error)
-        });
-
-    }
 
 
     useEffect(() => {
-
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/')
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
-
-        let unmounted = false;
 
 
         async function getLoginAPI() {
@@ -469,13 +329,8 @@ export default function Dashboard(props) {
         if (codigoBilhete != 'all') {
             bilhete(codigoBilhete);
         } else {
-            console.log('bbbbb');
+            // console.log('bbbbb');
         }
-
-
-        return () => {
-            unmounted = true;
-        };
 
 
     }, []);
@@ -493,18 +348,15 @@ export default function Dashboard(props) {
                         {/* Chart */}
                         <Grid item xs={12} md={12} lg={12}>
                             <Grid item xs={12}>
-                                <Grid container justify="center" spacing={2}>
+                                <Grid container spacing={2}>
 
                                     <Grid xs={12} md={12} sm={12} item>
-                                        <Paper className={classes.paperX}>
                                             <Grid container spacing={2} key={127}>
 
-                                                <Grid item sm container align="center">
+                                                <Grid item sm container >
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item>
+                                                        <Grid item align="center">
 
-
-                                                            <Typography variant="h5">BILHETES</Typography>
                                                             <br />
                                                             <TextField id="outlined-basic" label="Código do Bilhete"
                                                                 variant="outlined"
@@ -520,21 +372,25 @@ export default function Dashboard(props) {
                                                                 color="primary">
                                                                 <PrintIcon/>
                                                             </Button>
-                                                            <Button onClick={() => setStatusBilhete()}
-                                                                    variant="contained" color="secondary">
-                                                                <CancelIcon />
-                                                            </Button>
+                                                            <Button type="Link" href={"whatsapp://send?text=Link+para+seu+bilhete%3a%0d%0a%0d%0ahttps%3A%2F%2Fwww.sonhobets.com.br%2F%23%2FverificarBilhete%2F"+codigoB}
+                                                                variant="contained"
+                                                                style={{color:'white', backgroundColor:'green'}}>
+                                                                <WhatsAppIcon/>
+                                                            </Button> 
+                                                           
+                                                        
 
                                                             
                                                             <br /><br />
-                                                        </Grid>
+                                                            </Grid>
+                                                        
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Paper>
 
                                     </Grid>
-
+                                    
+                                    
                                 </Grid>
                             </Grid>
 
@@ -579,37 +435,38 @@ export default function Dashboard(props) {
 
                         </DialogActions>
                     </Dialog>
+                    
                 </Container>
 
-                <React.Fragment>
-                    <Grid container>
+                 <Grid container style={{marginLeft: 20}} >
 
-                        <Grid item xs={12} md={4} sm={12}>
+                    <Grid item xs={12} md={4} sm={12}>
 
-                        </Grid>
-                        <Grid item xs={12} md={4} sm={12}>
-                            
-                            <div style={{
-                                width: 'calc(100% - 50px)',
-                                
-                                backgroundColor: 'rgb(248, 236, 194)',
-                                color: 'black',
-                                boxSizing: 'border-box'
-                            }} ref={componentRef}>
-                                <div id="header"></div>
-                                <div id="bilhete"></div>
-                                <div id="footer"></div>
-                            </div>
-
-                        </Grid>
-
-                        <Grid item xs={12} md={4} sm={12}></Grid>
                     </Grid>
-                </React.Fragment>
-                <Typography variant={"h4"} align={"center"} style={{marginRight: 40}}>
+                    <Grid item xs={12} md={4} sm={12}>
+                        
+                        <div style={{
+                            width: 'calc(100% - 15%)',
+                            fontSize: 12,
+                            backgroundColor: 'rgb(248, 236, 194)',
+                            color: 'black',
+                            boxSizing: 'border-box'
+                        }} ref={componentRef}>
+                            <div id="header"></div>
+                            <div id="bilhete"></div>
+                            <div id="footer"></div>
+                        </div>
+
+                    </Grid>
+
+                    <Grid item xs={12} md={4} sm={2}></Grid>
+                </Grid>
+                <Typography variant={"h4"} align={"center"} >
                     <p id='status'></p>
                 </Typography>
+                
             </main>
+
 
         </div>
 

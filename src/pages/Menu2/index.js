@@ -54,7 +54,7 @@ import Taca from "../Home/taca.jpg";
 import PersonIcon from '@material-ui/icons/Person';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import football from "../Home/football";
+import football from "../Home/football.png";
 import Hidden from "@material-ui/core/Hidden";
 import AnchorLink from 'react-anchor-link-smooth-scroll';
 
@@ -161,6 +161,14 @@ export default function Menu(props) {
     };
 
     useEffect(() => {
+
+        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
+            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
+            history.push('/')
+        } else {
+            sessionStorage.setItem('minutos', new Date().getMinutes());
+        }
+
         async function getLoginAPI() {
 
             api.get('/api/getbanca/' + sessionStorage.getItem('login'))
@@ -217,10 +225,10 @@ export default function Menu(props) {
 
   const drw = (<div >
         <Divider />
-        <List>
+        <fieldset><List>
             <ListItem alignItems={"center"}>
                 <ListItemIcon >
-                    <img src={football} width={120}
+                <img src={football} width={160}
                          align="center"
                     />
                 </ListItemIcon>
@@ -318,6 +326,12 @@ export default function Menu(props) {
                 </ListItemIcon>
                 <ListItemText primary="Clientes" />
             </ListItem>
+            <ListItem button component={Link} to={'/regulamento'}>
+                <ListItemIcon>
+                <FileCopyIcon color="secondary"/>
+                </ListItemIcon>
+                <ListItemText primary="Regulamento" />
+            </ListItem>
             <ListItem button component={Link} to={'/bilhete/all'}>
                 <ListItemIcon>
                     <DescriptionIcon />
@@ -342,7 +356,7 @@ export default function Menu(props) {
                 <ListItemText primary="Sair" />
             </ListItem>
 
-        </List>
+        </List></fieldset>
 
     </div>);
 
@@ -359,7 +373,7 @@ export default function Menu(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
-                        <b>SONHOBETS198</b>
+                        <b>SONHOBETS</b>
                     </Typography>
                     <AnchorLink href='#bl'><DescriptionIcon style={{marginLeft: 10, color: 'white'}}/></AnchorLink>
 
@@ -385,15 +399,9 @@ export default function Menu(props) {
                     </Drawer>
                 </Hidden>
                 <Hidden xsDown implementation="css">
-                    <Drawer
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
-                        open
-                    >
+                  
                         {drw}
-                    </Drawer>
+                   
                 </Hidden>
         </nav></div>
     

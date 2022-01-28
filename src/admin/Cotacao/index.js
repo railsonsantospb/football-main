@@ -2,7 +2,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -22,7 +22,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -60,22 +59,14 @@ const StyledTableCell = withStyles((theme) => ({
 export default function Dashboard() {
 
     let history = useHistory();
-    let { campId } = useParams();
-    var betsAll = "";
     const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
-    const [client, setClient] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
     const [openNav, setOpenNav] = useState(false);
     const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
     const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
     const [openNavB, setOpenNavB] = useState("");
     const [titulo, setTitulo] = useState('');
     const [porcentagem, setPorcentagem] = useState(0);
@@ -199,34 +190,10 @@ export default function Dashboard() {
         },
     }));
 
-    const [selectedDate1, handleDateChange1] = useState(new Date());
-    const [selectedDate2, handleDateChange2] = useState(new Date());
 
     const classes = useStyles();
 
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
 
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
 
     const handleDrawerOpen = () => {
         if (
@@ -249,16 +216,9 @@ export default function Dashboard() {
         document.getElementById("drawer").style.display = "none";
     };
 
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
 
     const handleCloseURL = () => {
         setOpenURL(false);
-    };
-
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
     };
 
     const handleCloseLoading = () => {
@@ -337,11 +297,6 @@ export default function Dashboard() {
 
     }
 
-
-    const onClickHandler = () => {
-        
-    };
-
     function close(e) {
         try {
             if (e.clientX > 250) {
@@ -409,7 +364,6 @@ export default function Dashboard() {
             history.push('/adm');
         }
 
-        let unmounted = false;
 
         async function getDateAll() {
             axios.get('http://worldclockapi.com/api/json/utc/now',
@@ -514,12 +468,6 @@ export default function Dashboard() {
         getGerenteAPI();
         getDateAll();
 
-
-        
-
-        return () => {
-            unmounted = true;
-        };
 
 
     }, []);
