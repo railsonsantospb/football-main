@@ -1,39 +1,37 @@
-import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import { useHistory, Link } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
-import { DataGrid, ptBR, GridToolbar } from '@mui/x-data-grid';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {pt} from 'date-fns/locale';
+import {DataGrid, GridToolbar, ptBR} from '@mui/x-data-grid';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Menu from '../Menu/index';
 
 const themeG = createTheme(
     {
-      palette: {
-        primary: { main: '#1976d2' },
-      },
+        palette: {
+            primary: {main: '#1976d2'},
+        },
     },
     ptBR,
-  );
+);
 
 
 export default function Dashboard(props) {
 
     let history = useHistory();
-    const { window } = props;
+    const {window} = props;
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
@@ -44,49 +42,77 @@ export default function Dashboard(props) {
     const [dateAfter, setDateAfter] = useState('');
 
 
-        let s = {'Perdeu' : 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
-        const columns = [
-            { field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
-            renderCell: (params) => (<b>{params.value}</b>) },
+    let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
+    const columns = [
+        {
+            field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Cupom', headerName: 'Cupom', width: 120, align: 'center',
-            renderCell: (params) => (<Button variant="contained" color="primary" 
-            component={Link} to={'/bilhetegerente/'+params.value}>{params.value}</Button>) },
+        {
+            field: 'Cupom', headerName: 'Cupom', width: 120, align: 'center',
+            renderCell: (params) => (<Button variant="contained" color="primary"
+                                             component={Link}
+                                             to={'/bilhetegerente/' + params.value}>{params.value}</Button>)
+        },
 
-            { field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Data', headerName: 'Data', width: 140, align: 'center',
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Data', headerName: 'Data', width: 140, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Situacao', headerName: 'Situação', width: 115, align: 'center',
-            renderCell: (params) => (<Button variant="contained" style={{background: s[params.value]}}>
-                <p style={{color: 'white'}}>{params.value}</p></Button>) },
-                
-            { field: 'Entrada', headerName: 'Entrada', width: 80, align: 'center', 
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Situacao', headerName: 'Situação', width: 115, align: 'center',
+            renderCell: (params) => (<Button variant="contained" style={{background: s[params.value], width: 115}}>
+                <p style={{color: 'white'}}>{params.value}</p></Button>)
+        },
 
-            { field: 'Comissao', headerName: 'Comissão', width: 90, align: 'center',
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Entrada', headerName: 'Entrada', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Comissao', headerName: 'Comissão', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Retorno', headerName: 'Retorno', width: 80, align: 'center', 
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Tipo', headerName: 'Tipo', width: 60, align: 'center', 
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Retorno', headerName: 'Retorno', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Aposta', headerName: 'Aposta', width: 80, align: 'center', 
-            renderCell: (params) => (<b>{params.value}</b>) },
+        {
+            field: 'Tipo', headerName: 'Tipo', width: 60, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-            { field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',
-            renderCell: (params) => (<Button onClick={() => setStatusBilhete(params.value)} 
-            variant="contained" color="secondary"> <CancelIcon /></Button>) },
+        {
+            field: 'Aposta', headerName: 'Aposta', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
 
-          ];
-          
+        {
+            field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',
+            renderCell: (params) => (params.value != 0 ? <Button onClick={() =>
+                setStatusBilhete(params.value)}
+                                                                 variant="contained" color="secondary">
+                <CancelIcon/></Button> : <Button disabled
+                                                 variant="contained" color="secondary"> <CancelIcon/></Button>)
+        },
+
+    ];
+
 
     const drawerWidth = 240;
 
@@ -138,7 +164,7 @@ export default function Dashboard(props) {
         setOpenLoading(false);
     };
 
- 
+
     function setStatusBilhete(codigoBilhete) {
 
         api.put('/api/updatebilhete/' + codigoBilhete, {status: 'Cancelado'})
@@ -162,35 +188,45 @@ export default function Dashboard(props) {
         let init = 0;
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-        
-        
+
+
         console.log(dataAux.length, count.length);
         for (let datas of dataAux) {
-            
+
             let d = datas['Data'].split(' ')[0].split('/');
             d.reverse();
-            
+
             let dateReverse = new Date(d.join('-'));
-            
+
             console.log(dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2));
             if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
                 listAux.push(datas);
                 init = 1;
             }
         }
-        
+
         if (init == 0) {
             setAux(dataAux);
         } else {
             setAux(listAux);
         }
-        if(dataAux.length != count.length){
+        if (dataAux.length != count.length) {
             setAux(count);
         }
-        
+
     };
 
+    function custom_sort(a, b) {
+        let d1 = new Date(a.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+            a.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+            a.dataDaAposta.split(' ')[0].split('/')[2] + " " + a.dataDaAposta.split(' ')[1]);
 
+        let d2 = new Date(b.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+            b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+            b.dataDaAposta.split(' ')[0].split('/')[2] + " " + b.dataDaAposta.split(' ')[1]);
+
+        return d1.getTime() - d2.getTime();
+    }
 
     useEffect(() => {
 
@@ -202,76 +238,74 @@ export default function Dashboard(props) {
                     let l = [];
                     let ax = [];
                     try {
+                        let bh = res.data.bilhetes.slice();
+                        bh.sort(custom_sort);
                         if (res.data) {
                             setBilhetes(res.data);
-                            res.data.bilhetes.map((b) => {
+                            bh.map((b) => {
                                 let d1 = new Date(b.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
-                                b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
-                                b.dataDaAposta.split(' ')[0].split('/')[2]);
+                                    b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+                                    b.dataDaAposta.split(' ')[0].split('/')[2] + " " + b.dataDaAposta.split(' ')[1]);
 
-                                let d2 = new Date(sessionStorage.getItem('date').split('/')[1] + '/' +
-                                sessionStorage.getItem('date').split('/')[0] + '/' + 
-                                sessionStorage.getItem('date').split('/')[2]);
+                                let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
+                                    sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
+                                    sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
+                                    sessionStorage.getItem('date').split(' ')[1]);
 
-                                var difference= d2.getTime()-d1.getTime();
-                                let days = difference/(1000 * 3600 * 24);
+                                var difference = d2.getTime() - d1.getTime();
 
-                                let st = b.status.replaceAll('{', '').replaceAll('}', '');
-                                let result = ((st.split(',').length == b.quantidadeDeJogos));
 
-                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-                                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+                                let minutes = Math.floor((d2 - d1) / 1000 / 60);
+                                let days = difference / (1000 * 3600 * 24);
 
-                                if(days <= 6 && d2.getDay() >= d1.getDay()){
-                                    
+                                if (days <= 15) {
+
                                     l.push({
-                                        id: b.id, 
+                                        id: b.id,
                                         Banca: b.nomeBanca,
                                         Cupom: b.codigo,
-                                        Cliente: b.nomeCliente, 
-                                        Data: b.dataDaAposta, 
-                                        Situacao: valor,
+                                        Cliente: b.nomeCliente,
+                                        Data: b.dataDaAposta,
+                                        Situacao: b.status,
                                         Entrada: b.valorDeEntrada.toFixed(2),
                                         Comissao: b.comissao.toFixed(2),
                                         Cotacao: b.cotacao.toFixed(2),
                                         Retorno: b.valorDeSaida.toFixed(2),
                                         Tipo: b.tipoSimplesouMultiplo,
-                                        Aposta: b.tipoDeJogo, Cancelar: b.codigo});
+                                        Aposta: b.tipoDeJogo, Cancelar:
+                                            minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
+                                    });
                                 }
-                                ax.push({id: b.id, Cupom: b.codigo,
+                                ax.push({
+                                    id: b.id, Cupom: b.codigo,
                                     Banca: b.nomeBanca,
-                                    Cliente: b.nomeCliente, 
-                                    Data: b.dataDaAposta, 
-                                    Situacao: valor,
+                                    Cliente: b.nomeCliente,
+                                    Data: b.dataDaAposta,
+                                    Situacao: b.status,
                                     Entrada: b.valorDeEntrada.toFixed(2),
                                     Comissao: b.comissao.toFixed(2),
                                     Cotacao: b.cotacao.toFixed(2),
                                     Retorno: b.valorDeSaida.toFixed(2),
                                     Tipo: b.tipoSimplesouMultiplo,
-                                    Aposta: b.tipoDeJogo, Cancelar: b.codigo});
-                                
+                                    Aposta: b.tipoDeJogo, Cancelar:
+                                        minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
+                                });
+
                             });
-  
-                            
-                           
-                      
+
+
                         }
                         l.reverse();
                         setAux(l);
                         setCount(ax);
 
-                        
-                       
+
                     } catch (e) {
                         console.log(e);
                     }
                 }).catch(error => {
-                    console.log(error);
-                });
+                console.log(error);
+            });
 
         }
 
@@ -289,6 +323,7 @@ export default function Dashboard(props) {
                 console.log(error)
             });
         }
+
         getDateAfter();
 
         getBilhetesAPI();
@@ -309,11 +344,11 @@ export default function Dashboard(props) {
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -327,13 +362,14 @@ export default function Dashboard(props) {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
                                                             <Typography variant="h5">BILHETES</Typography>
                                                             <Grid container justify="space-around">
 
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -352,11 +388,12 @@ export default function Dashboard(props) {
 
                                                             </Grid>
 
-                                                            <br />
-                                                            <Button onClick={onClickHandler} variant="contained" color="primary">
+                                                            <br/>
+                                                            <Button onClick={onClickHandler} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br /><br />
+                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -375,11 +412,11 @@ export default function Dashboard(props) {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -398,10 +435,10 @@ export default function Dashboard(props) {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>
@@ -410,24 +447,25 @@ export default function Dashboard(props) {
                         </DialogActions>
                     </Dialog>
                 </Container>
-                <br />
+                <br/>
                 <ThemeProvider theme={themeG}>
-                <div style={{ height: 400, width: '100%',  }}>
-                <DataGrid
-                    components={{
-                        Toolbar: GridToolbar,
-                    }}
-                    rows={dataAux}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    // checkboxSelection
-                />
-                </div>
+                    <div style={{height: 900, width: '100%',}}>
+                        <DataGrid
+                            components={{
+                                Toolbar: GridToolbar,
+                            }}
+                            density="compact"
+                            rows={dataAux}
+                            columns={columns}
+                            pageSize={20}
+                            rowsPerPageOptions={[20]}
+                            // checkboxSelection
+                        />
+                    </div>
                 </ThemeProvider>
 
             </main>
-                    
+
         </div>
 
     );

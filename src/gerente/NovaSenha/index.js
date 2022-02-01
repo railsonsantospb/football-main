@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -11,9 +11,9 @@ import {makeStyles} from '@material-ui/core/styles';
 import Conan from './football.png';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import {useHistory, Redirect} from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 
 function Copyright() {
     return (
@@ -86,8 +86,8 @@ export default function SignInSide() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            api.put('/api/updategerentesenha/'+sessionStorage.getItem('manage'),
-                { "senha": values.password1 })
+            api.put('/api/updategerentesenha/' + sessionStorage.getItem('manage'),
+                {"senha": values.password1})
                 .then(res => {
 
                     try {
@@ -139,7 +139,7 @@ export default function SignInSide() {
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <Button color={'primary'} href={'/#/gerente'}><ArrowBackIcon/> INÍCIO</Button>
                 <div className={classes.paper}>
-                <img src={Conan} width="150"/>
+                    <img src={Conan} width="150"/>
                     <Typography variant="h4">
                         <b style={{textShadow: '5px 2px 2px black', color: '#428bca'}}>NOVA SENHA</b>
                     </Typography>
@@ -148,7 +148,7 @@ export default function SignInSide() {
                             fullWidth
                             id="password1"
                             name="password1"
-                            label="Nova Senha"
+                            label="Nova Senha (Gerente)"
                             type="password"
                             value={formik.values.user}
                             onChange={formik.handleChange}
@@ -159,7 +159,7 @@ export default function SignInSide() {
                             fullWidth
                             id="password2"
                             name="password2"
-                            label="Digite Novamente"
+                            label="Digite Novamente (Gerente)"
                             type="password"
                             value={formik.values.password2}
                             onChange={formik.handleChange}

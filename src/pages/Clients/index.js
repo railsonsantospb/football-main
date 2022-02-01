@@ -1,55 +1,34 @@
-import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
+import {useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {api} from '../Constantes/index';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
+import {pt} from 'date-fns/locale';
 import Menu from '../Menu/index';
 
 
 let tab;
 let date = [];
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
 
 export default function Dashboard(props) {
 
     let history = useHistory();
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
     const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
@@ -58,13 +37,12 @@ export default function Dashboard(props) {
     const [bancaId, setBancaId] = useState(0);
     const [dataAux, setAux] = useState([]);
     const [dateAfter, setDateAfter] = useState('');
-    const [country, setCountry] = useState([]);
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
 
 
-    const columns = ["NOME", "","", "","", "EXCLUIR"];
+    const columns = ["NOME", "", "", "", "", "EXCLUIR"];
 
 
     const options = {
@@ -168,7 +146,7 @@ export default function Dashboard(props) {
 
     useEffect(() => {
 
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
+        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "" ||
             (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
             history.push('/')
         } else {
@@ -223,7 +201,6 @@ export default function Dashboard(props) {
         getDateAll();
 
 
-
         async function getLoginAPI() {
 
             api.get('/api/getbanca/' + sessionStorage.getItem('login'))
@@ -245,6 +222,7 @@ export default function Dashboard(props) {
             });
 
         }
+
         async function getClientAPI() {
 
             api.get('/api/getclientes/' + sessionStorage.getItem('login'))
@@ -256,7 +234,8 @@ export default function Dashboard(props) {
                                 l.push([b.nome, <Typography></Typography>, <Typography></Typography>,
                                     <Typography></Typography>, <Typography></Typography>,
                                     <Button variant="contained"
-                                                          color="secondary" onClick={() => deleteClient(b.id)}><CancelIcon/></Button>]);
+                                            color="secondary"
+                                            onClick={() => deleteClient(b.id)}><CancelIcon/></Button>]);
                             });
                         }
                         setAux(l);
@@ -283,9 +262,10 @@ export default function Dashboard(props) {
                 console.log(error)
             });
         }
+
         getDateAfter();
 
-       
+
         getClientAPI();
         setData(dataAux);
         getLoginAPI();
@@ -295,11 +275,11 @@ export default function Dashboard(props) {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -313,13 +293,14 @@ export default function Dashboard(props) {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
                                                             <Typography variant="h5">CLIENTES</Typography>
                                                             <Grid container justify="space-around">
 
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -338,11 +319,12 @@ export default function Dashboard(props) {
 
                                                             </Grid>
 
-                                                            <br />
-                                                            <Button onClick={onClickHandler} variant="contained" color="primary">
+                                                            <br/>
+                                                            <Button onClick={onClickHandler} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br /><br />
+                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -382,11 +364,11 @@ export default function Dashboard(props) {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -405,10 +387,10 @@ export default function Dashboard(props) {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>

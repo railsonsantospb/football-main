@@ -1,33 +1,26 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
+import {Link, useHistory} from 'react-router-dom';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import Menu from '../Menu/index';
 
 export default function Dashboard() {
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
-    const [date, setDate] = useState([]);
     const [dataAux, setDataAux] = useState([]);
     const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
@@ -135,7 +128,7 @@ export default function Dashboard() {
             console.log(dataToState);
         }
     };
-   
+
 
     const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
         "APOSTAS", "STATUS", "PRÉ-JOGO", "AO VIVO", "EDITAR"];
@@ -156,7 +149,7 @@ export default function Dashboard() {
     }
 
 
-
+    clearInterval(Number(sessionStorage.getItem("idMaisAovivo")));
 
     let d = [];
     useEffect(() => {
@@ -165,105 +158,71 @@ export default function Dashboard() {
             history.push('/login')
         }
 
-        let unmounted = false;
 
-
-
-        async function getDateAll() {
-            
-                try {
-                    let d = Date.parse(new Date());
-                    d = new Date(d);
-                    d = d.setDate(d.getDate());
-
-
-                    let d1 = Date.parse(new Date());
-                    d1 = new Date(d1);
-                    d1 = d1.setDate(d1.getDate() + 1);
-
-                    let d2 = Date.parse(new Date());
-                    d2 = new Date(d2);
-                    d2 = d2.setDate(d2.getDate() + 2);
-
-                    d = new Date(d);
-                    d1 = new Date(d1);
-                    d2 = new Date(d2);
-
-
-                    setDate([d.getFullYear() + "-" + Number(d.getMonth() + 1) + "-" +
-                        d.getDate(), d1.getFullYear() + "-" + Number(d1.getMonth() + 1) + "-" +
-                    d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
-                    d2.getDate()]);
-
-                    if (!unmounted) {
-                        setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                        console.log([d.getDay(), d1.getDay(), d2.getDay()]);
-                    }
-
-
-
-                } catch (e) {
-                    console.log(e);
-                }
-                
-        }
-        
         async function getBancasAPI() {
-            
-            api.get('/api/getbancas/'+sessionStorage.getItem('manage'))
+
+            api.get('/api/getbancas/' + sessionStorage.getItem('manage'))
                 .then(res => {
                     try {
                         if (res.data) {
-                           
+
                             res.data.bancas.map((b) => {
                                 dataAux.push([
-                                    b.nome, 
-                                    'R$ '+(b.saldoGeral).toFixed(2), 
-                                    'R$ '+(b.saldoSimples).toFixed(2), 
+                                    b.nome,
+                                    'R$ ' + (b.saldoGeral).toFixed(2),
+                                    'R$ ' + (b.saldoSimples).toFixed(2),
                                     b.comissaoPreJogo,
                                     b.comissaoAoVivo,
-                                    b.ativarApostas == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CancelIcon /></Button>,
-                                    b.status == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarStatus(b.id, b.status)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarStatus(b.id, b.status)}><CancelIcon /></Button>,
-                                    b.ativarApostasPreJogo == 1 ? 
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CancelIcon /></Button>,
-                                    b.ativarApostasAoVivos == 1 ? 
-                                    <Button  variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CheckCircleIcon /></Button> : <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CancelIcon /></Button>,
-                                    <Button  variant="outlined" style={{ color: 'blue', borderColor: 'blue' }} component={Link} to={'/editcambistagerente/'+b.id}><EditIcon /></Button>,]);
+                                    b.ativarApostas == 1 ?
+                                        <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
+                                                onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CheckCircleIcon/></Button> :
+                                        <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
+                                                onClick={() => atualizarAtivarApostas(b.id, b.ativarApostas)}><CancelIcon/></Button>,
+                                    b.status == 1 ?
+                                        <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
+                                                onClick={() => atualizarStatus(b.id, b.status)}><CheckCircleIcon/></Button> :
+                                        <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
+                                                onClick={() => atualizarStatus(b.id, b.status)}><CancelIcon/></Button>,
+                                    b.ativarApostasPreJogo == 1 ?
+                                        <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
+                                                onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CheckCircleIcon/></Button> :
+                                        <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
+                                                onClick={() => atualizarAtivarApostasPreJogo(b.id, b.ativarApostasPreJogo)}><CancelIcon/></Button>,
+                                    b.ativarApostasAoVivos == 1 ?
+                                        <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
+                                                onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CheckCircleIcon/></Button> :
+                                        <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
+                                                onClick={() => atualizarApostasAoVivo(b.id, b.ativarApostasAoVivos)}><CancelIcon/></Button>,
+                                    <Button variant="outlined" style={{color: 'blue', borderColor: 'blue'}}
+                                            component={Link}
+                                            to={'/editcambistagerente/' + b.id}><EditIcon/></Button>,]);
                             })
                             setDataAux(dataAux);
-                            
+
                         }
                     } catch (e) {
                         console.log(e);
-                       
+
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
-        
+
         setDataAux(d);
         getBancasAPI();
-        getDateAll();
 
-
-
-        return () => {
-            unmounted = true
-        };
 
     }, []);
 
-    function atualizarApostasAoVivo(id, apostasAoVivo){
-        if(apostasAoVivo){
+    function atualizarApostasAoVivo(id, apostasAoVivo) {
+        if (apostasAoVivo) {
             apostasAoVivo = false;
         } else {
             apostasAoVivo = true;
         }
-        api.put('/api/updatebanca/'+id, {
+        api.put('/api/updatebanca/' + id, {
             "ativarApostasAoVivos": apostasAoVivo,
         })
             .then(res => {
@@ -273,13 +232,13 @@ export default function Dashboard() {
         });
     }
 
-    function atualizarAtivarApostasPreJogo(id, ativarApostasPreJogo){
-        if(ativarApostasPreJogo){
+    function atualizarAtivarApostasPreJogo(id, ativarApostasPreJogo) {
+        if (ativarApostasPreJogo) {
             ativarApostasPreJogo = false;
         } else {
             ativarApostasPreJogo = true;
         }
-        api.put('/api/updatebanca/'+id, {
+        api.put('/api/updatebanca/' + id, {
             "ativarApostasPreJogo": ativarApostasPreJogo,
         })
             .then(res => {
@@ -289,13 +248,13 @@ export default function Dashboard() {
         });
     }
 
-    function atualizarAtivarApostas(id, ativarApostas){
-        if(ativarApostas){
+    function atualizarAtivarApostas(id, ativarApostas) {
+        if (ativarApostas) {
             ativarApostas = false;
         } else {
             ativarApostas = true;
         }
-        api.put('/api/updatebanca/'+id, {
+        api.put('/api/updatebanca/' + id, {
             "ativarApostas": ativarApostas,
         })
             .then(res => {
@@ -305,13 +264,13 @@ export default function Dashboard() {
         });
     }
 
-    function atualizarStatus(id, status){
-        if(status){
+    function atualizarStatus(id, status) {
+        if (status) {
             status = false;
         } else {
             status = true;
         }
-        api.put('/api/updatebanca/'+id, {
+        api.put('/api/updatebanca/' + id, {
             "status": status,
         })
             .then(res => {
@@ -321,55 +280,55 @@ export default function Dashboard() {
         });
     }
 
-    
 
     const fixedHeightPaper = clsx(classes.paper);
 
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
-            
+
             <Menu/>
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
-                    {dataAux.length > 0 ? 
-                    <React.Fragment>
-                        <MUIDataTable
-                            title={<Grid container direction={'row'}>
-                                
-                                <br/>
-                                <Grid item style={{ paddingLeft: '10px' }}></Grid>
-                                <Grid item>
-                                    <Button variant="contained" color="primary" component={Link} to={'/cadcambistagerente'}>
-                                        CADASTRAR CAMBISTA
-                                    </Button>
-                                </Grid>
-                            </Grid>}
-                            data={dataAux}
-                            columns={columns}
-                            options={options}
+                    <br/>
+                    {dataAux.length > 0 ?
+                        <React.Fragment>
+                            <MUIDataTable
+                                title={<Grid container direction={'row'}>
 
-                        />
-                    </React.Fragment> : <Typography component="h4" color="inherit" align="center">
+                                    <br/>
+                                    <Grid item style={{paddingLeft: '10px'}}></Grid>
+                                    <Grid item>
+                                        <Button variant="contained" color="primary" component={Link}
+                                                to={'/cadcambistagerente'}>
+                                            CADASTRAR CAMBISTA
+                                        </Button>
+                                    </Grid>
+                                </Grid>}
+                                data={dataAux}
+                                columns={columns}
+                                options={options}
+
+                            />
+                        </React.Fragment> : <Typography component="h4" color="inherit" align="center">
                             <Grid item>
                                 <Button variant="contained" color="primary" component={Link} to={'/cadcambistagerente'}>
                                     CADASTRAR CAMBISTA
                                 </Button>
                             </Grid>
-                            <Grid item style={{ marginBottom: '10px' }}></Grid>
-                       Nenhum Cambista Cadastrado!
-                    </Typography>}
+                            <Grid item style={{marginBottom: '10px'}}></Grid>
+                            Nenhum Cambista Cadastrado!
+                        </Typography>}
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

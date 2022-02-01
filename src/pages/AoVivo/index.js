@@ -1,4 +1,4 @@
-import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,26 +7,24 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import { useHistory, Link } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { useReactToPrint } from 'react-to-print';
-import { cc, api } from '../Constantes/index';
+import {useReactToPrint} from 'react-to-print';
+import {api, cc} from '../Constantes/index';
 import Menu from '../Menu/index';
 import useWindowDimensions from '../Size/index';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -40,26 +38,18 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 
-
 export default function Dashboard(props) {
 
     const codigo = cc.generate().split('-').slice(1).join('-');
     let tab = false;
-    
+
     let betsAll = "";
     let history = useHistory();
-    const theme = useTheme();
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     const [live, setLive] = useState([]);
     const [message, setMessage] = useState("");
     const [client, setClient] = useState("");
     const [openURL, setOpenURL] = useState(false);
     const [openLoading, setOpenLoading] = useState(false);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
@@ -67,9 +57,8 @@ export default function Dashboard(props) {
     const [gerenteId, setGerenteId] = useState(0);
     const [bancaId, setBancaId] = useState(0);
     const [clientes, setClientes] = useState([]);
-    const [dateAfter, setDateAfter] = useState('');
     const [country, setCountry] = useState([]);
-    const { height, width } = useWindowDimensions();
+    const {height, width} = useWindowDimensions();
 
     const drawerWidth = 240;
 
@@ -105,7 +94,7 @@ export default function Dashboard(props) {
         },
         content: {
             flexGrow: 1,
-           
+
         },
         paper: {
             padding: theme.spacing(1),
@@ -145,8 +134,11 @@ export default function Dashboard(props) {
         if (localStorage.getItem("betsAll") === null) {
             localStorage.setItem("betsAll", "");
             localStorage.setItem('displayBets', 'none');
-            try{noneBets();} catch(e){}
-            
+            try {
+                noneBets();
+            } catch (e) {
+            }
+
         } else {
             let bets = localStorage.getItem("betsAll");
 
@@ -190,7 +182,7 @@ export default function Dashboard(props) {
         }
     }
 
-    setInterval(() => {
+    let initInterval = setInterval(() => {
         if (localStorage.getItem('delete') !== null) {
             let team = localStorage.getItem('delete');
             try {
@@ -215,12 +207,14 @@ export default function Dashboard(props) {
             geraBilhete();
         }
         localStorage.removeItem('delete');
-        if(localStorage.getItem('click') != null && localStorage.getItem('click') != ''){
+        if (localStorage.getItem('click') != null && localStorage.getItem('click') != '') {
             onClickHandler();
             localStorage.removeItem('click');
         }
         InitOdds();
-        //console.log(localStorage.getItem('delete'));
+
+
+
     }, 100);
 
 
@@ -245,7 +239,7 @@ export default function Dashboard(props) {
         document.getElementById('buttonClient').style.display = 'block';
         document.getElementById('valuesBets').style.display = 'block';
     }
-    
+
 
     function geraBilhete() {
         if (localStorage.getItem('betsAll') == "") {
@@ -285,7 +279,6 @@ export default function Dashboard(props) {
                 blockBets();
 
 
-
             });
 
             cotacaoHandler();
@@ -301,7 +294,7 @@ export default function Dashboard(props) {
         let d = "";
         let prejogo = localStorage.getItem('betsAll');
         let dx = new Date();
-        let dateHour = dx.getDate() + '/' + (parseInt(dx.getMonth())+1) + '/' + dx.getFullYear() + ' ' + dx.getHours() + ':' + dx.getMinutes() + ':' + dx.getSeconds();
+        let dateHour = dx.getDate() + '/' + (parseInt(dx.getMonth()) + 1) + '/' + dx.getFullYear() + ' ' + dx.getHours() + ':' + dx.getMinutes() + ':' + dx.getSeconds();
 
         document.getElementById('header').innerHTML = '\n' +
             '                    <div >\n' +
@@ -315,7 +308,7 @@ export default function Dashboard(props) {
             '\n' +
             '                        <span style="display: inline-block; text-align: left;">DATA:</span> <span id="conteudo_txtDataBilhete" style="display: inline-block"> ' + dateHour + '</span><br>\n' +
             '\n' +
-            '                        <span style="display: inline-block">COLABORADOR:</span> <span style="display: inline-block">'+ nomeBanca +'</span><br>\n' +
+            '                        <span style="display: inline-block">COLABORADOR:</span> <span style="display: inline-block">' + nomeBanca + '</span><br>\n' +
             '\n' +
             '                        <span style="display: inline-block">CLIENTE:</span> <span style="display: inline-block">' + client + '</span><br>\n' +
             '\n' +
@@ -406,7 +399,7 @@ export default function Dashboard(props) {
         api.get('/api/getdate')
             .then(res => {
                 d = (res.data.date);
-            
+
                 let comissaoValor = 0;
                 let qtd = localStorage.getItem('betsAll').split("=").length - 1;
                 for (let valores of bilhetes.sort()) {
@@ -469,8 +462,8 @@ export default function Dashboard(props) {
                                         }
 
                                     }).catch(error => {
-                                        console.log(error);
-                                    });
+                                    console.log(error);
+                                });
 
                             });
 
@@ -479,11 +472,11 @@ export default function Dashboard(props) {
                         }
 
                     }).catch(error => {
-                        console.log(error);
-                    });
+                    console.log(error);
+                });
             }).catch(error => {
-                console.log(error);
-            });
+            console.log(error);
+        });
 
     }
 
@@ -501,10 +494,10 @@ export default function Dashboard(props) {
             } else {
                 resultCotaca = 0;
             }
-           
-            let cotacao = sessionStorage.getItem('cotacaoAdmin');    
+
+            let cotacao = sessionStorage.getItem('cotacaoAdmin');
             document.getElementById('cotacao').innerHTML = parseFloat(resultCotaca > Number(cotacao) ?
-             Number(cotacao) : resultCotaca).toFixed(2);
+                Number(cotacao) : resultCotaca).toFixed(2);
         } catch (e) {
 
         }
@@ -517,7 +510,7 @@ export default function Dashboard(props) {
         let valorMin = sessionStorage.getItem('valorDeEntrada');
         let cotacao = Number(document.getElementById('cotacao').innerHTML);
         if (value) {
-         
+
             if (parseFloat(value) >= valorMin && parseFloat(value) <= valorMax) {
                 handleCloseURL();
                 document.getElementById('retorno').innerHTML = ((cotacao * Number(value)).toFixed(2));
@@ -547,7 +540,7 @@ export default function Dashboard(props) {
     function addClient() {
         if (client.length > 3) {
             if (getClient() == false) {
-                api.post('/api/addcliente', { 'nome': client, 'banca': sessionStorage.getItem('login') })
+                api.post('/api/addcliente', {'nome': client, 'banca': sessionStorage.getItem('login')})
                     .then(res => {
                         try {
                             if (res.data) {
@@ -563,16 +556,16 @@ export default function Dashboard(props) {
 
                                         }
                                     }).catch(error => {
-                                        console.log(error);
-                                    });
+                                    console.log(error);
+                                });
                             }
                         } catch (e) {
 
                         }
 
                     }).catch(error => {
-                        console.log(error);
-                    });
+                    console.log(error);
+                });
             } else {
                 setMessage(`Cliente já existe nessa banca!`);
                 handleClickOpenURL();
@@ -599,11 +592,10 @@ export default function Dashboard(props) {
 
         let auxClient =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
+            e.target.innerText.length > 0 ? e.target.innerText : '';
         setClient(auxClient);
 
     }
-
 
 
     function betsDone() {
@@ -631,300 +623,241 @@ export default function Dashboard(props) {
             betsAll = betsAll.slice(0, betsAll.length - 1);
             let i = 0;
             betsAll.map((bets) => {
-               
+
                 let auxBets = localStorage.getItem(bets.split('-')[0] + "x").split(',');
                 let id = auxBets.slice(-1)[0];
                 let opcao = auxBets[0].split(':')[0];
                 let key = auxBets[0].split(':')[1];
 
 
-                api.get('/api/getmaison/'+id)
-                .then(res => {
-                   
-                    let valores = new Set();
-                    let cotacoes = {};
+                api.get('/api/getmaison/' + id)
+                    .then(res => {
+
+                        let valores = new Set();
+                        let cotacoes = {};
 
 
-                    
-                    try {
+                        try {
 
-                        
 
-                        i++;
-                       
-                      
+                            i++;
 
-                        if (res.data) {
-                            res.data.mais.modalidades.map((m) => {
-                                m.cotacoes.map((c) => {
-                                    if(c.subeventos != null){
-                                     c.subeventos.map((e) => {
-                                        if(m.titulo + "--" +
-                                        ((m.titulo.indexOf('Handicap') != -1) ? 
-                                            (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]){
-                                            
 
-                                            oddValue = true;
-                                            valid2 = false;
-                                          
-                                            if (Number(auxBets[4]) == 15 && 
-                                            Number(auxBets[4]) > Number((e.cotacao/100).toFixed(2))) {
-                                                valid1 = true;
-                                                auxBets[4] = (e.cotacao/100).toFixed(2);
-                                                localStorage.setItem((bets.split('-')[0] + "x"),
-                                                    auxBets.join(','));
-                                                geraBilhete();
-                                            } else if(Number(auxBets[4]) != Number((e.cotacao/100).toFixed(2))){
-                                                valid1 = true;
-                                                auxBets[4] = (e.cotacao/100).toFixed(2);
-                                                localStorage.setItem((bets.split('-')[0] + "x"),
-                                                    auxBets.join(','));
-                                                geraBilhete();
-                                            }
+                            if (res.data) {
+                                res.data.mais.modalidades.map((m) => {
+                                    m.cotacoes.map((c) => {
+                                        if (c.subeventos != null) {
+                                            c.subeventos.map((e) => {
+                                                if (m.titulo + "--" +
+                                                    ((m.titulo.indexOf('Handicap') != -1) ?
+                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+
+
+                                                    oddValue = true;
+                                                    valid2 = false;
+
+                                                    if (Number(auxBets[4]) == 15 &&
+                                                        Number(auxBets[4]) > Number((e.cotacao / 100).toFixed(2))) {
+                                                        valid1 = true;
+                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                        localStorage.setItem((bets.split('-')[0] + "x"),
+                                                            auxBets.join(','));
+                                                        geraBilhete();
+                                                    } else if (Number(auxBets[4]) != Number((e.cotacao / 100).toFixed(2))) {
+                                                        valid1 = true;
+                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                        localStorage.setItem((bets.split('-')[0] + "x"),
+                                                            auxBets.join(','));
+                                                        geraBilhete();
+                                                    }
+                                                }
+                                            })
                                         }
-                                    }) }
+                                    })
                                 })
-                            })
-                            
-                            
-                                
-                            if (betsAll.length == i) {
-                                
-                                
 
-                                if (Number(document.getElementById('retorno').innerHTML) > 0) {
-                                    if(cotacaoAux > parseFloat(sessionStorage.getItem('cotacaoAdminMin'))) {
-                                    if (getClient() == false) {
-                                        setMessage(`Por favor adicione um cliente válido!`);
-                                        handleClickOpenURL();
-                                    } else if (valid2) {
-                                        setMessage(`Algumas apostas foram suspenas, aguarde um momento e confirme sua aposta!`);
-                                        handleClickOpenURL();
-                                    } else if (valid1) {
 
-                                        var resultCotaca = 1;
-                                        var id = localStorage.getItem('betsAll').split('=');
+                                if (betsAll.length == i) {
 
-                                        if (id !== null && id[0] !== '') {
-                                            for (let n in id.slice(0, id.length - 1)) {
-                                                resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
+
+                                    if (Number(document.getElementById('retorno').innerHTML) > 0) {
+                                        if (cotacaoAux > parseFloat(sessionStorage.getItem('cotacaoAdminMin'))) {
+                                            if (getClient() == false) {
+                                                setMessage(`Por favor adicione um cliente válido!`);
+                                                handleClickOpenURL();
+                                            } else if (valid2) {
+                                                setMessage(`Algumas apostas foram suspenas, aguarde um momento e confirme sua aposta!`);
+                                                handleClickOpenURL();
+                                            } else if (valid1) {
+
+                                                var resultCotaca = 1;
+                                                var id = localStorage.getItem('betsAll').split('=');
+
+                                                if (id !== null && id[0] !== '') {
+                                                    for (let n in id.slice(0, id.length - 1)) {
+                                                        resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
+
+                                                    }
+                                                } else {
+                                                    resultCotaca = 0;
+                                                }
+                                                setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
+
+
+                                                document.getElementById('retorno').innerHTML = ' ' +
+                                                    Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
+
+                                                handleClickOpenURL();
+
+
+                                            }
+                                            if (getClient() && !valid1 && !valid2 && !valid3) {
+                                                let qtd = localStorage.getItem('betsAll').split("=").length - 1;
+                                                let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
+
+                                                if (auxSaldo >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                    salvarBilhete();
+                                                    handlePrint();
+                                                    noneBets();
+                                                    clearOdds();
+                                                    geraBilhete();
+                                                } else {
+                                                    alert('Sem limite para apostar!');
+                                                }
+
 
                                             }
                                         } else {
-                                            resultCotaca = 0;
+                                            setMessage('A cotação mínima é de R$ ' + parseFloat(sessionStorage.getItem('cotacaoAdminMin'))
+                                                .toFixed(2));
+                                            handleClickOpenURL();
                                         }
-                                        setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
-
-
-
-                                            document.getElementById('retorno').innerHTML = ' ' +
-                                                Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
-
+                                    } else {
+                                        setMessage('Por favor insira um valor de no mínimo R$ ' + sessionStorage.getItem('valorDeEntrada') + ',00');
                                         handleClickOpenURL();
-
-
                                     }
-                                    if (getClient() && !valid1 && !valid2 && !valid3) {
-                                        let qtd = localStorage.getItem('betsAll').split("=").length - 1;
-                                        let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
-
-                                        if(auxSaldo  >= parseFloat(localStorage.getItem('valorIn'))){
-                                            salvarBilhete();
-                                            handlePrint();
-                                            noneBets();
-                                            clearOdds();
-                                            geraBilhete();
-                                        } else {
-                                            alert('Sem limite para apostar!');
-                                        }
-
-
-                                    }
-                                } else {
-                                    setMessage('A cotação mínima é de R$ '+ parseFloat(sessionStorage.getItem('cotacaoAdminMin'))
-                                    .toFixed(2));
-                                    handleClickOpenURL();
+                                    handleCloseLoading();
                                 }
-                                } else {
-                                    setMessage('Por favor insira um valor de no mínimo R$ '+ sessionStorage.getItem('valorDeEntrada') + ',00');
-                                    handleClickOpenURL();
-                                }
-                                handleCloseLoading();
                             }
+
+
+                        } catch (e) {
+                            alert('O seguinte jogo indisponível: ' + auxBets[5]);
+                            handleCloseLoading();
+                            console.log(e);
+                            valid1 = true;
+                            valid2 = true;
                         }
-
-
-
-                    } catch (e) {
-                        alert('O seguinte jogo indisponível: ' + auxBets[5]);
-                        handleCloseLoading();
-                        console.log(e);
-                        valid1 = true;
-                        valid2 = true;
-                    }
-                }).catch(error => {
+                    }).catch(error => {
                     alert('O seguinte jogo indisponível: ' + auxBets[5]);
                     handleCloseLoading();
-            });
+                });
 
 
             });
-            
+
 
         }, 0);
     }
 
 
     function onClickHandler() {
+        if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
+            let qtd = localStorage.getItem('betsAll').split("=").length;
+            let qtdJogos = sessionStorage.getItem("qtdJogos");
 
-        let qtd = localStorage.getItem('betsAll').split("=").length;
-        console.log(qtd);
-        if(qtd <= 20){
-        document.getElementById('bilheteP').innerHTML = '';
-        const team = localStorage.getItem('click');
+            if (qtd <= qtdJogos) {
+                sessionStorage.setItem('minutos', new Date().getMinutes());
+                document.getElementById('bilheteP').innerHTML = '';
+                const team = localStorage.getItem('click');
                 document.getElementById("retorno").innerHTML = '0.00';
-        try {
-            let betsGame = team.split("=");
- 
-            var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
-            var hourMinute =
-                ((date.getHours() + "").length === 1
-                    ? "0" + date.getHours()
-                    : date.getHours()) +
-                ":" +
-                ((date.getMinutes() + "").length === 1
-                    ? "0" + date.getMinutes()
-                    : date.getMinutes());
-
-            var monthDate =
-                date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-            betsGame[7] = monthDate + "  " + hourMinute;
-
-            if (
-                localStorage.getItem(betsGame.slice(-1)[0]) === betsGame[2] &&
-                document
-                    .getElementById(betsGame[2] + betsGame.slice(-1)[0])
-                    .innerHTML.indexOf("/svg>") === -1
-            ) {
-                document.getElementById(
-                    betsGame[2] + betsGame.slice(-1)[0]
-                ).style.background = "";
-                localStorage.setItem(betsGame.slice(-1)[0], "");
-                localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
-                localStorage.removeItem(betsGame.slice(-1)[0]);
-                localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                betsAll = localStorage.getItem("betsAll");
-                betsAll = betsAll.replace(
-                    betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
-                    ""
-                );
-                localStorage.setItem("betsAll", betsAll);
-                geraBilhete();
-                cotacaoHandler();
-
-            } else if (
-                document
-                    .getElementById(betsGame[2] + betsGame.slice(-1)[0])
-                    .innerHTML.indexOf("/svg>") === -1
-            ) {
-
-                document.getElementById(
-                    betsGame[2] + betsGame.slice(-1)[0]
-                ).style.background = "red";
-                if (localStorage.getItem(betsGame.slice(-1)[0])) {
-                    document.getElementById(
-                        localStorage.getItem(betsGame.slice(-1)[0]) + betsGame.slice(-1)[0]
-                    ).style.background = "";
-                }
-                localStorage.setItem(betsGame.slice(-1)[0] + "x", betsGame);
-                betsAll = localStorage.getItem("betsAll");
-                betsAll = betsAll.replace(
-                    betsGame.slice(-1)[0] +
-                    "-" +
-                    localStorage.getItem(betsGame.slice(-1)[0]) +
-                    "=",
-                    ""
-                );
-                localStorage.setItem(betsGame.slice(-1)[0], betsGame[2]);
-                betsAll = betsAll + betsGame.slice(-1)[0] + "-" + betsGame[2] + "=";
-                localStorage.setItem("betsAll", betsAll);
-                geraBilhete();
-                cotacaoHandler();
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    } else {
-        alert('Você passou o número máximo de 20 jogos por apostas!');
-    }
-    };
-
-
-    function close(e) {
-        try {
-            if (e.clientX > 250) {
-                document.getElementById('drawer').style.display = 'none';
-            }
-        } catch (e) {
-            //console.log(e);
-        }
-
-    }
-
-    useEffect(() => {
-
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/')
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
-
-        async function liveAll() {
-
-            
-
-        }
-
-        async function getDateAfter() {
-            api.get('/api/getdateafter').then(res => {
-
                 try {
+                    let betsGame = team.split("=");
 
-                    setDateAfter(res.data.date);
+                    var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
+                    var hourMinute =
+                        ((date.getHours() + "").length === 1
+                            ? "0" + date.getHours()
+                            : date.getHours()) +
+                        ":" +
+                        ((date.getMinutes() + "").length === 1
+                            ? "0" + date.getMinutes()
+                            : date.getMinutes());
 
+                    var monthDate =
+                        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+                    betsGame[7] = monthDate + "  " + hourMinute;
+
+                    if (
+                        localStorage.getItem(betsGame.slice(-1)[0]) === betsGame[2] &&
+                        document
+                            .getElementById(betsGame[2] + betsGame.slice(-1)[0])
+                            .innerHTML.indexOf("/svg>") === -1
+                    ) {
+                        document.getElementById(
+                            betsGame[2] + betsGame.slice(-1)[0]
+                        ).style.background = "";
+                        localStorage.setItem(betsGame.slice(-1)[0], "");
+                        localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
+                        localStorage.removeItem(betsGame.slice(-1)[0]);
+                        localStorage.removeItem(betsGame.slice(-1)[0] + "x");
+                        betsAll = localStorage.getItem("betsAll");
+                        betsAll = betsAll.replace(
+                            betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
+                            ""
+                        );
+                        localStorage.setItem("betsAll", betsAll);
+                        geraBilhete();
+                        cotacaoHandler();
+
+                    } else if (
+                        document
+                            .getElementById(betsGame[2] + betsGame.slice(-1)[0])
+                            .innerHTML.indexOf("/svg>") === -1
+                    ) {
+
+                        document.getElementById(
+                            betsGame[2] + betsGame.slice(-1)[0]
+                        ).style.background = "red";
+                        if (localStorage.getItem(betsGame.slice(-1)[0])) {
+                            document.getElementById(
+                                localStorage.getItem(betsGame.slice(-1)[0]) + betsGame.slice(-1)[0]
+                            ).style.background = "";
+                        }
+                        localStorage.setItem(betsGame.slice(-1)[0] + "x", betsGame);
+                        betsAll = localStorage.getItem("betsAll");
+                        betsAll = betsAll.replace(
+                            betsGame.slice(-1)[0] +
+                            "-" +
+                            localStorage.getItem(betsGame.slice(-1)[0]) +
+                            "=",
+                            ""
+                        );
+                        localStorage.setItem(betsGame.slice(-1)[0], betsGame[2]);
+                        betsAll = betsAll + betsGame.slice(-1)[0] + "-" + betsGame[2] + "=";
+                        localStorage.setItem("betsAll", betsAll);
+                        geraBilhete();
+                        cotacaoHandler();
+                    }
                 } catch (e) {
                     console.log(e);
                 }
-            }).catch(error => {
-                console.log(error)
-            });
+            } else {
+                alert('Você passou o número máximo de 20 jogos por apostas!');
+            }
         }
-        getDateAfter();
+    };
 
-        async function all() {
-            api.get('/api/gethome').then(res => {
+    useEffect(() => {
 
-                
-                    let l = []
-                    res.data.home.modalidades[0].paises.map((f) => {
-                    
-                        l.push(f);
-                        
-                    });
-                    setCountry(l);
-
-                
-            }).catch(error => {
-                console.log(error)
-            });
-
-        }
-        all();
+        let cancel = true;
 
 
-       async function getLoginAPI() {
 
+        async function getLoginAPI() {
+            if (Number(new Date().getMinutes() - Number(sessionStorage.getItem('minutos'))) >= 10) {
+                history.push('/');
+            }
             api.get('/api/getbanca/' + sessionStorage.getItem('login'))
                 .then(res => {
                     try {
@@ -936,9 +869,236 @@ export default function Dashboard(props) {
                             setBilhetes(res.data.bancas.comissaoPreJogo.split(';'));
                             setBancaId(res.data.bancas.id);
                             console.log(res.data.bancas.ativarApostasAoVivos == false);
-                            if(res.data.bancas.ativarApostasAoVivos == true){
+                            if (res.data.bancas.ativarApostasAoVivos == true) {
 
                                 let l = [];
+                                let cotacao = {};
+                                api.get('/api/getlive')
+                                    .then(res => {
+
+                                        try {
+                                            document.getElementById('aoVivo').innerHTML = '';
+                                            res.data.live.campeonatos.map((c) => {
+                                                try {
+                                                    res.data.cotacao.map((o) => {
+                                                        cotacao[o.tipoDeCotacao] = [o.status, o.porcentagem];
+                                                    })
+
+
+                                                    c.eventos.map((live) => {
+
+                                                        if (live.periodo != "Não Iniciado") {
+                                                            let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
+                                                                (live.subeventos.length >= 3 ?
+                                                                    ('VencedordoEncontro' +
+                                                                        live.subeventos[0].aposta +
+                                                                        live.subeventos[0].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                                            let idEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ?
+                                                                (live.subeventos.length >= 3 ?
+                                                                    ('VencedordoEncontro' +
+                                                                        live.subeventos[1].aposta +
+                                                                        live.subeventos[1].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                                            let idFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ?
+                                                                (live.subeventos.length >= 3 ?
+                                                                    ('VencedordoEncontro' +
+                                                                        live.subeventos[2].aposta +
+                                                                        live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                                            let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[0].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? (live.subeventos[0].cotacao / 100).toFixed(2) >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[0].cotacao / 100).toFixed(2) : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                                            let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[1].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? (live.subeventos[1].cotacao / 100).toFixed(2) >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[1].cotacao / 100).toFixed(2) : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                                            let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[2].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? (live.subeventos[2].cotacao / 100).toFixed(2) >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[2].cotacao / 100).toFixed(2) : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                                            let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                                                ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                                                live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
+                                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                                    (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                            ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
+                                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                                            ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+                                                            let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                                                ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                                                live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
+                                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                                    (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                            ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
+                                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                                            ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+                                                            let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                                                ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                                                live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
+                                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                                    (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                            ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
+                                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                                            ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+                                                            let date = (new Date(live.data).getDate() < 10
+                                                                    ? "0" + new Date(live.data).getDate()
+                                                                    : new Date(live.data).getDate()) +
+                                                                "/" +
+                                                                (Number(new Date(live.data).getMonth()) + 1 < 10
+                                                                    ? "0" +
+                                                                    (Number(new Date(live.data).getMonth()) + 1)
+                                                                    : Number(new Date(live.data).getMonth()) + 1) +
+                                                                "/" +
+                                                                new Date(live.data).getFullYear() +
+                                                                " " +
+                                                                (new Date(live.data).getHours() < 10
+                                                                    ? "0" + new Date(live.data).getHours()
+                                                                    : new Date(live.data).getHours()) +
+                                                                ":" +
+                                                                (Number(new Date(live.data).getMinutes() + "") === 0
+                                                                    ? "00"
+                                                                    : Number(new Date(live.data).getMinutes() + "") >=
+                                                                    10
+                                                                        ? new Date(live.data).getMinutes() + ""
+                                                                        : "0" + (new Date(live.data).getMinutes() + ""))
+                                                            if (width > 600) {
+                                                                document.getElementById('aoVivo')
+                                                                    .innerHTML += '<tr id="zebra">' +
+                                                                    '<td class="times">' + live.casa + ' X ' + live.fora + '<br/>' +
+                                                                    c.pais + ': ' + c.nome + '<br/>' +
+                                                                    '<b>(' + live.placar.split(':')[0] + ' - ' + live.placar.split(':')[1] + ')</b><br/>' +
+                                                                    '<b>' + (live.periodo == 'INT' ? 'Intervalo' : live.periodo) + ' - ' + live.tempoDecorridoMin + 'min</b>' +
+                                                                    '</td>' +
+                                                                    '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
+                                                                    '<b class="button" id="' + (valorCasa[0] == '&' ? '' : idCasa) + '">' + valorCasa + '</b></td>' +
+
+                                                                    '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
+                                                                    '<b class="button" id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '">' + valorEmpate + '</b></td>' +
+
+                                                                    '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
+                                                                    '<b class="button" id="' + (valorFora[0] == '&' ? '' : idFora) + '">' + valorFora + '</b></td>' +
+
+                                                                    '<td id="ocultar" ><a href="/#/maisaovivo/' + live.id + '"' +
+                                                                    'class="buttonM"><p style="font-size: 26px;">' + "+" + '</p></a></td>' +
+                                                                    '</tr>'
+                                                            } else {
+
+                                                                document.getElementById('aoVivo')
+                                                                    .innerHTML += '<tr id="bets1">' +
+                                                                    '<td class="times"><a style="text-decoration: none; color: black" href="/#/maisaovivo/' + live.id + '"' +
+                                                                    '>' + live.casa + ' X ' + live.fora + '</a><br/>' +
+                                                                    c.pais + ': ' + c.nome + '<br/>' +
+                                                                    '<b>(' + live.placar.split(':')[0] + ' - ' + live.placar.split(':')[1] + ')</b><br/>' +
+                                                                    '<b>' + (live.periodo == 'INT' ? 'Intervalo' : live.periodo) + '<br/>' + live.tempoDecorridoMin + 'min</b>' +
+                                                                    '</td>' +
+                                                                    '<td id="bets2">' +
+                                                                    '<span id="' + (valorCasa[0] == '&' ? '' : idCasa) + '" class="button" style="margin-left: 52px;" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
+                                                                    '<b>' + valorCasa + '</b></span>' +
+
+                                                                    '<span id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
+                                                                    '<b>' + valorEmpate + '</b></span>' +
+
+
+                                                                    '<span id="' + (valorFora[0] == '&' ? '' : idFora) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
+                                                                    '<b>' + valorFora + '</b></span>' + '</td>' +
+
+                                                                    '</tr>'
+                                                            }
+                                                        }
+
+                                                    })
+
+
+                                                } catch (e) {
+
+                                                }
+
+                                            })
+
+                                        } catch (e) {
+                                            // console.log(e);
+                                        }
+                                        setLive(l);
+
+                                    }).catch(error => {
+                                    // console.log(error);
+                                });
+
+                            } else {
+                                document.getElementById('aoVivo')
+                                    .innerHTML = '<center>Apostas Ao Vivo Desativadas. Fale com seu gerente!</center>';
+                            }
+
+                        }
+                    } catch (e) {
+
+                    }
+                }).catch(error => {
+                console.log(error)
+            });
+
+        }
+
+        async function getClienteAPI() {
+
+            api.get('/api/getclientes/' + sessionStorage.getItem('login'))
+                .then(res => {
+                    try {
+                        if (res.data) {
+                            setClientes(res.data);
+                        }
+                    } catch (e) {
+
+                    }
+                }).catch(error => {
+                console.log(error);
+            });
+
+        }
+
+
+
+
+        async function gamesLivre(){
+            if (Number(new Date().getMinutes() - Number(sessionStorage.getItem('minutos'))) >= 10) {
+                history.push('/');
+            }
+            let l = [];
             let cotacao = {};
             api.get('/api/getlive')
                 .then(res => {
@@ -947,100 +1107,100 @@ export default function Dashboard(props) {
                         document.getElementById('aoVivo').innerHTML = '';
                         res.data.live.campeonatos.map((c) => {
                             try {
-                                res.data.cotacao.map((o) =>{
+                                res.data.cotacao.map((o) => {
                                     cotacao[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                 })
 
 
                                 c.eventos.map((live) => {
 
-                                    if(live.periodo != "Não Iniciado"){
-                                        let idCasa =  (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao/100) ? 
-                                                         (live.subeventos.length >= 3 ?
-                                                    ('VencedordoEncontro'+
-                                                        live.subeventos[0].aposta+
-                                                        live.subeventos[0].idOpcao+live.id).replace(/[^0-9a-z]/gi, '') : ''):'');
-        
-                                                    let idEmpate =  (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao/100) ?
-                                                    (live.subeventos.length >= 3 ?
-                                                                ('VencedordoEncontro'+
-                                                                    live.subeventos[1].aposta+
-                                                                    live.subeventos[1].idOpcao+live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
-        
-                                                    let idFora =  (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao/100) ?
-                                                    (live.subeventos.length >= 3 ?
-                                                                ('VencedordoEncontro'+
-                                                                    live.subeventos[2].aposta+
-                                                                    live.subeventos[2].idOpcao+live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
-        
-                                                                    let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3  ?
-                                                                        live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                        +live.subeventos[0].aposta + "=" +
-                                                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro'+live.subeventos[0].aposta+live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                         'VencedordoEncontro'+live.subeventos[0].aposta : '') + "=" +
-                                                                        (live.subeventos.length >= 3 ? (live.subeventos[0].cotacao/100).toFixed(2) >
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')) ? 
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[0].cotacao/100).toFixed(2) : 0)
-                                                                        + "=" + (live.casa + ' x ' + live.fora) + "=" 
-                                                                        + (c.pais + ': '+c.nome) + "=" + new Date(live.data) + "=" +
-                                                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-                
-                                                            let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3  ?
-                                                                        live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                        +live.subeventos[1].aposta + "=" +
-                                                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro'+live.subeventos[1].aposta+live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                         'VencedordoEncontro'+live.subeventos[1].aposta : '') + "=" +
-                                                                        (live.subeventos.length >= 3 ? (live.subeventos[1].cotacao/100).toFixed(2) >
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')) ? 
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[1].cotacao/100).toFixed(2) : 0)
-                                                                        + "=" + (live.casa + ' x ' + live.fora) + "=" 
-                                                                        + (c.pais + ': '+c.nome) + "=" + new Date(live.data) + "=" +
-                                                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-                
-                                                            let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3  ?
-                                                                        live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                        +live.subeventos[2].aposta + "=" +
-                                                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro'+live.subeventos[2].aposta+live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                         'VencedordoEncontro'+live.subeventos[2].aposta : '') + "=" +
-                                                                        (live.subeventos.length >= 3 ? (live.subeventos[2].cotacao/100).toFixed(2) >
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')) ? 
-                                                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[2].cotacao/100).toFixed(2) : 0)
-                                                                        + "=" + (live.casa + ' x ' + live.fora) + "=" 
-                                                                        + (c.pais + ': '+c.nome) + "=" + new Date(live.data) + "=" +
-                                                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-        
-                                                    let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao/100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ? 
-                                                                    ((live.subeventos[0].cotacao/100) - (((live.subeventos[0].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100))*-1)) :
-                                                                        live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0 
-                                                                        &&  (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                                (parseFloat((live.subeventos[0].cotacao/100) > parseFloat(sessionStorage.getItem('cotaMax')) 
-                                                                                ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao/100)) + 
-                                                                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                                    ((live.subeventos[0].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100)) : 0)).toFixed(2) 
-                                                                                 : '&#x1F512;') : '&#x1F512;')
-        
-                                                    let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao/100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ? 
-                                                                    ((live.subeventos[1].cotacao/100) - (((live.subeventos[1].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100))*-1)) :
-                                                                        live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0 
-                                                                        &&  (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                                (parseFloat((live.subeventos[1].cotacao/100) > parseFloat(sessionStorage.getItem('cotaMax')) 
-                                                                                ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao/100)) + 
-                                                                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                                    ((live.subeventos[1].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100)) : 0)).toFixed(2) 
-                                                                                 : '&#x1F512;') : '&#x1F512;')
-        
-                                                    let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao/100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ? 
-                                                                    ((live.subeventos[2].cotacao/100) - (((live.subeventos[2].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100))*-1)) :
-                                                                        live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0 
-                                                                        &&  (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                                (parseFloat((live.subeventos[2].cotacao/100) >  parseFloat(sessionStorage.getItem('cotaMax')) 
-                                                                                ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao/100)) + 
-                                                                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                                    ((live.subeventos[2].cotacao/100) * (cotacao['Vencedor do Encontro'][1]/100)) : 0)).toFixed(2) 
-                                                                                 : '&#x1F512;') : '&#x1F512;')
+                                    if (live.periodo != "Não Iniciado") {
+                                        let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
+                                            (live.subeventos.length >= 3 ?
+                                                ('VencedordoEncontro' +
+                                                    live.subeventos[0].aposta +
+                                                    live.subeventos[0].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                        let idEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ?
+                                            (live.subeventos.length >= 3 ?
+                                                ('VencedordoEncontro' +
+                                                    live.subeventos[1].aposta +
+                                                    live.subeventos[1].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                        let idFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ?
+                                            (live.subeventos.length >= 3 ?
+                                                ('VencedordoEncontro' +
+                                                    live.subeventos[2].aposta +
+                                                    live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
+                                        let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[0].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? (live.subeventos[0].cotacao / 100).toFixed(2) >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[0].cotacao / 100).toFixed(2) : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                        let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[1].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? (live.subeventos[1].cotacao / 100).toFixed(2) >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[1].cotacao / 100).toFixed(2) : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                        let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[2].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? (live.subeventos[2].cotacao / 100).toFixed(2) >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[2].cotacao / 100).toFixed(2) : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                        let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                            ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                            live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
+                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                        ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
+                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                        ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+                                        let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                            ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                            live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
+                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                        ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
+                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                        ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+                                        let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
+                                            ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
+                                            live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
+                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
+                                                (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                        ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
+                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
+                                                        ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
+                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
 
                                         let date = (new Date(live.data).getDate() < 10
                                                 ? "0" + new Date(live.data).getDate()
@@ -1063,46 +1223,46 @@ export default function Dashboard(props) {
                                                 10
                                                     ? new Date(live.data).getMinutes() + ""
                                                     : "0" + (new Date(live.data).getMinutes() + ""))
-                                        if(width > 600){
+                                        if (width > 600) {
                                             document.getElementById('aoVivo')
                                                 .innerHTML += '<tr id="zebra">' +
-                                                '<td class="times">'+live.casa + ' X ' + live.fora+'<br/>'+
-                                                c.pais + ': ' + c.nome+'<br/>'+
-                                                '<b>('+live.placar.split(':')[0] +' - ' +live.placar.split(':')[1]+')</b><br/>'+
-                                                '<b>'+(live.periodo == 'INT' ? 'Intervalo' : live.periodo) +' - '+ live.tempoDecorridoMin + 'min</b>'+
-                                                '</td>'+
-                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">'+
-                                                '<b class="button" id="'+(valorCasa[0] == '&' ? '' : idCasa)+'">'+valorCasa+'</b></td>'+
+                                                '<td class="times">' + live.casa + ' X ' + live.fora + '<br/>' +
+                                                c.pais + ': ' + c.nome + '<br/>' +
+                                                '<b>(' + live.placar.split(':')[0] + ' - ' + live.placar.split(':')[1] + ')</b><br/>' +
+                                                '<b>' + (live.periodo == 'INT' ? 'Intervalo' : live.periodo) + ' - ' + live.tempoDecorridoMin + 'min</b>' +
+                                                '</td>' +
+                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
+                                                '<b class="button" id="' + (valorCasa[0] == '&' ? '' : idCasa) + '">' + valorCasa + '</b></td>' +
 
-                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">'+
-                                                '<b class="button" id="'+(valorEmpate[0] == '&' ? '' : idEmpate)+'">'+valorEmpate+'</b></td>'+
+                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
+                                                '<b class="button" id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '">' + valorEmpate + '</b></td>' +
 
-                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">'+
-                                                '<b class="button" id="'+(valorFora[0] == '&' ? '' : idFora)+'">'+valorFora+'</b></td>'+
+                                                '<td id="ocultar" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
+                                                '<b class="button" id="' + (valorFora[0] == '&' ? '' : idFora) + '">' + valorFora + '</b></td>' +
 
-                                                '<td id="ocultar" ><a href="/#/maisaovivo/'+live.id+'"'+
-                                                'class="buttonM"><p style="font-size: 26px;">'+"+"+'</p></a></td>'+
+                                                '<td id="ocultar" ><a href="/#/maisaovivo/' + live.id + '"' +
+                                                'class="buttonM"><p style="font-size: 26px;">' + "+" + '</p></a></td>' +
                                                 '</tr>'
-                                        }else{
+                                        } else {
 
                                             document.getElementById('aoVivo')
                                                 .innerHTML += '<tr id="bets1">' +
-                                                '<td class="times"><a style="text-decoration: none; color: black" href="/#/maisaovivo/'+live.id+'"'+
-                                                '>'+live.casa + ' X ' + live.fora+ '</a><br/>'+
-                                                c.pais + ': ' + c.nome+'<br/>'+
-                                                '<b>('+live.placar.split(':')[0] +' - ' +live.placar.split(':')[1]+')</b><br/>'+
-                                                '<b>'+(live.periodo == 'INT' ? 'Intervalo' : live.periodo) +'<br/>'+ live.tempoDecorridoMin + 'min</b>'+
-                                                '</td>'+
-                                                '<td id="bets2">'+
-                                                '<span id="'+(valorCasa[0] == '&' ? '' : idCasa)+'" class="button" style="margin-left: 52px;" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">'+
-                                                '<b>'+valorCasa+'</b></span>'+
+                                                '<td class="times"><a style="text-decoration: none; color: black" href="/#/maisaovivo/' + live.id + '"' +
+                                                '>' + live.casa + ' X ' + live.fora + '</a><br/>' +
+                                                c.pais + ': ' + c.nome + '<br/>' +
+                                                '<b>(' + live.placar.split(':')[0] + ' - ' + live.placar.split(':')[1] + ')</b><br/>' +
+                                                '<b>' + (live.periodo == 'INT' ? 'Intervalo' : live.periodo) + '<br/>' + live.tempoDecorridoMin + 'min</b>' +
+                                                '</td>' +
+                                                '<td id="bets2">' +
+                                                '<span id="' + (valorCasa[0] == '&' ? '' : idCasa) + '" class="button" style="margin-left: 52px;" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
+                                                '<b>' + valorCasa + '</b></span>' +
 
-                                                '<span id="'+(valorEmpate[0] == '&' ? '' : idEmpate)+'" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">'+
-                                                '<b>'+valorEmpate+'</b></span>'+
+                                                '<span id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
+                                                '<b>' + valorEmpate + '</b></span>' +
 
 
-                                                '<span id="'+(valorFora[0] == '&' ? '' : idFora)+'" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">'+
-                                                '<b>'+valorFora+'</b></span>'+'</td>'+
+                                                '<span id="' + (valorFora[0] == '&' ? '' : idFora) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
+                                                '<b>' + valorFora + '</b></span>' + '</td>' +
 
                                                 '</tr>'
                                         }
@@ -1111,89 +1271,73 @@ export default function Dashboard(props) {
                                 })
 
 
-                            } catch(e){
+                            } catch (e) {
 
                             }
 
                         })
 
                     } catch (e) {
-                        console.log(e);
+                        // console.log(e);
                     }
                     setLive(l);
 
                 }).catch(error => {
-                console.log(error);
+                // console.log(error);
             });
-                            
-                            } else {
-                                document.getElementById('aoVivo')
-                                                            .innerHTML = '<center>Apostas Ao Vivo Desativadas. Fale com seu gerente!</center>';
-                            }
-
-                        }
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
-                    console.log(error)
-                });
-
         }
-
-        async function getClienteAPI() {
-
-            api.get('/api/getclientes/' + sessionStorage.getItem('login'))
-                .then(res => {
-                    try {
-                        if (res.data) {
-                            setClientes(res.data);
-                        }
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
-
-        }
-    
-        getLoginAPI();
-        getClienteAPI();
-
-
 
         setTimeout(() => {
-            liveAll();
+            if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
+                gamesLivre();
+            } else {
+                getLoginAPI();
+            }
         }, 1000);
 
-        setInterval(() => {
-            liveAll();
+        let maisAovivo = setInterval(() => {
+
+            if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
+                gamesLivre();
+            } else {
+                getLoginAPI();
+                if (cancel) {
+                    getClienteAPI();
+                }
+            }
         }, 10000);
 
-        geraBilhete();
-        setLive([]);
+        if (cancel) {
+            geraBilhete();
+        }
 
-   
+
+        return () => {
+            // clean up
+            clearInterval(maisAovivo);
+            clearInterval(initInterval);
+            maisAovivo = null;
+            cancel = false;
+            initInterval = null;
+        };
+
 
     }, []);
-
-   
 
 
     const fixedHeightPaper = clsx(classes.paper);
     return (
-        <div className={classes.root} onClick={close}>
-            <CssBaseline />
+        <div className={classes.root}>
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3} justify="flex-start">
                         {/* Chart */}
-                        <Grid item xs={12} md={12} lg={8} >
-                            <Grid >
+                        <Grid item xs={12} md={12} lg={8}>
+                            <Grid>
                                 <Grid container justify="center" spacing={2}>
 
                                     <Grid xs={12} md={12} sm={6} item>
@@ -1202,7 +1346,7 @@ export default function Dashboard(props) {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
                                                             <Typography>
 
@@ -1221,31 +1365,36 @@ export default function Dashboard(props) {
                                                 </Grid>
                                             </Grid>
                                         </Paper>
-                                       
+
                                         <TableContainer component={Paper}>
 
 
-                                            <Table stickyHeader aria-label="sticky table" >
-                                            
+                                            <Table stickyHeader aria-label="sticky table">
+
                                                 <TableHead>
                                                     <TableRow>
-                                                        
-                                                        <StyledTableCell align={"center"} id='font'><b>JOGO</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: 15}} id='ocultar'><b>CASA</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: 15}} id='ocultar'><b>EMPATE</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: 15}} id='ocultar'><b>FORA</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: 15}} id='ocultar'><b>MAIS</b></StyledTableCell>
+
+                                                        <StyledTableCell align={"center"}
+                                                                         id='font'><b>JOGO</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"} style={{width: 15}}
+                                                                         id='ocultar'><b>CASA</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"} style={{width: 15}}
+                                                                         id='ocultar'><b>EMPATE</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"} style={{width: 15}}
+                                                                         id='ocultar'><b>FORA</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"} style={{width: 15}}
+                                                                         id='ocultar'><b>MAIS</b></StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
 
                                                 <TableBody id='aoVivo'>
                                                     <LinearProgress/>
                                                 </TableBody>
-                                                
+
                                             </Table>
-                                            
+
                                         </TableContainer>
-                                        </Grid>
+                                    </Grid>
 
                                 </Grid>
                             </Grid>
@@ -1253,92 +1402,96 @@ export default function Dashboard(props) {
 
                         <Grid item xs={12} md={9} lg={4} id='bl'>
                             <div id='font'>
-                            <Paper className={fixedHeightPaper}>
-                                <Typography variant="h6" gutterBottom align="center">
-                                    <b>AO VIVO</b>
-                                </Typography>
-                                <Divider /><br />
-                                <div id={"bilhete"}></div>
-                                <Divider />
-                                <br style={{ marginBottom: '10px' }} />
-                                <Typography align="center" style={{
-                                    lineHeight: '120%',
+                                <Paper className={fixedHeightPaper}>
+                                    <Typography variant="h6" gutterBottom align="center">
+                                        <b>AO VIVO</b>
+                                    </Typography>
+                                    <Divider/><br/>
+                                    <div id={"bilhete"}></div>
+                                    <Divider/>
+                                    <br style={{marginBottom: '10px'}}/>
+                                    <Typography align="center" style={{
+                                        lineHeight: '120%',
 
-                                }}
-                                    id={"valuesBets"}>
-                                    Cotação: R$ <b id={"cotacao"}></b><br />
-                                    Possível Retorno:
-                                    R$<b id={"retorno"}> 0.00</b><br />
-                                    Valor da Aposta:<b></b><br /><br />
-                                </Typography>
-                                <center><div id={"value"} >
-                                    <TextField
-                                        fullWidth
-                                        id={"resetField1"}
-                                        label="Digite um Valor"
-                                        type="number"
-
-                                        onChange={valueBetsHandler}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                        onInput={(e) => {
-                                            e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
-                                        }}
-                                        variant="filled"
-                                    /> </div></center>
-
-                                <br style={{ marginBottom: '10px' }} />
-                                <div id={"clients"} >
-                                    <Autocomplete
-                                        id={"resetField2"}
-                                        freeSolo
-                                        onChange={verifyClientHandler}
-                                        options={clientes.clientes}
-                                        getOptionLabel={(option) => option.nome}
-                                        renderInput={(params) =>
+                                    }}
+                                                id={"valuesBets"}>
+                                        Cotação: R$ <b id={"cotacao"}></b><br/>
+                                        Possível Retorno:
+                                        R$<b id={"retorno"}> 0.00</b><br/>
+                                        Valor da Aposta:<b></b><br/><br/>
+                                    </Typography>
+                                    <center>
+                                        <div id={"value"}>
                                             <TextField
-                                                {...params}
+                                                fullWidth
+                                                id={"resetField1"}
+                                                label="Digite um Valor"
+                                                type="number"
 
-                                                label="Nome do Cliente"
-                                                variant="outlined" />}
-                                    /></div>
+                                                onChange={valueBetsHandler}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                onInput={(e) => {
+                                                    e.target.value = Math.max(0, parseInt(e.target.value)).toString().slice(0, 4)
+                                                }}
+                                                variant="filled"
+                                            /></div>
+                                    </center>
 
-                                <br style={{ marginBottom: '10px' }} />
-                                <Button id={"done"}
-                                    onClick={betsDone} variant="contained" color="secondary">
-                                    <b>FINALIZAR APOSTA</b>
-                                </Button>
+                                    <br style={{marginBottom: '10px'}}/>
+                                    <div id={"clients"}>
+                                        <Autocomplete
+                                            id={"resetField2"}
+                                            freeSolo
+                                            onChange={verifyClientHandler}
+                                            options={clientes.clientes}
+                                            getOptionLabel={(option) => option.nome}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    {...params}
 
-                                <br style={{ marginBottom: '10px' }} />
-                                <center><div id={"fieldClient"}>
-                                    <TextField
-                                        id={"resetField3"}
-                                        label="Cadastrar Cliente"
-                                        type="search"
-                                        fullWidth
-                                        onChange={addVeiryClient}
-                                        variant="outlined" /></div></center>
+                                                    label="Nome do Cliente"
+                                                    variant="outlined"/>}
+                                        /></div>
 
-                                <br style={{ marginBottom: '10px' }} />
+                                    <br style={{marginBottom: '10px'}}/>
+                                    <Button id={"done"}
+                                            onClick={betsDone} variant="contained" color="secondary">
+                                        <b>FINALIZAR APOSTA</b>
+                                    </Button>
 
-                                <Button id={"buttonClient"}
-                                    variant="contained"
-                                    onClick={addClient}
-                                    color="secondary">
-                                    <b>CADASTRAR CLIENTE</b>
-                                </Button>
-                                <br style={{ marginBottom: '10px' }} />
-                            </Paper>
+                                    <br style={{marginBottom: '10px'}}/>
+                                    <center>
+                                        <div id={"fieldClient"}>
+                                            <TextField
+                                                id={"resetField3"}
+                                                label="Cadastrar Cliente"
+                                                type="search"
+                                                fullWidth
+                                                onChange={addVeiryClient}
+                                                variant="outlined"/></div>
+                                    </center>
+
+                                    <br style={{marginBottom: '10px'}}/>
+
+                                    <Button id={"buttonClient"}
+                                            variant="contained"
+                                            onClick={addClient}
+                                            color="secondary">
+                                        <b>CADASTRAR CLIENTE</b>
+                                    </Button>
+                                    <br style={{marginBottom: '10px'}}/>
+                                </Paper>
                             </div>
                         </Grid>
 
                     </Grid>
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -1357,10 +1510,10 @@ export default function Dashboard(props) {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>
@@ -1370,9 +1523,9 @@ export default function Dashboard(props) {
                     </Dialog>
                 </Container>
                 <div>
-                <ScrollUpButton/>
+                    <ScrollUpButton/>
                 </div>
-                <div style={{ display: 'none' }}>
+                <div style={{display: 'none'}}>
 
                     <Grid item xs={12} md={4} sm={12}>
                         <div style={{

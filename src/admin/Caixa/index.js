@@ -1,4 +1,4 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,41 +7,19 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import clsx from 'clsx';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import {images, auxCountry, auxItens, api} from '../Constantes/index';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {api} from '../Constantes/index';
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import {pt} from 'date-fns/locale';
 import Menu from '../Menu/index';
 
 let tab;
@@ -77,8 +55,6 @@ export default function Dashboard() {
     const [dataAux, setDataAux] = useState([]);
 
 
-
-
     const StyledTableRow = withStyles((theme) => ({
         root: {
             '&:nth-of-type(odd)': {
@@ -86,8 +62,6 @@ export default function Dashboard() {
             },
         },
     }))(TableRow);
-
-
 
 
     const useStyles = makeStyles((theme) => ({
@@ -183,95 +157,17 @@ export default function Dashboard() {
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
 
-
     const classes = useStyles();
-
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = (index) => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    };
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-    const handleClickOpenURL = () => {
-        setOpenURL(true);
-    };
 
     const handleCloseURL = () => {
         setOpenURL(false);
     };
 
-    const handleClickOpenLoading = () => {
-        setOpenLoading(true);
-    };
 
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
-    // const dataAux = [
-    //     ["S6T3-YT5G", "madara", "01/04/2021 08:09:23", "Aberto", "30.00", "3.00", "160.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["S9G3-HW5G", "tobi", "02/04/2021 01:09:23", "Aberto", "30.00", "3.00", "160.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SDE3-HN5G", "hidan", "05/04/2021 10:09:23", "Aberto", "30.00", "3.00", "260.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SI73-KJ5G", "deidara", "04/04/2021 12:29:23", "Ganhou", "10.00", "1.00", "140.00",
-    //         "60.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Aberto", "20.00", "2.00", "100.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    //
-    //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-    //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-    //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-    // ];
 
     function loadCaixa() {
         let entradas = 0;
@@ -280,22 +176,22 @@ export default function Dashboard() {
         let perdeu = 0;
         let comissao = 0;
         for (let datas of dataAux) {
-            
+
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[10]));
 
-            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
+                st.indexOf('Perdeu') != -1 ? 'Perdeu' :
+                    st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
-            if(valor != 'Cancelado'){
+            if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
                 comissao += parseFloat(datas[5]);
             }
-        
+
 
             if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
@@ -304,7 +200,7 @@ export default function Dashboard() {
             } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-            
+
         }
         setTotalEntrada(entradas);
         setEntradasAbertas(abertos);
@@ -326,25 +222,25 @@ export default function Dashboard() {
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
         for (let datas of dataAux) {
-            let dateReverse = new Date('20'+(datas[2].split(' ')[0]).split('/').reverse().join('-'));
+            let dateReverse = new Date('20' + (datas[2].split(' ')[0]).split('/').reverse().join('-'));
 
             if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-               
+
                 let st = datas[3].replaceAll('{', '').replaceAll('}', '');
                 let result = ((st.split(',').length == datas[10]));
 
-                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
+                    st.indexOf('Perdeu') != -1 ? 'Perdeu' :
+                        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
+                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
-                if(valor != 'Cancelado'){
+                if (valor != 'Cancelado') {
                     entradas += parseFloat(datas[4]);
                     comissao += parseFloat(datas[5]);
                 }
-        
+
 
                 if (datas[3] == 'Aberto') {
                     abertos += parseFloat(datas[4]);
@@ -353,7 +249,7 @@ export default function Dashboard() {
                 } else if (datas[3] == 'Perdeu') {
                     perdeu += parseFloat(datas[4]);
                 }
-                
+
                 init = 1;
             }
         }
@@ -379,11 +275,6 @@ export default function Dashboard() {
         }
     }
 
-    function exit() {
-        sessionStorage.removeItem('admin');
-        history.push('/adm');
-    }
-
     let d = [];
     useEffect(() => {
 
@@ -395,37 +286,35 @@ export default function Dashboard() {
 
         async function getDateAll() {
             axios.get('http://worldclockapi.com/api/json/utc/now',
-                {
+                {}).then(res => {
+                try {
 
-                }).then(res => {
-                    try {
+                    let d1 = Date.parse(res.data.currentDateTime);
+                    d1 = new Date(d1);
+                    d1 = d1.setDate(d1.getDate());
 
-                        let d1 = Date.parse(res.data.currentDateTime);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
+                    let d2 = Date.parse(res.data.currentDateTime);
+                    d2 = new Date(d2);
+                    d2 = d2.setDate(d2.getDate() + 1);
 
-                        let d2 = Date.parse(res.data.currentDateTime);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
-
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
+                    d1 = new Date(d1);
+                    d2 = new Date(d2);
 
 
-                        date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                            Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                            (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                                Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
+                    date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
+                        Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
+                    (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
+                        Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
 
-                        localStorage.setItem("date", date);
+                    localStorage.setItem("date", date);
 
 
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
+                } catch (e) {
+                    console.log(e);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
         }
 
         getDateAll();
@@ -443,16 +332,16 @@ export default function Dashboard() {
                             // ];
                             res.data.bilhetes.map((b) => {
 
-                               dataAux.push([
-                                   b.codigo,
-                               b.nomeCliente,
-                               b.dataDaAposta,
-                               b.status,
-                               b.valorDeEntrada,
-                               b.comissao,
-                               b.cotacao,
-                                   b.valorDeSaida,
-                               ])
+                                dataAux.push([
+                                    b.codigo,
+                                    b.nomeCliente,
+                                    b.dataDaAposta,
+                                    b.status,
+                                    b.valorDeEntrada,
+                                    b.comissao,
+                                    b.cotacao,
+                                    b.valorDeSaida,
+                                ])
                             })
 
                             setDataAux(dataAux);
@@ -481,14 +370,13 @@ export default function Dashboard() {
     }, []);
 
 
-
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container maxWidth="lg" className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -502,12 +390,12 @@ export default function Dashboard() {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
-
+                                                        <Grid item>
 
 
                                                             <Grid container justify="space-around">
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -527,11 +415,12 @@ export default function Dashboard() {
 
                                                             </Grid>
 
-                                                            <br />    
-                                                            <Button onClick={onClickHandler} variant="contained" color="primary">
+                                                            <br/>
+                                                            <Button onClick={onClickHandler} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br /><br />
+                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -540,46 +429,50 @@ export default function Dashboard() {
 
                                         <TableContainer component={Paper}>
 
-                                            <Table stickyHeader aria-label="sticky table" >
-                                                <TableHead >
+                                            <Table stickyHeader aria-label="sticky table">
+                                                <TableHead>
                                                     <TableRow>
-                                                        <StyledTableCell align={"center"}><b>TOTAL DE ENTRADAS</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>ENTRADAS EM ABERTO</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>SAÍDAS</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>COMISSÕES</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"}><b>TOTAL DE
+                                                            ENTRADAS</b></StyledTableCell>
+                                                        <StyledTableCell align={"center"}><b>ENTRADAS EM
+                                                            ABERTO</b></StyledTableCell>
+                                                        <StyledTableCell
+                                                            align={"center"}><b>SAÍDAS</b></StyledTableCell>
+                                                        <StyledTableCell
+                                                            align={"center"}><b>COMISSÕES</b></StyledTableCell>
                                                         <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
                                                     </TableRow>
                                                 </TableHead>
 
                                                 <TableBody>
 
-                                                    <StyledTableRow >
-                                                       
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
+                                                    <StyledTableRow>
+
+                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5">
                                                                 R$ {totalEntrada.toFixed(2)}
                                                             </Typography>
                                                         </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
+                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5">
                                                                 R$ {entradasAbertas.toFixed(2)}
                                                             </Typography>
                                                         </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
+                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5">
                                                                 R$ {saidas.toFixed(2)}
                                                             </Typography>
                                                         </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
+                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5">
                                                                 R$ {comissoes.toFixed(2)}
                                                             </Typography>
                                                         </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{ width: '10px' }}>
+                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             {saidas > total ? <Typography variant="h5">
-                                                                <b style={{ color: 'red' }}>R$ {Math.abs(total).toFixed(2)}</b>
+                                                                <b style={{color: 'red'}}>R$ {Math.abs(total).toFixed(2)}</b>
                                                             </Typography> : <Typography variant="h5">
-                                                                <b style={{ color: 'green' }}>R$ {Math.abs(total).toFixed(2)}</b>
+                                                                <b style={{color: 'green'}}>R$ {Math.abs(total).toFixed(2)}</b>
                                                             </Typography>}
 
                                                         </StyledTableCell>
@@ -599,11 +492,11 @@ export default function Dashboard() {
                         {/* Recent Orders */}
 
                     </Grid>
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -622,10 +515,10 @@ export default function Dashboard() {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>

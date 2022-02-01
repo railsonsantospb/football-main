@@ -1,73 +1,29 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
+import {useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { api, cotacao } from '../Constantes/index';
+import {api, cotacao} from '../Constantes/index';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-
-
-
-let tab;
-let date = [];
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
+import Menu from '../Menu/index';
 
 export default function Dashboard() {
 
     let history = useHistory();
-    const [open, setOpen] = useState(false);
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
     const [data, setData] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [titulo, setTitulo] = useState('');
     const [porcentagem, setPorcentagem] = useState(0);
     const [bancas, setBancas] = useState([]);
@@ -98,7 +54,6 @@ export default function Dashboard() {
             console.log(dataToState);
         }
     };
-
 
 
     const useStyles = makeStyles((theme) => ({
@@ -194,29 +149,6 @@ export default function Dashboard() {
     const classes = useStyles();
 
 
-
-    const handleDrawerOpen = () => {
-        if (
-            document.getElementById("drawer").style.display == "none" ||
-            document.getElementById("drawer").style.display == ""
-        ) {
-            document.getElementById("drawer").style.display = "block";
-            document.getElementById("drawer").style.marginLeft = "40px";
-        } else if (document.getElementById("drawer").style.display == "block") {
-            document.getElementById("drawer").style.display = "none";
-            document.getElementById("drawer").style.marginLeft = "0px";
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById("drawer").style.display = "none";
-    };
-
-
     const handleCloseURL = () => {
         setOpenURL(false);
     };
@@ -226,12 +158,11 @@ export default function Dashboard() {
     };
 
 
-
     function verifyClientHandler(e) {
 
         let auxClient =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
+            e.target.innerText.length > 0 ? e.target.innerText : '';
         setTitulo(auxClient);
 
     }
@@ -241,32 +172,31 @@ export default function Dashboard() {
         let c = [];
         let gerente =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
-        
+            e.target.innerText.length > 0 ? e.target.innerText : '';
+
         gerentes.map((g) => {
-            if(g.title == gerente){
+            if (g.title == gerente) {
                 id = g.id;
                 setNomeGerente(g.title);
                 setG(g.id);
             }
         })
 
-        if(bancas.length == 0){
+        if (bancas.length == 0) {
             bancasAux.map((b) => {
-                if(b.gerente == id){
+                if (b.gerente == id) {
                     c.push({'title': b.title, 'id': b.id});
                 }
             })
         } else {
             bancas.map((b) => {
-                if(b.gerente == id){
+                if (b.gerente == id) {
                     c.push({'title': b.title, 'id': b.id});
                 }
             })
         }
-        
 
-        
+
         console.log(bancasAux);
         setBancas(c);
 
@@ -276,15 +206,15 @@ export default function Dashboard() {
 
         let banca =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
-        
+            e.target.innerText.length > 0 ? e.target.innerText : '';
+
         bancasAux.map((b) => {
-            if(b.title == banca){
+            if (b.title == banca) {
                 setNomeBanca(b.title);
                 setB(b.id);
             }
         })
-        
+
 
     }
 
@@ -292,7 +222,7 @@ export default function Dashboard() {
 
         let auxClient =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
+            e.target.innerText.length > 0 ? e.target.innerText : '';
         setPorcentagem(auxClient);
 
     }
@@ -308,32 +238,24 @@ export default function Dashboard() {
     }
 
 
-    function exit() {
-        sessionStorage.removeItem('admin');
-        history.push('/adm');
-    }
-
-    let d = [];
-
-
-    function deleteCotacao(id){
-        api.delete('/api/deletecotacao/'+id)
-                .then(res => {
-                    try {
-                        console.log(res.data);
-                        history.go(0);
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
-                    console.log(error);
+    function deleteCotacao(id) {
+        api.delete('/api/deletecotacao/' + id)
+            .then(res => {
+                try {
+                    console.log(res.data);
                     history.go(0);
-                });
+                } catch (e) {
+
+                }
+            }).catch(error => {
+            console.log(error);
+            history.go(0);
+        });
     }
 
-    function criarCotacao(){
-        if(titulo != '' && porcentagem != '' && porcentagem != 0){
-            api.post('/api/addcotacao',{
+    function criarCotacao() {
+        if (titulo != '' && porcentagem != '' && porcentagem != 0) {
+            api.post('/api/addcotacao', {
                 "tipoDeCotacao": titulo,
                 "porcentagem": porcentagem,
                 "tipo": "prejogo",
@@ -365,41 +287,6 @@ export default function Dashboard() {
         }
 
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {
-
-                }).then(res => {
-                    try {
-
-                        let d1 = Date.parse(res.data.currentDateTime);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
-
-                        let d2 = Date.parse(res.data.currentDateTime);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
-
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
-
-
-                        date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                            Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                            (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                                Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
-
-                        localStorage.setItem("date", date);
-
-
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
-        }
-
         async function getCotacaoAPI() {
 
             api.get('/api/getcotacao/prejogo')
@@ -408,23 +295,23 @@ export default function Dashboard() {
                         let l = [];
                         console.log(bancasAux);
                         res.data.cotacoes.map((c) => {
-                            l.push([c.tipoDeCotacao, c.porcentagem == 1 ? 
-                                <b style={{color: 'red'}}>{'Bloqueada'}</b> : 
-                                <b style={{color: 'green'}}>{c.porcentagem + '%'}</b>,  
+                            l.push([c.tipoDeCotacao, c.porcentagem == 1 ?
+                                <b style={{color: 'red'}}>{'Bloqueada'}</b> :
+                                <b style={{color: 'green'}}>{c.porcentagem + '%'}</b>,
                                 c.nomeGerente, c.nomeBanca,
-                                <Button variant='contained' color='secondary' 
-                                onClick={() => deleteCotacao(c.id)}><CancelIcon/></Button>]);
+                                <Button variant='contained' color='secondary'
+                                        onClick={() => deleteCotacao(c.id)}><CancelIcon/></Button>]);
                         })
                         setData(l);
                     } catch (e) {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
-        
+
         async function getBancaAPI() {
             let l = [];
             let c = {};
@@ -435,19 +322,21 @@ export default function Dashboard() {
                             l.push({'title': b.nome, 'gerente': b.gerente, 'id': b.id})
                             c[b.id] = b.nome;
                         })
-                       
+
                     } catch (e) {
 
                     }
 
                     setBancasAux(l);
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
+
         getBancaAPI();
         getCotacaoAPI();
+
         async function getGerenteAPI() {
             let l = []
             api.get('/api/getgerencia')
@@ -461,147 +350,23 @@ export default function Dashboard() {
                     }
                     setGerentes(l);
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
+
         getGerenteAPI();
-        getDateAll();
-
-
 
     }, []);
 
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
-            <AppBar position="fixed" id={"appbar"} className={clsx(classes.appBar)}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}
-                        onClick={handleDrawerOpen} style={{ cursor: 'pointer' }}>
-                        <b>XBETS198</b>
-                    </Typography>
-
-                    <Typography component="h4" color="inherit" display="inline" style={{ marginRight: '-10px' }}>
-                        <b>Gerencia:</b> eletronica <br />
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                className={classes.drawer}
-                variant="permanent"
-                id={"drawer"}
-                onEscapeKeyDown={handleDrawerClose}
-                onBackdropClick={handleDrawerClose}
-            >
-                <div className={classes.toolbarIcon}>
-                    <IconButton onClick={handleDrawerClose}>
-                        <ChevronLeftIcon />
-                    </IconButton>
-                </div>
-                <Divider />
-                <List>
-                    <ListItem button component={Link} to={'/admin'}>
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Início" />
-                    </ListItem>
-
-                    <ListItem button component={Link} to={'/caixagerente'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/caixacambistas'}>
-                        <ListItemIcon>
-                            <InboxIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Caixa Cambistas" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/relatorios'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Relatório" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetesgerente'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/cotacao'}>
-                        <ListItemIcon>
-                            <MonetizationOnIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Cotação (Pre-Jogo)" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/cotacaoAovivo'}>
-                        <ListItemIcon>
-                            <MonetizationOnIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Cotação (Ao Vivo)" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/validarBilhete'}>
-                        <ListItemIcon>
-                            <FileCopyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Validar Bilhetes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/cotacao'}>
-                        <ListItemIcon>
-                            <MonetizationOnIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Cotação" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/clientesgerente'}>
-                        <ListItemIcon>
-                            <PersonIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Clientes" />
-                    </ListItem>
-                    <ListItem button component={Link} to={'/bilhetegerente/all'}>
-                        <ListItemIcon>
-                            <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Conferir Bilhetes" />
-                    </ListItem>
-                </List>
-
-                <Divider />
-
-                <List>
-                    <ListItem button component={Link} to={"/novasenhagerente"}>
-                        <ListItemIcon>
-                            <VpnKeyIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Alterar Senha" />
-                    </ListItem>
-                    <ListItem button onClick={exit}>
-                        <ListItemIcon>
-                            <ExitToAppIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Sair" />
-                    </ListItem>
-
-                </List>
-
-            </Drawer>
+            <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -610,19 +375,20 @@ export default function Dashboard() {
                                 <Grid container justify="center" spacing={2}>
 
                                     <Grid xs={12} md={9} sm={12} item>
-                                        <Paper className={classes.paperX} style={{ padding: '10px' }}>
+                                        <Paper className={classes.paperX} style={{padding: '10px'}}>
                                             <Grid container spacing={2} key={127}>
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
-                                                            <Typography variant="h5">GERENCIAR COTAÇÕES PRE-JOGO</Typography>
-                                                            <br />
+                                                            <Typography variant="h5">GERENCIAR COTAÇÕES
+                                                                PRE-JOGO</Typography>
+                                                            <br/>
                                                             <Grid container direction={'row'} justify="space-around">
 
-                                                                <Grid item md={9} xs={12} ><Autocomplete
+                                                                <Grid item md={9} xs={12}><Autocomplete
 
                                                                     id={"resetField2"}
                                                                     freeSolo
@@ -635,9 +401,9 @@ export default function Dashboard() {
                                                                             {...params}
 
                                                                             label="Nome da Cotação"
-                                                                            variant="outlined" />}
+                                                                            variant="outlined"/>}
                                                                 />
-                                                                    <br />
+                                                                    <br/>
                                                                 </Grid>
 
                                                                 <Grid item md={3}>
@@ -654,7 +420,7 @@ export default function Dashboard() {
                                                                     />
 
                                                                 </Grid>
-                                                                <Grid item md={9} xs={12} ><Autocomplete
+                                                                <Grid item md={9} xs={12}><Autocomplete
 
                                                                     id={"resetField2"}
                                                                     freeSolo
@@ -667,11 +433,11 @@ export default function Dashboard() {
                                                                             {...params}
 
                                                                             label="Gerente"
-                                                                            variant="outlined" />}
+                                                                            variant="outlined"/>}
                                                                 />
-                                                                    <br />
+                                                                    <br/>
                                                                 </Grid>
-                                                                <Grid item md={9} xs={12} ><Autocomplete
+                                                                <Grid item md={9} xs={12}><Autocomplete
 
                                                                     id={"resetField2"}
                                                                     freeSolo
@@ -684,19 +450,19 @@ export default function Dashboard() {
                                                                             {...params}
 
                                                                             label="Banca"
-                                                                            variant="outlined" />}
+                                                                            variant="outlined"/>}
                                                                 />
-                                                                    <br />
+                                                                    <br/>
                                                                 </Grid>
 
                                                             </Grid>
 
-                                                            <br /><br />
-                                                            <Button onClick={criarCotacao} variant="contained" color="primary">
+                                                            <br/><br/>
+                                                            <Button onClick={criarCotacao} variant="contained"
+                                                                    color="primary">
                                                                 SALVAR
                                                             </Button>
-                                                          
-                                                            
+
 
                                                         </Grid>
 
@@ -711,17 +477,17 @@ export default function Dashboard() {
                                 </Grid>
                             </Grid>
                             <br/>
-                             <React.Fragment>
+                            <React.Fragment>
 
 
                                 <MUIDataTable
-                                   
+
                                     data={data}
                                     columns={columns}
                                     options={options}
 
                                 />
-                            </React.Fragment> 
+                            </React.Fragment>
                         </Grid>
                         {/* Recent Deposits */}
 
@@ -729,11 +495,11 @@ export default function Dashboard() {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -752,10 +518,10 @@ export default function Dashboard() {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>

@@ -1,24 +1,20 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import {makeStyles, withStyles} from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
+import {useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {api} from '../Constantes/index';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {pt} from 'date-fns/locale';
+import {Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -241,8 +237,8 @@ export default function Dashboard() {
     function loadBalanco() {
 
 
-
     }
+
     let b = 0;
 
     let entradas = 0;
@@ -259,15 +255,15 @@ export default function Dashboard() {
 
         let st = datas[3].replaceAll('{', '').replaceAll('}', '');
         let result = ((st.split(',').length == datas[8]));
-        let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-        st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-        st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+        let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
+            st.indexOf('Perdeu') != -1 ? 'Perdeu' :
+                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                    st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
+                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                        st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
-        if(datas[0] == 'Pre-Jogo'){
-            if(valor != 'Cancelado'){
+        if (datas[0] == 'Pre-Jogo') {
+            if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
                 comissao += parseFloat(datas[5]);
             }
@@ -278,9 +274,9 @@ export default function Dashboard() {
             } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-            
+
         } else {
-            if(valor != 'Cancelado'){
+            if (valor != 'Cancelado') {
                 entradasV += parseFloat(datas[4]);
                 comissaoV += parseFloat(datas[5]);
             }
@@ -306,7 +302,7 @@ export default function Dashboard() {
 
         relatorios[4]['Pré-Jogo'] = ((((entradas - ganhos - comissao)))).toFixed(2);
         relatorios[4]['Ao Vivo'] = ((((entradasV - ganhosV - comissaoV)))).toFixed(2);
-        b = (((entradas+entradasV)- (ganhos+ganhosV) - (comissao+comissaoV)));
+        b = (((entradas + entradasV) - (ganhos + ganhosV) - (comissao + comissaoV)));
 
     }
 
@@ -322,23 +318,23 @@ export default function Dashboard() {
         ganhos = 0;
         perdeu = 0;
         comissao = 0;
-        
+
         for (let datas of dataAux) {
 
             let st = datas[3].replaceAll('{', '').replaceAll('}', '');
             let result = ((st.split(',').length == datas[8]));
-            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-            st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-            st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
-            
-            if(valor != 'Cancelado'){
+            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
+                st.indexOf('Perdeu') != -1 ? 'Perdeu' :
+                    st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
+                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+
+            if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
                 comissao += parseFloat(datas[5]);
             }
-            
+
             if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
             } else if (valor == 'Ganhou') {
@@ -346,41 +342,40 @@ export default function Dashboard() {
             } else if (valor == 'Perdeu') {
                 perdeu += parseFloat(datas[4]);
             }
-            
+
         }
 
-        if((totalEntrada[banca]) != undefined) {
-            totalEntrada[banca] = totalEntrada[banca]+entradas
+        if ((totalEntrada[banca]) != undefined) {
+            totalEntrada[banca] = totalEntrada[banca] + entradas
             setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = entradasAbertas[banca]+abertos;
+            entradasAbertas[banca] = entradasAbertas[banca] + abertos;
             setEntradasAbertas(entradasAbertas);
-            saidas[banca] = saidas[banca]+ganhos;
+            saidas[banca] = saidas[banca] + ganhos;
             setSaidas(saidas);
-            comissoes[banca] = comissoes[banca]+comissao
+            comissoes[banca] = comissoes[banca] + comissao
             setComissoes(comissoes);
-            total[banca] = total[banca]+((entradas - ganhos - comissao));
+            total[banca] = total[banca] + ((entradas - ganhos - comissao));
             setTotal(total);
         } else {
-            totalEntrada[banca]=entradas;
+            totalEntrada[banca] = entradas;
             setTotalEntrada(totalEntrada);
-            entradasAbertas[banca]=abertos;
+            entradasAbertas[banca] = abertos;
             setEntradasAbertas(entradasAbertas);
-            saidas[banca]=ganhos;
+            saidas[banca] = ganhos;
             setSaidas(saidas);
-            comissoes[banca]=comissao;
+            comissoes[banca] = comissao;
             setComissoes(comissoes);
-            total[banca]=((entradas - ganhos - comissao));
+            total[banca] = ((entradas - ganhos - comissao));
             setTotal(total);
         }
 
         let v = 0;
-        for(let i in total){
+        for (let i in total) {
             v += total[i];
         }
         setDone(v);
 
     }
-
 
 
     function close(e) {
@@ -396,7 +391,7 @@ export default function Dashboard() {
 
     let d = [];
     useEffect(() => {
-        
+
         if (sessionStorage.getItem('admin') == null || sessionStorage.getItem('admin') == "") {
             history.push('/adm')
         }
@@ -408,47 +403,56 @@ export default function Dashboard() {
                 .then(res => {
                     try {
                         if (res.data) {
-                        //    console.log(res.data);
-                           res.data.gerencias.map((g) => {
+                            //    console.log(res.data);
+                            res.data.gerencias.map((g) => {
                                 gerencia[g.id] = g.nome;
                                 gerencia[g.nome] = g.id;
-                           });
+                            });
                             setGerente(gerencia);
-                           api.get('/api/getbilhetes')
-                .then(res => {
-                    try {
-                        if (res.data) {
+                            api.get('/api/getbilhetes')
+                                .then(res => {
+                                    try {
+                                        if (res.data) {
 
-                            res.data.bilhetes.map((b) => {
-                                nomesBancas.add(gerencia[b.gerenteId]);
-                                nomesAux.add(gerencia[b.gerenteId]);
+                                            res.data.bilhetes.map((b) => {
+                                                nomesBancas.add(gerencia[b.gerenteId]);
+                                                nomesAux.add(gerencia[b.gerenteId]);
 
-                                dataAux.push([
-                                    b.tipoDeJogo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida
-                                ]);
-                                dataAuxB.push([
-                                    b.tipoDeJogo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida
-                                ]);
-                                loadCaixa(gerencia[b.gerenteId]);
-                                loadBalanco();
-                                dataAux.pop();
-                            })
-                            setNomesBancas(nomesBancas);
-                            setNomeAux(nomesAux);
+                                                dataAux.push([
+                                                    b.tipoDeJogo,
+                                                    b.nomeCliente,
+                                                    b.dataDaAposta,
+                                                    b.status,
+                                                    b.valorDeEntrada,
+                                                    b.comissao,
+                                                    b.cotacao,
+                                                    b.valorDeSaida
+                                                ]);
+                                                dataAuxB.push([
+                                                    b.tipoDeJogo,
+                                                    b.nomeCliente,
+                                                    b.dataDaAposta,
+                                                    b.status,
+                                                    b.valorDeEntrada,
+                                                    b.comissao,
+                                                    b.cotacao,
+                                                    b.valorDeSaida
+                                                ]);
+                                                loadCaixa(gerencia[b.gerenteId]);
+                                                loadBalanco();
+                                                dataAux.pop();
+                                            })
+                                            setNomesBancas(nomesBancas);
+                                            setNomeAux(nomesAux);
+                                        }
+                                    } catch (e) {
+                                        console.log(e);
+
+                                    }
+                                }).catch(error => {
+                                console.log(error)
+                            });
+
                         }
                     } catch (e) {
                         console.log(e);
@@ -457,25 +461,12 @@ export default function Dashboard() {
                 }).catch(error => {
                 console.log(error)
             });
-                            
-                        }
-                    } catch (e) {
-                        console.log(e);
-                       
-                    }
-                }).catch(error => {
-                    console.log(error)
-                });
 
         }
-        
-
-        
 
 
         async function getBancasAPI() {
 
-            
 
         }
 
@@ -487,8 +478,6 @@ export default function Dashboard() {
         loadBalanco();
 
     }, []);
-
-
 
 
     const getDatas = () => {
@@ -526,40 +515,37 @@ export default function Dashboard() {
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
-        if(new Date(auxDate1) <= new Date(auxDate2)){
-            if(nome != '' && nome != 'Todos'){
+        if (new Date(auxDate1) <= new Date(auxDate2)) {
+            if (nome != '' && nome != 'Todos') {
 
                 nomesBancas.clear();
                 nomesBancas.add(nome);
                 n = nome;
             } else {
 
-                [...nomesAux].map((b)=>{
+                [...nomesAux].map((b) => {
                     nomesBancas.add(b);
                 });
                 n = 'empty';
             }
             [...nomesBancas].map((banca) => {
 
-                    totalEntrada[banca]=entradas;
-              
-                    entradasAbertas[banca]=abertos;
-         
-                    saidas[banca]=ganhos;
-                
-                    comissoes[banca]=comissao;
-               
-                    total[banca]=((entradas - ganhos - comissao));
-                    setDone(total[banca]);
+                totalEntrada[banca] = entradas;
+
+                entradasAbertas[banca] = abertos;
+
+                saidas[banca] = ganhos;
+
+                comissoes[banca] = comissao;
+
+                total[banca] = ((entradas - ganhos - comissao));
+                setDone(total[banca]);
 
 
             })
 
 
-
-          
-
-            api.get('/api/getbilhetesgerentedates2/'+(gerente[nome] == undefined ? 'all' : gerente[nome])+'/'+auxDate1+'/'+auxDate2+'/'+n)
+            api.get('/api/getbilhetesgerentedates2/' + (gerente[nome] == undefined ? 'all' : gerente[nome]) + '/' + auxDate1 + '/' + auxDate2 + '/' + n)
                 .then(res => {
                     try {
                         console.log(res.data);
@@ -575,15 +561,15 @@ export default function Dashboard() {
 
                                 let st = b.status.replaceAll('{', '').replaceAll('}', '');
                                 let result = ((st.split(',').length == b.quantidadeJogos));
-                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' : 
-                                st.indexOf('Perdeu') != -1 ? 'Perdeu' : 
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' : 
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
+                                    st.indexOf('Perdeu') != -1 ? 'Perdeu' :
+                                        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
+                                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
+                                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
+                                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
 
-                                if(valor != 'Cancelado'){
+                                if (valor != 'Cancelado') {
                                     entradas += parseFloat(b.valorDeEntrada);
                                     comissao += parseFloat(b.comissao);
                                 }
@@ -595,40 +581,38 @@ export default function Dashboard() {
                                     perdeu += parseFloat(b.valorDeEntrada);
 
                                 }
-                                
+
                                 soma += ((entradas - ganhos - comissao));
 
-                                if((totalEntrada[gerente[b.gerenteId]]) != undefined) {
-                                    totalEntrada[gerente[b.gerenteId]] = totalEntrada[gerente[b.gerenteId]]+entradas
-                             
-                                    entradasAbertas[gerente[b.gerenteId]] = entradasAbertas[gerente[b.gerenteId]]+abertos;
-                                    
-                                    saidas[gerente[b.gerenteId]] = saidas[gerente[b.gerenteId]]+ganhos;
-                                   
-                                    comissoes[gerente[b.gerenteId]] = comissoes[gerente[b.gerenteId]]+comissao
-                                   
-                                    total[gerente[b.gerenteId]] = total[gerente[b.gerenteId]]+((entradas - ganhos - comissao));
-                                   
+                                if ((totalEntrada[gerente[b.gerenteId]]) != undefined) {
+                                    totalEntrada[gerente[b.gerenteId]] = totalEntrada[gerente[b.gerenteId]] + entradas
+
+                                    entradasAbertas[gerente[b.gerenteId]] = entradasAbertas[gerente[b.gerenteId]] + abertos;
+
+                                    saidas[gerente[b.gerenteId]] = saidas[gerente[b.gerenteId]] + ganhos;
+
+                                    comissoes[gerente[b.gerenteId]] = comissoes[gerente[b.gerenteId]] + comissao
+
+                                    total[gerente[b.gerenteId]] = total[gerente[b.gerenteId]] + ((entradas - ganhos - comissao));
 
 
                                 } else {
 
-                                    totalEntrada[gerente[b.gerenteId]]=entradas;
-                              
-                                    entradasAbertas[gerente[b.gerenteId]]=abertos;
-                         
-                                    saidas[gerente[b.gerenteId]]=ganhos;
-                                
-                                    comissoes[gerente[b.gerenteId]]=comissao;
-                               
-                                    total[gerente[b.gerenteId]]=((entradas - ganhos - comissao));
-                                                                        
+                                    totalEntrada[gerente[b.gerenteId]] = entradas;
+
+                                    entradasAbertas[gerente[b.gerenteId]] = abertos;
+
+                                    saidas[gerente[b.gerenteId]] = ganhos;
+
+                                    comissoes[gerente[b.gerenteId]] = comissao;
+
+                                    total[gerente[b.gerenteId]] = ((entradas - ganhos - comissao));
 
 
                                 }
-                              
+
                                 setDone(soma);
-                                if(b.tipoDeJogo == 'Pre-Jogo'){
+                                if (b.tipoDeJogo == 'Pre-Jogo') {
                                     somaP += ((entradas - ganhos - comissao));
                                     entradasP += entradas;
                                     abertosP += abertos;
@@ -645,9 +629,8 @@ export default function Dashboard() {
                                     relatorios[2]['Pré-Jogo'] = saidaP;
                                     relatorios[3]['Pré-Jogo'] = comissaoP;
                                     relatorios[4]['Pré-Jogo'] = somaP;
-                                 
-                                    
-                                    
+
+
                                 } else {
                                     somaV += ((entradas - ganhos - comissao));
                                     entradasV += entradas;
@@ -666,11 +649,7 @@ export default function Dashboard() {
                                     // setTotalP(somaV);
                                     // setComissoesV(comissaoV);
                                 }
-                                
 
-
-
-                               
 
                             })
                             setGraph(relatorios);
@@ -691,11 +670,11 @@ export default function Dashboard() {
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -709,13 +688,14 @@ export default function Dashboard() {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
                                                             <Typography variant="h5">RELATÓRIO</Typography>
                                                             <Grid container justify="space-around">
 
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -734,7 +714,8 @@ export default function Dashboard() {
 
                                                             </Grid>
                                                             <FormControl className={classes.formControl}>
-                                                                <InputLabel id="demo-controlled-open-select-label">Selecione um Gerente</InputLabel>
+                                                                <InputLabel id="demo-controlled-open-select-label">Selecione
+                                                                    um Gerente</InputLabel>
                                                                 <Select
                                                                     labelId="demo-controlled-open-select-label"
                                                                     id="demo-controlled-open-select"
@@ -743,107 +724,121 @@ export default function Dashboard() {
                                                                     onOpen={handleOpenS}
                                                                     value={nome}
                                                                     onChange={handleChangeS}
-                                                                    style={{ width: '280px' }}
+                                                                    style={{width: '280px'}}
                                                                 >
                                                                     <MenuItem value="Todos">
                                                                         <em>Todos</em>
                                                                     </MenuItem>
-                                                                    {[...nomesAux].map((n)=>(
+                                                                    {[...nomesAux].map((n) => (
                                                                         <MenuItem value={n}>{n}</MenuItem>
                                                                     ))}
 
                                                                 </Select>
                                                             </FormControl>
-                                                            <br />
-                                                            <br />
-                                                            <Button onClick={getDatas} variant="contained" color="primary">
+                                                            <br/>
+                                                            <br/>
+                                                            <Button onClick={getDatas} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br />
-                                                            <br />
+                                                            <br/>
+                                                            <br/>
                                                         </Grid>
 
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
                                         </Paper>
-                                        <br />
+                                        <br/>
                                         {done < 0 ? <Typography variant="h5" align="center">
-                                            Balanço: <b style={{ color: 'red' }}>R$ {done.toFixed(2)}</b>
+                                            Balanço: <b style={{color: 'red'}}>R$ {done.toFixed(2)}</b>
                                         </Typography> : <Typography variant="h5" align="center">
-                                            Balanço: <b style={{ color: 'green' }}>R$ {done.toFixed(2)}</b>
+                                            Balanço: <b style={{color: 'green'}}>R$ {done.toFixed(2)}</b>
                                         </Typography>}
-                                        <br />
+                                        <br/>
                                         <Grid item>
 
-                                                <ResponsiveContainer width='100%' height={400}>
-                                                    <BarChart data={graph == 0 ? relatorios : graph}>
-                                                        <CartesianGrid strokeDasharray="3 3" />
-                                                        <XAxis dataKey="name" />
-                                                        <YAxis />
-                                                        <Tooltip />
-                                                        <Legend />
-                                                        <Bar dataKey="Pré-Jogo" fill="#8884d8" />
-                                                        <Bar dataKey="Ao Vivo" fill="#82ca9d" />
-                                                    </BarChart>
-                                                </ResponsiveContainer>
+                                            <ResponsiveContainer width='100%' height={400}>
+                                                <BarChart data={graph == 0 ? relatorios : graph}>
+                                                    <CartesianGrid strokeDasharray="3 3"/>
+                                                    <XAxis dataKey="name"/>
+                                                    <YAxis/>
+                                                    <Tooltip/>
+                                                    <Legend/>
+                                                    <Bar dataKey="Pré-Jogo" fill="#8884d8"/>
+                                                    <Bar dataKey="Ao Vivo" fill="#82ca9d"/>
+                                                </BarChart>
+                                            </ResponsiveContainer>
 
                                         </Grid>
-                                        <br />
-                                        <br />
+                                        <br/>
+                                        <br/>
                                         <Grid item>
                                             <TableContainer component={Paper}>
 
-                                                <Table stickyHeader aria-label="sticky table" >
-                                                    <TableHead >
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
                                                         <TableRow>
-                                                            <StyledTableCell align={"center"}><b>GERENTE</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>TOTAL DE ENTRADAS</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>GERENTE</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>TOTAL DE
+                                                                ENTRADAS</b></StyledTableCell>
                                                             <StyledTableCell align={"center"}><b>ENTRADAS EM ABERTO</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>SAÍDAS</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>COMISSÕES</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>SAÍDAS</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>COMISSÕES</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>TOTAL</b></StyledTableCell>
                                                         </TableRow>
                                                     </TableHead>
 
                                                     <TableBody>
 
                                                         {[...nomesBancas].map((banca) => (
-                                                            <StyledTableRow >
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                <Typography variant="h5">
-                                                                    {banca}
-                                                                </Typography>
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                <Typography variant="h5">
-                                                                    R$ {totalEntrada[banca].toFixed(2)}
-                                                                </Typography>
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                <Typography variant="h5">
-                                                                    R$ {entradasAbertas[banca].toFixed(2)}
-                                                                </Typography>
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                <Typography variant="h5">
-                                                                    R$ {saidas[banca].toFixed(2)}
-                                                                </Typography>
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                <Typography variant="h5">
-                                                                    R$ {comissoes[banca].toFixed(2)}
-                                                                </Typography>
-                                                            </StyledTableCell>
-                                                            <StyledTableCell align={"center"} style={{ width: '10px' }}>
-                                                                {saidas[banca] > totalEntrada[banca] ? <Typography variant="h5">
-                                                                    <b style={{ color: 'red' }}>R$ -{Math.abs(total[banca]).toFixed(2)}</b>
-                                                                </Typography> : <Typography variant="h5">
-                                                                    <b style={{ color: 'green' }}>R$ {Math.abs(total[banca]).toFixed(2)}</b>
-                                                                </Typography>}
+                                                            <StyledTableRow>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    <Typography variant="h5">
+                                                                        {banca}
+                                                                    </Typography>
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    <Typography variant="h5">
+                                                                        R$ {totalEntrada[banca].toFixed(2)}
+                                                                    </Typography>
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    <Typography variant="h5">
+                                                                        R$ {entradasAbertas[banca].toFixed(2)}
+                                                                    </Typography>
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    <Typography variant="h5">
+                                                                        R$ {saidas[banca].toFixed(2)}
+                                                                    </Typography>
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    <Typography variant="h5">
+                                                                        R$ {comissoes[banca].toFixed(2)}
+                                                                    </Typography>
+                                                                </StyledTableCell>
+                                                                <StyledTableCell align={"center"}
+                                                                                 style={{width: '10px'}}>
+                                                                    {saidas[banca] > totalEntrada[banca] ?
+                                                                        <Typography variant="h5">
+                                                                            <b style={{color: 'red'}}>R$
+                                                                                -{Math.abs(total[banca]).toFixed(2)}</b>
+                                                                        </Typography> : <Typography variant="h5">
+                                                                            <b style={{color: 'green'}}>R$ {Math.abs(total[banca]).toFixed(2)}</b>
+                                                                        </Typography>}
 
-                                                            </StyledTableCell>
-                                                        </StyledTableRow>
+                                                                </StyledTableCell>
+                                                            </StyledTableRow>
                                                         ))}
 
 
@@ -865,11 +860,11 @@ export default function Dashboard() {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -888,10 +883,10 @@ export default function Dashboard() {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>

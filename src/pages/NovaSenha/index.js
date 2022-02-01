@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,14 +8,12 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import Conan from './football';
+import Conan from './football.png';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
-import {useHistory, Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { isEqual } from 'date-fns';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 
 function Copyright() {
     return (
@@ -74,7 +71,7 @@ const validationSchema = yup.object({
         .string('Entre com sua senha')
         .required('A nova senha é obrigatória')
         .oneOf([yup.ref('password1'), null], 'As senhas estão diferentes'),
-        
+
 });
 
 
@@ -89,31 +86,27 @@ export default function SignInSide() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            api.put('/api/updatebancasenha/'+sessionStorage.getItem('login'), 
-            { "senha": values.password1 })
-            .then(res => {
-        
-                try {
-                    if (res.data) {
-                    console.log(res.data);
-                    
-                    
-                    history.push("/inicio")
+            api.put('/api/updatebancasenha/' + sessionStorage.getItem('login'),
+                {"senha": values.password1})
+                .then(res => {
+
+                    try {
+                        if (res.data) {
+                            console.log(res.data);
+
+
+                            history.push("/inicio")
+                        }
+                    } catch (e) {
+                        console.log(e);
                     }
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-            console.log(error)
+                }).catch(error => {
+                console.log(error)
             });
         },
     });
-
-    const [login, setLogin] = useState([]);
-    const [form, setForm] = useState([]);
-
     useEffect(() => {
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
+        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "" ||
             (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
             history.push('/');
 
@@ -130,10 +123,9 @@ export default function SignInSide() {
 
     }, [])
 
-    function init(){
+    function init() {
         history.push('/home');
     }
-
 
 
     return (
@@ -144,19 +136,16 @@ export default function SignInSide() {
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <Button onClick={init}><ArrowBackIcon/> INÍCIO</Button>
                 <div className={classes.paper}>
-                    <Avatar alt="xbets198" src={Conan} className={classes.avatar}/>
+                    <img src={Conan} width="150"/>
                     <Typography variant="h4">
                         <b style={{textShadow: '5px 2px 2px black', color: '#428bca'}}>NOVA SENHA</b>
-                    </Typography>
-                    <Typography variant="h6" variant="caption">
-                        <b>VEM VIVER A EMOÇÃO DO FUTEBOL</b>
                     </Typography>
                     <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <TextField
                             fullWidth
                             id="password1"
                             name="password1"
-                            label="Nova Senha"
+                            label="Nova Senha (Banca)"
                             type="password"
                             value={formik.values.user}
                             onChange={formik.handleChange}
@@ -167,7 +156,7 @@ export default function SignInSide() {
                             fullWidth
                             id="password2"
                             name="password2"
-                            label="Digite Novamente"
+                            label="Digite Novamente (Banca)"
                             type="password"
                             value={formik.values.password2}
                             onChange={formik.handleChange}

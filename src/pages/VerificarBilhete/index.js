@@ -84,23 +84,6 @@ export default function Dashboard(props) {
         appBarSpacer: theme.mixins.toolbar,
     }));
 
-    const columns = ["CUPOM", "CLIENTE", "DATA", "SITUAÇÃO", "VALOR DA APOSTA", "COMISSÕES", "COTAÇÃO", "RETORNO",
-        "TIPO", "APOSTA", "CANCELAR", "IMPRIMIR"];
-
-
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
 
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
@@ -119,14 +102,6 @@ export default function Dashboard(props) {
         setOpenLoading(false);
     };
 
-
-    function print() {
-        if(impressao == 1){
-            handlePrint();
-        } else {
-            alert('Sem permissão para imprimir. Fale com seu gerente!');
-        }
-    }
 
     function getCodigo(e) {
         document.getElementById('header').innerHTML = '';

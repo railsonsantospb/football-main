@@ -1,7 +1,6 @@
 import {images, api} from "../Constantes/index";
-import {withStyles, makeStyles, useTheme} from "@material-ui/core/styles";
-import TableRow from "@material-ui/core/TableRow";
-import React, {useState, useEffect, useRef, useMemo} from "react";
+import {makeStyles, useTheme} from "@material-ui/core/styles";
+import React, {useState, useEffect} from "react";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -30,6 +29,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import football from "../Home/football.png";
 import Hidden from "@material-ui/core/Hidden";
 import AnchorLink from 'react-anchor-link-smooth-scroll';
+import Button from "@material-ui/core/Button";
 
 export default function Menu(props) {
   const [country, setCountry] = useState([]);
@@ -50,13 +50,7 @@ export default function Menu(props) {
         setMobileOpen(!mobileOpen);
     };
 
-    const StyledTableRow = withStyles((theme) => ({
-        root: {
-            "&:nth-of-type(odd)": {
-                backgroundColor: theme.palette.action.hover,
-            },
-        },
-    }))(TableRow);
+
 
     const drawerWidth = 240;
 
@@ -117,22 +111,8 @@ export default function Menu(props) {
         }
     };
 
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    };
 
     useEffect(() => {
-
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/')
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
 
         async function getLoginAPI() {
 
@@ -152,8 +132,6 @@ export default function Menu(props) {
                 });
 
         }
-        getLoginAPI();
-
 
         async function all() {
             let regioes = ['gb-eng','it','es','fr','de','nl','pt','ar'];
@@ -165,9 +143,9 @@ export default function Menu(props) {
                 try {
                     let l = []
                     res.data.home.modalidades[0].paises.map((f) => {
-                     
+
                         l.push(f);
-                        
+
                     });
                     setCountry(l);
 
@@ -181,11 +159,14 @@ export default function Menu(props) {
 
         }
         all();
+        if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
+            getLoginAPI();
+        }
     },[])
     
     function exit(){
         sessionStorage.removeItem('login');
-        history.push('/');
+        history.push('/banca');
     }
 
   const drw = (<div >
@@ -199,13 +180,14 @@ export default function Menu(props) {
                 </ListItemIcon>
             </ListItem>
             <Divider />
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem>
                 <Typography component="h4" color="inherit" >
                     <b>Banca:</b> {nomeBanca} <br /><b>Simples:</b> R$ {saldoSimples.toFixed(2)} <br/><b> Geral:</b>  R$ {saldoGeral.toFixed(2)}
                 </Typography>
-            </ListItem>
+            </ListItem> : ''}
             <Divider />
-            <ListItem button component={Link} to={'/home'}>
+            <ListItem button component={Link} to={'/inicio'}>
                 <ListItemIcon>
                     <HomeIcon />
                 </ListItemIcon>
@@ -253,7 +235,7 @@ export default function Menu(props) {
                                         {id ? id.campeonatos.map((team, index) => {
                                             return (
                                                 <ListItem key={team} button className={classes.nested} component={Link}
-                                                          to={'/campeonato/'+team.id}>
+                                                          to={'/pre/campeonato/'+team.id}>
                                                     <ListItemIcon>
                                                         <img src={Taca} width="20px"
                                                              height="12"
@@ -273,24 +255,27 @@ export default function Menu(props) {
 
                 </List>
             </Collapse>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button component={Link} to={'/caixa'}>
                 <ListItemIcon>
                     <InboxIcon />
                 </ListItemIcon>
                 <ListItemText primary="Caixa" />
-            </ListItem>
+            </ListItem>: ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button component={Link} to={'/bilhetes'}>
                 <ListItemIcon>
                     <FileCopyIcon />
                 </ListItemIcon>
                 <ListItemText primary="Bilhetes" />
-            </ListItem>
+            </ListItem> : ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button component={Link} to={'/clientes'}>
                 <ListItemIcon>
                     <PersonIcon />
                 </ListItemIcon>
                 <ListItemText primary="Clientes" />
-            </ListItem>
+            </ListItem> : ''}
             <ListItem button component={Link} to={'/regulamento'}>
                 <ListItemIcon>
                 <FileCopyIcon color="secondary"/>
@@ -303,23 +288,38 @@ export default function Menu(props) {
                 </ListItemIcon>
                 <ListItemText primary="Conferir Bilhetes" />
             </ListItem>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+            <ListItem button component={Link} to={'/recuperarpin'}>
+                <ListItemIcon>
+                    <VpnKeyIcon />
+                </ListItemIcon>
+                <ListItemText primary="Recuperar Pin" />
+            </ListItem> : ''}
         </List>
 
         <Divider />
 
         <List>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button component={Link} to={"/novasenha"}>
                 <ListItemIcon>
                     <VpnKeyIcon />
                 </ListItemIcon>
                 <ListItemText primary="Alterar Senha" />
-            </ListItem>
+            </ListItem> :  ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button onClick={exit}>
                 <ListItemIcon>
                     <ExitToAppIcon />
                 </ListItemIcon>
                 <ListItemText primary="Sair" />
-            </ListItem>
+            </ListItem> : <Button onClick={exit} style={{width: 230}}
+
+                    variant="contained"
+                    color="primary"
+                >
+                    LOGIN
+                </Button>}
 
         </List></fieldset>
 

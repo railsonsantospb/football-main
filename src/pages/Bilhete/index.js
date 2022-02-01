@@ -1,32 +1,26 @@
-import {withStyles, makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
+import {useHistory} from 'react-router-dom';
+import {useParams} from "react-router";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import PrintIcon from '@material-ui/icons/Print';
-import { useReactToPrint } from "react-to-print";
+import {useReactToPrint} from "react-to-print";
 import TextField from '@material-ui/core/TextField';
-import Box from "@material-ui/core/Box";
 import Menu from '../Menu/index';
 
 
 export default function Dashboard(props) {
 
     let history = useHistory();
-    let { codigoBilhete } = useParams();
-    const { window } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    let {codigoBilhete} = useParams();
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
@@ -83,23 +77,6 @@ export default function Dashboard(props) {
         appBarSpacer: theme.mixins.toolbar,
     }));
 
-    const columns = ["CUPOM", "CLIENTE", "DATA", "SITUAÇÃO", "VALOR DA APOSTA", "COMISSÕES", "COTAÇÃO", "RETORNO",
-        "TIPO", "APOSTA", "CANCELAR", "IMPRIMIR"];
-
-
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
 
     const componentRef = useRef();
     const handlePrint = useReactToPrint({
@@ -120,7 +97,7 @@ export default function Dashboard(props) {
 
 
     function print() {
-        if(impressao == 1){
+        if (impressao == 1) {
             handlePrint();
         } else {
             alert('Sem permissão para imprimir. Fale com seu gerente!');
@@ -137,16 +114,29 @@ export default function Dashboard(props) {
 
 
     let nb = 0;
+
+    function custom_sort(a, b) {
+        let d1 = new Date(a.dataDoJogo.split(' ')[0].split('/')[2] + '/' +
+            a.dataDoJogo.split(' ')[0].split('/')[1] + '/' +
+            a.dataDoJogo.split(' ')[0].split('/')[0] + " " + a.dataDoJogo.split(' ')[2]);
+
+        let d2 = new Date(b.dataDoJogo.split(' ')[0].split('/')[2] + '/' +
+            b.dataDoJogo.split(' ')[0].split('/')[1] + '/' +
+            b.dataDoJogo.split(' ')[0].split('/')[0] + " " + b.dataDoJogo.split(' ')[2]);
+
+        return Date.parse(d1) - Date.parse(d2);
+    }
+
     function bilhete(codigo) {
         document.getElementById('status').innerHTML = '';
         try {
-            api.get('/api/getbilhetebanca/' + codigo + '/' + sessionStorage.getItem('login'))
+            api.get('/api/getbilhete/' + codigo)
                 .then(res => {
                     let l = [];
                     try {
                         if (res.data) {
                             setBilhetes(res.data);
-                    
+
                             document.getElementById('header').innerHTML = '\n' +
                                 '                    <div >\n' +
                                 '\n' +
@@ -155,7 +145,7 @@ export default function Dashboard(props) {
                                 '\n' +
                                 '                        <hr style="width: 100%;border: 0;border-bottom: 2px dashed #292323;">\n' +
                                 '\n' +
-                                '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;" class="H3">'+ (res.data.bilhete[0].tipoSimplesouMultiplo == 'M' ? 'Aposta Multipla' : 'Aposta Simples') +'</h4></center>\n' +
+                                '                        <center><h4 style="display: block;margin-block-start: 1.33em;margin-block-end: 1.33em;margin-inline-start: 0px;margin-inline-end: 0px;font-weight: bold;" class="H3">' + (res.data.bilhete[0].tipoSimplesouMultiplo == 'M' ? 'Aposta Multipla' : 'Aposta Simples') + '</h4></center>\n' +
                                 '\n' +
                                 '                        <span style="display: inline-block; text-align: left;">DATA:</span> <span id="conteudo_txtDataBilhete" style="display: inline-block"> ' + res.data.bilhete[0].dataDaAposta + '</span><br>\n' +
                                 '\n' +
@@ -187,11 +177,11 @@ export default function Dashboard(props) {
                     try {
 
                         if (res.data) {
-                            res.data.jogo.map((jogo) => {
+                            let jg = res.data.jogo.slice();
+                            jg.sort(custom_sort);
+                            jg.map((jogo) => {
                                 nb = jogo.length;
                                 statusB.push(jogo.status);
-
-                                
 
 
                                 document.getElementById('bilhete').innerHTML +=
@@ -217,13 +207,13 @@ export default function Dashboard(props) {
                                     '\n' +
                                     '                                </div>\n'
                             });
-                            
-                            
+
+
                             document.getElementById('status').innerHTML = statusB.indexOf('Perdeu') != -1 ?
-                            "<b style='color: white' class='buttonRed'>Perdeu</b>" : (statusB.indexOf('Aberto') != -1 ?
-                        "<b style='color: white' class='buttonBlue'>Aberto</b>" : (statusB.filter((x) => x == 'Ganhou' || x == 'Cancelado').length) == statusB.length ?
-                        (statusB.filter((x) =>  x == 'Cancelado').length) == statusB.length ? 
-                        "<b style='color: white;' class='buttonGold'>Cancelado</b>" : "<b style='color: white' class='buttonGreen'>Ganhou</b>" : "<b style='color: white' class='buttonGold'>Cancelado</b>");
+                                "<b style='color: white' class='buttonRed'>Perdeu</b>" : (statusB.indexOf('Aberto') != -1 ?
+                                    "<b style='color: white' class='buttonBlue'>Aberto</b>" : (statusB.filter((x) => x == 'Ganhou' || x == 'Cancelado').length) == statusB.length ?
+                                        (statusB.filter((x) => x == 'Cancelado').length) == statusB.length ?
+                                            "<b style='color: white;' class='buttonGold'>Cancelado</b>" : "<b style='color: white' class='buttonGreen'>Ganhou</b>" : "<b style='color: white' class='buttonGold'>Cancelado</b>");
 
                         }
                     } catch (e) {
@@ -234,7 +224,7 @@ export default function Dashboard(props) {
             });
             try {
 
-                api.get('/api/getbilhetebanca/' + codigo + '/' + sessionStorage.getItem('login'))
+                api.get('/api/getbilhete/' + codigo)
                     .then(res => {
                         try {
                             if (res.data) {
@@ -265,7 +255,7 @@ export default function Dashboard(props) {
                                     '                        <div>\n' +
                                     '                            <div style="display: inline-block; width: 100%; text-align: center;"><span style="display: inline-block">BILHETE</span></div>\n' +
                                     '                            <div style="display: inline-block; width: 100%; text-align: center;">\n' +
-                                    '                                <h2 style="font-weight:bold" class="H1">'+codigo+'</h2>                  \n' +
+                                    '                                <h2 style="font-weight:bold" class="H1">' + codigo + '</h2>                  \n' +
                                     '                            </div>\n' +
                                     '                            <hr style="width: 100%;border: 0;border-bottom: 1px dashed #292323;">\n' +
                                     '                        </div>\n' +
@@ -290,12 +280,11 @@ export default function Dashboard(props) {
             } catch (e) {
             }
         } catch (e) {
-                document.getElementById('header').innerHTML = '';
-                document.getElementById('bilhete').innerHTML = '';
-                document.getElementById('footer').innerHTML = '';
+            document.getElementById('header').innerHTML = '';
+            document.getElementById('bilhete').innerHTML = '';
+            document.getElementById('footer').innerHTML = '';
         }
     }
-
 
 
     useEffect(() => {
@@ -338,11 +327,11 @@ export default function Dashboard(props) {
 
     return (
         <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -351,46 +340,45 @@ export default function Dashboard(props) {
                                 <Grid container spacing={2}>
 
                                     <Grid xs={12} md={12} sm={12} item>
-                                            <Grid container spacing={2} key={127}>
+                                        <Grid container spacing={2} key={127}>
 
-                                                <Grid item sm container >
-                                                    <Grid item container direction="column" spacing={2}>
-                                                        <Grid item align="center">
+                                            <Grid item sm container>
+                                                <Grid item container direction="column" spacing={2}>
+                                                    <Grid item align="center">
 
-                                                            <br />
-                                                            <TextField id="outlined-basic" label="Código do Bilhete"
-                                                                variant="outlined"
-                                                                onChange={getCodigo} />
-                                                            <Grid container justify="space-around">
+                                                        <br/>
+                                                        <TextField id="outlined-basic" label="Código do Bilhete"
+                                                                   variant="outlined"
+                                                                   onChange={getCodigo}/>
+                                                        <Grid container justify="space-around">
 
-                                                            </Grid>
+                                                        </Grid>
 
-                                                            <br />
+                                                        <br/>
 
-                                                            <Button onClick={print} style={{ margin: '10px' }}
+                                                        <Button onClick={print} style={{margin: '10px'}}
                                                                 variant="contained"
                                                                 color="primary">
-                                                                <PrintIcon/>
-                                                            </Button>
-                                                            <Button type="Link" href={"whatsapp://send?text=Link+para+seu+bilhete%3a%0d%0a%0d%0ahttps%3A%2F%2Fwww.sonhobets.com.br%2F%23%2FverificarBilhete%2F"+codigoB}
+                                                            <PrintIcon/>
+                                                        </Button>
+                                                        <Button type="Link"
+                                                                href={"whatsapp://send?text=Link+para+seu+bilhete%3a%0d%0a%0d%0ahttps%3A%2F%2Fwww.sonhobets.com.br%2F%23%2FverificarBilhete%2F" + codigoB}
                                                                 variant="contained"
-                                                                style={{color:'white', backgroundColor:'green'}}>
-                                                                <WhatsAppIcon/>
-                                                            </Button> 
-                                                           
-                                                        
+                                                                style={{color: 'white', backgroundColor: 'green'}}>
+                                                            <WhatsAppIcon/>
+                                                        </Button>
 
-                                                            
-                                                            <br /><br />
-                                                            </Grid>
-                                                        
+
+                                                        <br/><br/>
                                                     </Grid>
+
                                                 </Grid>
                                             </Grid>
+                                        </Grid>
 
                                     </Grid>
-                                    
-                                    
+
+
                                 </Grid>
                             </Grid>
 
@@ -401,11 +389,11 @@ export default function Dashboard(props) {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
                         <DialogContent>
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -424,10 +412,10 @@ export default function Dashboard(props) {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>
@@ -435,16 +423,16 @@ export default function Dashboard(props) {
 
                         </DialogActions>
                     </Dialog>
-                    
+
                 </Container>
 
-                 <Grid container style={{marginLeft: 20}} >
+                <Grid container style={{marginLeft: 20}}>
 
                     <Grid item xs={12} md={4} sm={12}>
 
                     </Grid>
                     <Grid item xs={12} md={4} sm={12}>
-                        
+
                         <div style={{
                             width: 'calc(100% - 15%)',
                             fontSize: 12,
@@ -461,10 +449,10 @@ export default function Dashboard(props) {
 
                     <Grid item xs={12} md={4} sm={2}></Grid>
                 </Grid>
-                <Typography variant={"h4"} align={"center"} >
+                <Typography variant={"h4"} align={"center"}>
                     <p id='status'></p>
                 </Typography>
-                
+
             </main>
 
 

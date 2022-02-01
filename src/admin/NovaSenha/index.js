@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,21 +8,19 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
-import Conan from './football';
+import Conan from './football.png';
 import {useFormik} from 'formik';
 import * as yup from 'yup';
-import axios from 'axios';
-import {useHistory, Redirect} from "react-router-dom";
+import {Redirect, useHistory} from "react-router-dom";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { isEqual } from 'date-fns';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 
 function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
             <Link color="inherit" href="https://material-ui.com/">
-               SONHOBETS198
+                SONHOBETS198
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
@@ -90,7 +87,7 @@ export default function SignInSide() {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             api.put('/api/updateadmin',
-                { "senha": values.password1 })
+                {"senha": values.password1})
                 .then(res => {
 
                     try {
@@ -135,7 +132,7 @@ export default function SignInSide() {
 
     }
 
-    function inicio(){
+    function inicio() {
         history.push('/admin');
     }
 
@@ -147,19 +144,16 @@ export default function SignInSide() {
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <Button color={'primary'} onClick={inicio}><ArrowBackIcon/> INÍCIO</Button>
                 <div className={classes.paper}>
-                    <Avatar alt="xbets198" src={Conan} className={classes.avatar}/>
+                    <img src={Conan} width="150"/>
                     <Typography variant="h4">
                         <b style={{textShadow: '5px 2px 2px black', color: '#428bca'}}>NOVA SENHA</b>
-                    </Typography>
-                    <Typography variant="caption">
-                        <b>VEM VIVER A EMOÇÃO DO FUTEBOL</b>
                     </Typography>
                     <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <TextField
                             fullWidth
                             id="password1"
                             name="password1"
-                            label="Nova Senha"
+                            label="Nova Senha (Admin)"
                             type="password"
                             value={formik.values.user}
                             onChange={formik.handleChange}
@@ -170,7 +164,7 @@ export default function SignInSide() {
                             fullWidth
                             id="password2"
                             name="password2"
-                            label="Digite Novamente"
+                            label="Digite Novamente (Admin)"
                             type="password"
                             value={formik.values.password2}
                             onChange={formik.handleChange}

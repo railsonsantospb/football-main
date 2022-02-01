@@ -1,200 +1,153 @@
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import TableCell from '@material-ui/core/TableCell';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect, useRef } from 'react';
-import clsx from 'clsx';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { useParams } from "react-router";
-import LinearProgress from '@material-ui/core/LinearProgress';
+import {Link, useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import SportsSoccerIcon from '@material-ui/icons/SportsSoccer';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import PersonIcon from '@material-ui/icons/Person';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { images, auxCountry, auxItens, cc } from '../Constantes/index';
-import MUIDataTable from "mui-datatables";
+import {api} from '../Constantes/index';
 import CancelIcon from '@material-ui/icons/Cancel';
-import PrintIcon from '@material-ui/icons/Print';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import {api} from "../../pages/Constantes";
+import {pt} from 'date-fns/locale';
+import {DataGrid, GridToolbar, ptBR} from '@mui/x-data-grid';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 import Menu from '../Menu/index';
 
-
-let tab;
-let date = [];
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: "#3f51b5",
-        color: theme.palette.common.white,
+const themeG = createTheme(
+    {
+        palette: {
+            primary: {main: '#1976d2'},
+        },
     },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
+    ptBR,
+);
 
 
-export default function Dashboard() {
+export default function Dashboard(props) {
 
     let history = useHistory();
-    let { campId } = useParams();
-    var betsAll = "";
-    const [open, setOpen] = useState(false);
-    const [live, setLive] = useState([]);
+    const {window} = props;
     const [message, setMessage] = useState("");
-    const [dateHour, setDateHour] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
-    const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [dic, setDic] = useState({});
-    const [competition, setCompetition] = useState([]);
-    const [data, setData] = useState([]);
-    const [ids, setIds] = useState([]);
-    const [openNavB, setOpenNavB] = useState("");
     const [bilhetes, setBilhetes] = useState("");
     const [dataAux, setAux] = useState([]);
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
-
-    const columns = ["CUPOM", "BANCA", "DATA", "SITUAÇÃO", "VALOR DA APOSTA", "COMISSÕES", "COTAÇÃO", "RETORNO",
-        "TIPO", "APOSTA", "CANCELAR", "IMPRIMIR"];
+    const [count, setCount] = useState([]);
+    const [dateAfter, setDateAfter] = useState('');
 
 
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
+    let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
+    const columns = [
+        {
+            field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Cupom', headerName: 'Cupom', width: 120, align: 'center',
+            renderCell: (params) => (<Button variant="contained" color="primary"
+                                             component={Link}
+                                             to={'/bilheteA/' + params.value}>{params.value}</Button>)
+        },
+
+        {
+            field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Data', headerName: 'Data', width: 140, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Situacao', headerName: 'Situação', width: 115, align: 'center',
+            renderCell: (params) => (<Button variant="contained" style={{background: s[params.value], width: 115}}>
+                <p style={{color: 'white'}}>{params.value}</p></Button>)
+        },
+
+        {
+            field: 'Entrada', headerName: 'Entrada', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Comissao', headerName: 'Comissão', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Retorno', headerName: 'Retorno', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Tipo', headerName: 'Tipo', width: 60, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Aposta', headerName: 'Aposta', width: 80, align: 'center',
+            renderCell: (params) => (<b>{params.value}</b>)
+        },
+
+        {
+            field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',
+            renderCell: (params) => (<Button onClick={() =>
+                setStatusBilhete(params.value)}
+                                                                 variant="contained" color="secondary">
+                <CancelIcon/></Button>)
+        },
+
+    ];
 
 
+    const drawerWidth = 240;
 
     const useStyles = makeStyles((theme) => ({
         root: {
-            display: "flex",
-        },
-        nested: {
-            paddingLeft: theme.spacing(4),
-        },
-        toolbar: {
-            paddingRight: 24, // keep right padding when drawer closed
-        },
-        toolbarIcon: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            padding: "0 8px",
-            ...theme.mixins.toolbar,
-        },
-        appBar: {
-            zIndex: theme.zIndex.drawer + 1,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-        },
-        appBarShift: {
-            marginLeft: drawerWidth,
-            width: `calc(100% - ${drawerWidth}px)`,
-            transition: theme.transitions.create(["width", "margin"], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        menuButton: {
-            marginRight: 36,
-        },
-        menuButtonHidden: {
-            display: "none",
-        },
-        title: {
-            flexGrow: 1,
-            marginLeft: "-30px",
-        },
-        drawerPaper: {
-            position: "relative",
-            whiteSpace: "nowrap",
-            width: drawerWidth,
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        drawerPaperClose: {
-            overflowX: "hidden",
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            width: theme.spacing(7),
-            [theme.breakpoints.up("sm")]: {
-                width: theme.spacing(9),
-            },
-        },
-        appBarSpacer: theme.mixins.toolbar,
-        content: {
-            flexGrow: 1,
-            overflow: "auto",
-        },
-        container: {
-            paddingTop: theme.spacing(4),
-            paddingBottom: theme.spacing(4),
-        },
-        paper: {
-            padding: theme.spacing(2),
-            display: "flex",
-            overflow: "auto",
-            flexDirection: "column",
-        },
-        fixedHeight: {
-            height: 240,
-        },
-        button: {
-            width: 10,
+            display: 'flex',
         },
         drawer: {
-            display: "none",
-            flexShrink: 0,
+            [theme.breakpoints.up('sm')]: {
+                width: drawerWidth,
+                flexShrink: 0,
+            },
         },
-    }));
+        appBar: {
+            [theme.breakpoints.up('sm')]: {
+                width: `calc(100% - ${drawerWidth}px)`,
+                marginLeft: drawerWidth,
+            },
+        },
+        menuButton: {
+            marginRight: theme.spacing(2),
+            [theme.breakpoints.up('sm')]: {
+                display: 'none',
+            },
+        },
+        // necessary for content to be below app bar
+        toolbar: theme.mixins.toolbar,
+        drawerPaper: {
+            width: drawerWidth,
+        },
+        content: {
+            flexGrow: 1,
+            padding: theme.spacing(3),
+        },
 
+        appBarSpacer: theme.mixins.toolbar,
+    }));
     const [selectedDate1, handleDateChange1] = useState(new Date());
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
@@ -205,51 +158,14 @@ export default function Dashboard() {
         setOpenURL(false);
     };
 
-
     const handleCloseLoading = () => {
         setOpenLoading(false);
     };
 
 
+    function setStatusBilhete(codigoBilhete) {
 
-    const onClickHandler = () => {
-        let listAux = [];
-        let init = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-        for (let datas of dataAux) {
-
-            let d = datas[2].split(' ')[0].split('/');
-            d[2] = "20"+d[2]
-            let dateReverse = new Date(d.reverse().join('/'));
-
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-                listAux.push(datas);
-                init = 1;
-            }
-        }
-
-        if (init == 0) {
-            setAux(dataAux);
-        } else {
-            setAux(listAux);
-        }
-    };
-
-    function close(e) {
-        try {
-            if (e.clientX > 250) {
-                document.getElementById("drawer").style.display = "none";
-            }
-        } catch (e) {
-            //console.log(e);
-        }
-    }
-
-    function setStatusBilhete(id) {
-
-        api.put('/api/updatebilhete/' + id, {status: 'Cancelado'})
+        api.put('/api/updatebilhete/' + codigoBilhete, {status: 'Cancelado'})
             .then(res => {
                 try {
                     if (res.data) {
@@ -265,103 +181,156 @@ export default function Dashboard() {
     }
 
 
+    const onClickHandler = () => {
+        let listAux = [];
+        let init = 0;
+        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
+        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
+
+
+        console.log(dataAux.length, count.length);
+        for (let datas of dataAux) {
+
+            let d = datas['Data'].split(' ')[0].split('/');
+            d.reverse();
+
+            let dateReverse = new Date(d.join('-'));
+
+            console.log(dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2));
+            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
+                listAux.push(datas);
+                init = 1;
+            }
+        }
+
+        if (init == 0) {
+            setAux(dataAux);
+        } else {
+            setAux(listAux);
+        }
+        if (dataAux.length != count.length) {
+            setAux(count);
+        }
+
+    };
+
+    function custom_sort(a, b) {
+        let d1 = new Date(a.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+            a.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+            a.dataDaAposta.split(' ')[0].split('/')[2] + " " + a.dataDaAposta.split(' ')[1]);
+
+        let d2 = new Date(b.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
+            b.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
+            b.dataDaAposta.split(' ')[0].split('/')[2] + " " + b.dataDaAposta.split(' ')[1]);
+
+        return d1.getTime() - d2.getTime();
+    }
 
     useEffect(() => {
 
-        if (sessionStorage.getItem('admin') == null || sessionStorage.getItem('admin') == "") {
-            history.push('/adm')
-        }
 
-        let unmounted = false;
+        async function getBilhetesAPI() {
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {
-
-                }).then(res => {
+            api.get('/api/getbilhetes')
+                .then(res => {
+                    let l = [];
+                    let ax = [];
                     try {
-
-                        let d1 = Date.parse(res.data.currentDateTime);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
-
-                        let d2 = Date.parse(res.data.currentDateTime);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
-
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
+                        let bh = res.data.bilhetes.slice();
+                        bh.sort(custom_sort);
+                        if (res.data) {
+                            setBilhetes(res.data);
+                            bh.map((b) => {
 
 
-                        date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                            Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                            (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                                Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
 
-                        localStorage.setItem("date", date);
+                                    l.push({
+                                        id: b.id,
+                                        Banca: b.nomeBanca,
+                                        Cupom: b.codigo,
+                                        Cliente: b.nomeCliente,
+                                        Data: b.dataDaAposta,
+                                        Situacao: b.status,
+                                        Entrada: b.valorDeEntrada.toFixed(2),
+                                        Comissao: b.comissao.toFixed(2),
+                                        Cotacao: b.cotacao.toFixed(2),
+                                        Retorno: b.valorDeSaida.toFixed(2),
+                                        Tipo: b.tipoSimplesouMultiplo,
+                                        Aposta: b.tipoDeJogo, Cancelar: b.codigo,
+                                    });
 
+                                ax.push({
+                                    id: b.id, Cupom: b.codigo,
+                                    Banca: b.nomeBanca,
+                                    Cliente: b.nomeCliente,
+                                    Data: b.dataDaAposta,
+                                    Situacao: b.status,
+                                    Entrada: b.valorDeEntrada.toFixed(2),
+                                    Comissao: b.comissao.toFixed(2),
+                                    Cotacao: b.cotacao.toFixed(2),
+                                    Retorno: b.valorDeSaida.toFixed(2),
+                                    Tipo: b.tipoSimplesouMultiplo,
+                                    Aposta: b.tipoDeJogo, Cancelar: b.codigo,
+                                });
+
+                            });
+
+
+                        }
+                        l.reverse();
+                        setAux(l);
+                        setCount(ax);
 
 
                     } catch (e) {
                         console.log(e);
                     }
                 }).catch(error => {
-                    console.log(error);
-                });
-        }
-
-        async function getBilhetesBancas() {
-
-            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
-                .then(res => {
-                    let l = [];
-                    try {
-                        if (res.data) {
-                            setBilhetes(res.data);
-                            res.data.bilhetes.map((b) => {
-                                l.push([<b>{b.codigo}</b>,
-                                    b.nomeBanca,
-                                    b.dataDaAposta,
-                                    b.status == 'Aberto' ? <b style={{color: 'blue'}}>{b.status}</b> :
-                                        b.status == 'Cancelado' ? <b style={{color: 'gold'}}>{b.status}</b> :
-                                            b.status == 'Perdeu' ? <b style={{color: 'red'}}>{b.status}</b> :
-                                                b.status == 'Ganhou' ? <b style={{color: 'green'}}>{b.status}</b> : b.status,
-                                    b.valorDeEntrada.toFixed(2),
-                                    b.comissao.toFixed(2),
-                                    b.cotacao.toFixed(2),
-                                    b.valorDeSaida.toFixed(2),
-                                    b.tipoSimplesouMultiplo,
-                                    b.tipoDeJogo, <Button onClick={() => setStatusBilhete(b.id)} variant="contained" color="secondary"><CancelIcon /></Button>,
-                                    <Button variant="contained" color="primary" component={Link} to={'/bilhete/'+b.codigo}><PrintIcon /></Button>]);
-                            });
-                        }
-                        setAux(l);
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
                 console.log(error);
             });
 
         }
-        getDateAll();
-        getBilhetesBancas();
 
-        return () => {
-            unmounted = true;
-        };
+        async function getDateAfter() {
+            api.get('/api/getdateafter').then(res => {
 
+                try {
+
+                    setDateAfter(res.data.date);
+
+                } catch (e) {
+                    console.log(e);
+                }
+            }).catch(error => {
+                console.log(error)
+            });
+        }
+
+        getDateAfter();
+
+        getBilhetesAPI();
 
     }, []);
 
+    function close(e) {
+
+        try {
+            if (e.clientX > 250) {
+                document.getElementById('drawer').style.display = 'none';
+            }
+        } catch (e) {
+            //console.log(e);
+        }
+
+    }
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -375,13 +344,14 @@ export default function Dashboard() {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
                                                             <Typography variant="h5">BILHETES</Typography>
                                                             <Grid container justify="space-around">
 
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -400,11 +370,12 @@ export default function Dashboard() {
 
                                                             </Grid>
 
-                                                            <br />
-                                                            <Button onClick={onClickHandler} variant="contained" color="primary">
+                                                            <br/>
+                                                            <Button onClick={onClickHandler} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br /><br />
+                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -415,7 +386,7 @@ export default function Dashboard() {
 
                                 </Grid>
                             </Grid>
-                            {1 > 0 ? '' : <LinearProgress />}
+
                         </Grid>
                         {/* Recent Deposits */}
 
@@ -423,11 +394,11 @@ export default function Dashboard() {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -446,10 +417,10 @@ export default function Dashboard() {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>
@@ -458,17 +429,22 @@ export default function Dashboard() {
                         </DialogActions>
                     </Dialog>
                 </Container>
-                {1 > 0 ? <React.Fragment>
-
-
-                    <MUIDataTable
-                       
-                        data={dataAux}
-                        columns={columns}
-                        options={options}
-
-                    />
-                </React.Fragment> : ''}
+                <br/>
+                <ThemeProvider theme={themeG}>
+                    <div style={{height: 900, width: '100%',}}>
+                        <DataGrid
+                            components={{
+                                Toolbar: GridToolbar,
+                            }}
+                            density="compact"
+                            rows={dataAux}
+                            columns={columns}
+                            pageSize={20}
+                            rowsPerPageOptions={[20]}
+                            // checkboxSelection
+                        />
+                    </div>
+                </ThemeProvider>
 
             </main>
 

@@ -16,13 +16,14 @@ import {
     DialogContent,
     DialogTitle,
 } from "@material-ui/core";
-import Conan from './football.png';
+import Conan from './football.jpeg';
+import Logo from './football2.png';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useHistory, Redirect } from "react-router-dom";
 import { api } from '../Constantes/index';
-
+const CryptoJS = require('crypto-js');
 
 function Copyright() {
   return (
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
   },
   image: {
-    opacity: 0.2,
+    opacity: 0.9,
     backgroundImage: `url(${Conan})`,
     backgroundRepeat: 'no-repeat',
     backgroundColor:
@@ -95,14 +96,16 @@ export default function SignInSide() {
     };
 
   const formik = useFormik({
+
     initialValues: {
-      user: '',
-      password: '',
+      user: sessionStorage.getItem("userBanca") != null ? sessionStorage.getItem("userBanca") : '',
+      password: sessionStorage.getItem("senhaBanca") != null ?
+          JSON.parse(decryptData2(sessionStorage.getItem("senhaBanca")))+"" : '',
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       handleClickOpenLoading();
-      
+
       api.post('/api/getloginbanca', { "nome": values.user, "senha": values.password, 
         headers: {
                 "Access-Control-Allow-Origin": "*",
@@ -116,9 +119,11 @@ export default function SignInSide() {
               sessionStorage.setItem('login', res.data.bancas.id);
               sessionStorage.setItem('gerenteId', res.data.bancas.gerente);
               sessionStorage.setItem('nomeBanca', res.data.bancas.login);
-              sessionStorage.setItem('minutos', new Date().getMinutes());
+
+
               if(res.data.bancas.status == 1){
-                
+                sessionStorage.setItem("senhaBanca", encryptData2(values.password));
+                sessionStorage.setItem("userBanca", values.user);
                 history.push("/inicio");
               } else {
                 alert('Usuário não tem permissão. Fale com seu gerente!');
@@ -139,9 +144,40 @@ export default function SignInSide() {
     },
   });
 
+  function encryptData2(data) {
+    //var Key = C.enc.Utf8.parse("6il7YCRSqIOB9NooY225lPKQ0KuAF/nkFX6cY3vJkS0=");
+    var Key = CryptoJS.enc.Utf8.parse("6il7YCRSqIOB9NooY225lPKQ0KuAF/nkFX6cY3vJkS0=");  // 1. Replace C by CryptoJS
+    var IV = CryptoJS.enc.Utf8.parse("0123456789ABCDEF");
+    var encryptedText = CryptoJS.AES.encrypt(JSON.stringify(data), Key, {
+      iv: IV,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    //return encryptedText.toString(CryptoJS.format.Hex);
+    return encryptedText.toString(CryptoJS.format.Base64);                              // 2. Use Base64 instead of Hex
+  }
+
+
+  function decryptData2(encryptedData, key) {
+    var C = CryptoJS;
+    //encryptedData = C.enc.Base64.parse(encryptedData);                                // 3. Remove line
+    var Key = C.enc.Utf8.parse("6il7YCRSqIOB9NooY225lPKQ0KuAF/nkFX6cY3vJkS0=");
+    var IV = C.enc.Utf8.parse("0123456789ABCDEF");
+    //var decryptedText = C.AES.encrypt(encryptedData, Key, {
+    var decryptedText = C.AES.decrypt(encryptedData, Key, {                             // 4. Use decrypt instead of encrypt
+      iv: IV,
+      mode: C.mode.CBC,
+      padding: C.pad.Pkcs7
+    });
+    //return encryptedData.toString(CryptoJS.enc.Utf8);
+    return decryptedText.toString(CryptoJS.enc.Utf8);                                   // 5. Use decryptedText instead of encryptedData
+  }
+
+
+
   const [login, setLogin] = useState([]);
   const [form, setForm] = useState([]);
-  
+
 
   useEffect(() => {
 
@@ -164,9 +200,9 @@ export default function SignInSide() {
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+      <Grid item xs={12} sm={8} md={5} component={Paper}  square>
         <div className={classes.paper}>
-          <img src={Conan} width="150"/>
+          <img src={Logo} width="150"/>
           <Typography variant="h4" >
           </Typography>
 

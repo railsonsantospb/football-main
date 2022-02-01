@@ -65,12 +65,6 @@ export default function Dashboard(props) {
 
     useEffect(() => {
 
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/')
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
 
 
         async function getPaisesCampeonatos() {
@@ -169,8 +163,11 @@ export default function Dashboard(props) {
 
         }
 
+        if(sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "") {
+            getLoginAPI();
+        }
      
-        getLoginAPI();
+
         getDateAll();
                 
         values = ids;

@@ -1,43 +1,15 @@
 import {images, api} from "../Constantes/index";
-import {withStyles, makeStyles, useTheme} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import React, {useState, useEffect, useRef, useMemo} from "react";
-import clsx from "clsx";
-import CssBaseline from "@material-ui/core/CssBaseline";
+import {makeStyles, useTheme} from "@material-ui/core/styles";
+import React, {useState, useEffect} from "react";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-} from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import Container from "@material-ui/core/Container";
-import Paper from "@material-ui/core/Paper";
 import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import axios from "axios";
-import LockIcon from "@material-ui/icons/Lock";
 import {useHistory, Link} from "react-router-dom";
-import {useParams} from "react-router";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import {Box} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import {useReactToPrint} from "react-to-print";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -57,41 +29,27 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import football from "../Home/football.png";
 import Hidden from "@material-ui/core/Hidden";
 import AnchorLink from 'react-anchor-link-smooth-scroll';
+import Button from "@material-ui/core/Button";
 
 export default function Menu(props) {
-  const [country, setCountry] = useState([]);
-  let history = useHistory();
+    const [country, setCountry] = useState([]);
+    let history = useHistory();
     const theme = useTheme();
-  
+
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    let auxChamp = [];
-    const [open, setOpen] = useState(false);
-    const [openWith, setOpenWith] = useState(40);
     const [openNav, setOpenNav] = useState(false);
     const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
     const [saldoSimples, setSaldoSimples] = useState(0);
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
-    const [datas, setDatas] = useState([]);
-    const [dateD, setDateD] = useState('');
-    const [dateAfter, setDateAfter] = useState('');
-    
-    const [apostasPreJogo, setApostasPreJogo] = useState(false);
- 
-    
-    
+
+
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const StyledTableRow = withStyles((theme) => ({
-        root: {
-            "&:nth-of-type(odd)": {
-                backgroundColor: theme.palette.action.hover,
-            },
-        },
-    }))(TableRow);
+
 
     const drawerWidth = 240;
 
@@ -140,7 +98,7 @@ export default function Menu(props) {
 
     const classes = useStyles();
 
-  const handleClick = () => {
+    const handleClick = () => {
         setOpenNav(!openNav);
     };
 
@@ -152,22 +110,8 @@ export default function Menu(props) {
         }
     };
 
-    const handleClickB = (index) => {
-        if (openNavB === index) {
-            setOpenNavB("");
-        } else {
-            setOpenNavB(index);
-        }
-    };
 
     useEffect(() => {
-
-        if ( sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/')
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
 
         async function getLoginAPI() {
 
@@ -183,12 +127,10 @@ export default function Menu(props) {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
-        getLoginAPI();
-
 
         async function all() {
             let regioes = ['gb-eng','it','es','fr','de','nl','pt','ar'];
@@ -200,9 +142,9 @@ export default function Menu(props) {
                 try {
                     let l = []
                     res.data.home.modalidades[0].paises.map((f) => {
-                     
+
                         l.push(f);
-                        
+
                     });
                     setCountry(l);
 
@@ -216,31 +158,35 @@ export default function Menu(props) {
 
         }
         all();
+        if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
+            getLoginAPI();
+        }
     },[])
-    
+
     function exit(){
         sessionStorage.removeItem('login');
-        history.push('/');
+        history.push('/banca');
     }
 
-  const drw = (<div >
+    const drw = (<div >
         <Divider />
         <fieldset><List>
             <ListItem alignItems={"center"}>
-                <ListItemIcon >
-                <img src={football} width={160}
+                <ListItemIcon  >
+                    <img src={football} width={160}
                          align="center"
                     />
                 </ListItemIcon>
             </ListItem>
             <Divider />
-            <ListItem>
-                <Typography component="h4" color="inherit" >
-                    <b>Banca:</b> {nomeBanca} <br /><b>Simples:</b> R$ {saldoSimples.toFixed(2)} <br/><b> Geral:</b>  R$ {saldoGeral.toFixed(2)}
-                </Typography>
-            </ListItem>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem>
+                    <Typography component="h4" color="inherit" >
+                        <b>Banca:</b> {nomeBanca} <br /><b>Simples:</b> R$ {saldoSimples.toFixed(2)} <br/><b> Geral:</b>  R$ {saldoGeral.toFixed(2)}
+                    </Typography>
+                </ListItem> : ''}
             <Divider />
-            <ListItem button component={Link} to={'/home'}>
+            <ListItem button component={Link} to={'/inicio'}>
                 <ListItemIcon>
                     <HomeIcon />
                 </ListItemIcon>
@@ -288,7 +234,7 @@ export default function Menu(props) {
                                         {id ? id.campeonatos.map((team, index) => {
                                             return (
                                                 <ListItem key={team} button className={classes.nested} component={Link}
-                                                          to={'/pre/campeonato/'+team.id}>
+                                                          to={'/campeonato/'+team.id}>
                                                     <ListItemIcon>
                                                         <img src={Taca} width="20px"
                                                              height="12"
@@ -308,27 +254,30 @@ export default function Menu(props) {
 
                 </List>
             </Collapse>
-            <ListItem button component={Link} to={'/caixa'}>
-                <ListItemIcon>
-                    <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Caixa" />
-            </ListItem>
-            <ListItem button component={Link} to={'/bilhetes'}>
-                <ListItemIcon>
-                    <FileCopyIcon />
-                </ListItemIcon>
-                <ListItemText primary="Bilhetes" />
-            </ListItem>
-            <ListItem button component={Link} to={'/clientes'}>
-                <ListItemIcon>
-                    <PersonIcon />
-                </ListItemIcon>
-                <ListItemText primary="Clientes" />
-            </ListItem>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem button component={Link} to={'/caixa'}>
+                    <ListItemIcon>
+                        <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Caixa" />
+                </ListItem>: ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem button component={Link} to={'/bilhetes'}>
+                    <ListItemIcon>
+                        <FileCopyIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Bilhetes" />
+                </ListItem> : ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem button component={Link} to={'/clientes'}>
+                    <ListItemIcon>
+                        <PersonIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Clientes" />
+                </ListItem> : ''}
             <ListItem button component={Link} to={'/regulamento'}>
                 <ListItemIcon>
-                <FileCopyIcon color="secondary"/>
+                    <FileCopyIcon color="secondary"/>
                 </ListItemIcon>
                 <ListItemText primary="Regulamento" />
             </ListItem>
@@ -338,51 +287,66 @@ export default function Menu(props) {
                 </ListItemIcon>
                 <ListItemText primary="Conferir Bilhetes" />
             </ListItem>
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem button component={Link} to={'/recuperarpin'}>
+                    <ListItemIcon>
+                        <VpnKeyIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Recuperar Pin" />
+                </ListItem> : ''}
         </List>
 
-        <Divider />
+            <Divider />
 
-        <List>
-            <ListItem button component={Link} to={"/novasenha"}>
-                <ListItemIcon>
-                    <VpnKeyIcon />
-                </ListItemIcon>
-                <ListItemText primary="Alterar Senha" />
-            </ListItem>
-            <ListItem button onClick={exit}>
-                <ListItemIcon>
-                    <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText primary="Sair" />
-            </ListItem>
+            <List>
+                {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                    <ListItem button component={Link} to={"/novasenha"}>
+                        <ListItemIcon>
+                            <VpnKeyIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Alterar Senha" />
+                    </ListItem> :  ''}
+                {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                    <ListItem button onClick={exit}>
+                        <ListItemIcon>
+                            <ExitToAppIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Sair" />
+                    </ListItem> : <Button onClick={exit} style={{width: 230}}
 
-        </List></fieldset>
+                                          variant="contained"
+                                          color="primary"
+                    >
+                        LOGIN
+                    </Button>}
+
+            </List></fieldset>
 
     </div>);
 
-  return (
+    return (
         <div><AppBar position="fixed" className={classes.appBar}>
-                <Toolbar className={classes.toolbar}>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
-                        <b>SONHOBETS</b>
-                    </Typography>
-                    <AnchorLink href='#bl'><DescriptionIcon style={{marginLeft: 10, color: 'white'}}/></AnchorLink>
+            <Toolbar className={classes.toolbar}>
+                <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    className={classes.menuButton}
+                >
+                    <MenuIcon />
+                </IconButton>
+                <Typography component="h1" variant="h6" color="inherit" className={classes.title}>
+                    <b>SONHOBETS</b>
+                </Typography>
+                <AnchorLink href='#bl'><DescriptionIcon style={{marginLeft: 10, color: 'white'}}/></AnchorLink>
 
-                </Toolbar>
+            </Toolbar>
         </AppBar>
-        <nav className={classes.drawer} aria-label="mailbox folders">
+            <nav className={classes.drawer} aria-label="mailbox folders">
                 <Hidden smUp implementation="css">
                     <Drawer
-                        
+
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
@@ -399,11 +363,12 @@ export default function Menu(props) {
                     </Drawer>
                 </Hidden>
                 <Hidden xsDown implementation="css">
-                  
-                        {drw}
-                   
+
+                    {drw}
+
+
                 </Hidden>
-        </nav></div>
-    
-  );
+            </nav></div>
+
+    );
 }

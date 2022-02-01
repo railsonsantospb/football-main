@@ -1,18 +1,17 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
+import {useHistory} from 'react-router-dom';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useParams} from "react-router";
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
 import Menu from '../Menu/index';
@@ -37,7 +36,7 @@ export default function Dashboard() {
     const [apostas, setApostas] = useState(false);
     const [status, setStatus] = useState(false);
     const [idCambista, setidCambista] = useState(0);
-    
+
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -129,19 +128,15 @@ export default function Dashboard() {
             flexShrink: 0,
         }
     }));
-    
+
     const validationSchema = yup.object({
         password1: yup
-        .string().min(4, 'Digite no minimo 4 digitos'),
+            .string().min(4, 'Digite no minimo 4 digitos'),
         password2: yup
             .string().min(4, 'Digite no minimo 4 digitos')
             .oneOf([yup.ref('password1'), ''], 'As senhas estão diferentes'),
-            
+
     });
-
-    const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
-        "APOSTAS", "STATUS", "PRÉ-JOGO", "AO VIVO", "EDITAR"];
-
 
     const classes = useStyles();
 
@@ -166,7 +161,7 @@ export default function Dashboard() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            api.put('/api/updatebanca/'+id, {
+            api.put('/api/updatebanca/' + id, {
                 "nome": nomeBanca,
                 "login": nomeBanca,
                 "senha": values.password1 != '' ? values.password1 : senha,
@@ -181,20 +176,20 @@ export default function Dashboard() {
                 "habilitarImpressao": imprimir,
                 "ativarApostas": apostas,
                 "status": status,
-    
+
             })
                 .then(res => {
                     try {
                         if (res.data) {
                             console.log(res.data);
                             history.push("/gerente");
-                        }   
+                        }
                     } catch (e) {
-    
+
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
         },
     });
     console.log(id);
@@ -209,17 +204,13 @@ export default function Dashboard() {
         let unmounted = false;
 
 
-
-
-      
-
         async function getBancaAPI() {
 
-            api.get('/api/getbanca/'+id)
+            api.get('/api/getbanca/' + id)
                 .then(res => {
                     try {
                         if (res.data) {
-                           
+
                             setApostasAoVivo(res.data.bancas.ativarApostasAoVivos);
                             setApostas(res.data.bancas.ativarApostas);
                             setApostasPreJogo(res.data.bancas.ativarApostasPreJogo);
@@ -234,19 +225,17 @@ export default function Dashboard() {
                             setEmail(res.data.bancas.email);
                             setSenha(res.data.bancas.senha);
                             setidCambista(res.data.bancas.id);
-                        }   
+                        }
                     } catch (e) {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
 
         getBancaAPI();
-
-
 
 
         return () => {
@@ -255,85 +244,83 @@ export default function Dashboard() {
 
     }, []);
 
-    
+
     function handlerChangeApostasAovivo() {
-        if(apostasAoVivo){
+        if (apostasAoVivo) {
             setApostasAoVivo(false);
         } else {
             setApostasAoVivo(true);
         }
     }
 
-    function handlerChangeApostasPreJogo(){
-        if(apostasPreJogo){
+    function handlerChangeApostasPreJogo() {
+        if (apostasPreJogo) {
             setApostasPreJogo(false);
         } else {
             setApostasPreJogo(true);
         }
     }
 
-    function handlerChangeImprimir(){
-        if(imprimir){
+    function handlerChangeImprimir() {
+        if (imprimir) {
             setImprimir(false);
         } else {
             setImprimir(true);
         }
     }
 
-    function handlerChangeAposta(){
-        if(apostas){
+    function handlerChangeAposta() {
+        if (apostas) {
             setApostas(false);
         } else {
             setApostas(true);
         }
     }
 
-    function handlerChangeStatus(){
-        if(status){
+    function handlerChangeStatus() {
+        if (status) {
             setStatus(false);
         } else {
             setStatus(true);
         }
     }
 
-    function deleteCambista(){
-        
-        api.delete('/api/deletebanca/'+id)
+    function deleteCambista() {
+
+        api.delete('/api/deletebanca/' + id)
             .then(res => {
                 try {
                     if (res.data) {
-                        history.push("/gerenteReload");
-                    }   
+                        history.push("/gerente");
+                    }
                 } catch (e) {
-                    history.push("/gerenteReload");
+                    history.push("/gerente");
                 }
             }).catch(error => {
-                history.push("/gerenteReload");
-                console.log(error);
-                
-            });
-    
-    }
+            history.push("/gerente");
+            console.log(error);
 
-    
+        });
+
+    }
 
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
             <Menu/>
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
-                   
-                        <Typography variant="h6" gutterBottom>
-                            Editar Cambista
-                        </Typography>
-                        <form className={classes.form} onSubmit={formik.handleSubmit}>
+                    <br/>
+
+                    <Typography variant="h6" gutterBottom>
+                        Editar Cambista
+                    </Typography>
+                    <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -380,8 +367,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setLimitG(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
                                 <TextField
                                     value={limitS}
                                     id="standard-number"
@@ -390,8 +377,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setLimitS(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
 
                                 <TextField
                                     value={comissaoPreJogo}
@@ -412,8 +399,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setComissaoPreJogo(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
                                 <TextField
                                     value={comissaoAoVivo}
                                     disabled
@@ -466,49 +453,53 @@ export default function Dashboard() {
 
                             <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasAoVivo} 
-                                    onClick={handlerChangeApostasAovivo}/>}
-                                    label="Habilitar Apostas Ao Vivo" 
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostasAoVivo}
+                                                       onClick={handlerChangeApostasAovivo}/>}
+                                    label="Habilitar Apostas Ao Vivo"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasPreJogo}
-                                    onClick={handlerChangeApostasPreJogo} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostasPreJogo}
+                                                       onClick={handlerChangeApostasPreJogo}/>}
                                     label="Habilitar Apostas Pre-Jogo"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={imprimir}
-                                    onClick={handlerChangeImprimir} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={imprimir}
+                                                       onClick={handlerChangeImprimir}/>}
                                     label="Habilitar Imprimir Bilhete"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostas}
-                                    onClick={handlerChangeAposta} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostas}
+                                                       onClick={handlerChangeAposta}/>}
                                     label="Apostas Ativas"
                                 />
-                                
+
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress"  checked={status}
-                                    onClick={handlerChangeStatus} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" checked={status}
+                                                       onClick={handlerChangeStatus}/>}
                                     label="Status"
                                 />
                             </Grid>
                             <Button variant="contained" color="primary" className={classes.submit}
-                             type="submit" disableElevation >
+                                    type="submit" disableElevation>
                                 ATUALIZAR
                             </Button>
-                            
-                            <Button variant="contained" color="secondary" 
-                             disableElevation style={{marginLeft: '10px'}}
-                             onClick={deleteCambista}>
+
+                            <Button variant="contained" color="secondary"
+                                    disableElevation style={{marginLeft: '10px'}}
+                                    onClick={deleteCambista}>
                                 EXCLUIR
                             </Button>
                         </Grid>
-                        </form>
-                  
+                    </form>
+
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

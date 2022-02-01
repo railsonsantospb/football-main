@@ -1,4 +1,4 @@
-import {Switch, Route, HashRouter} from 'react-router-dom';
+import {HashRouter, Route} from 'react-router-dom';
 
 import AoVivo from '../pages/AoVivo';
 import PreJogo from '../pages/PreJogo';
@@ -10,10 +10,11 @@ import Init from '../pages/Init';
 import Caixa from '../pages/Caixa';
 import Bilhetes from '../pages/Bilhetes';
 import Bilhete from '../pages/Bilhete';
+import RecuperarPin from '../pages/RecuperPin';
 import VerificarBilhete from '../pages/VerificarBilhete';
 import Clients from '../pages/Clients';
 import Login from '../pages/Login';
-import LoginMange  from '../gerente/Login';
+import LoginMange from '../gerente/Login';
 import NovaSenha from '../pages/NovaSenha';
 import ManageHome from '../gerente/Home';
 import ManageCaixa from '../gerente/Caixa';
@@ -27,7 +28,7 @@ import ManageCaixaCambista from '../gerente/CaixaCambista';
 import NovaSenhaGerente from '../gerente/NovaSenha';
 
 import ManageHomeA from '../admin/Home';
-import LoginMangeA  from '../admin/Login';
+import LoginMangeA from '../admin/Login';
 import ManageCaixaA from '../admin/Caixa';
 import ManageBilhetesA from '../admin/Bilhetes';
 import ManageBilheteA from '../admin/Bilhete';
@@ -51,24 +52,25 @@ export default function Routes() {
 
     return (
         <HashRouter>
-            <Route exact path="/inicio" component={Init}/>
-            <Route exact path="/" component={Login}/>
+            <Route exact path="/" component={Init}/>
+            <Route exact path="/banca" component={Login}/>
             <Route exact path="/login" component={LoginMange}/>
             <Route exact path="/campeonato/:campId" component={PreJogo}/>
             <Route exact path="/pre/campeonato/:campId" component={PreJogo2}/>
             <Route exact path="/date/:dateId" component={Init}/>
-            <Route exact path="/home" component={Home}/>
+            <Route exact path="/inicio" component={Home}/>
             <Route exact path="/aovivo" component={AoVivo}/>
             <Route exact path="/maisAoVivo/:id" component={MaisAoVivo}/>
             <Route exact path="/maispre/:id" component={Mais}/>
             <Route exact path="/caixa" component={Caixa}/>
             <Route exact path="/bilhetes" component={Bilhetes}/>
             <Route exact path="/bilhete/:codigoBilhete" component={Bilhete}/>
+            <Route exact path="/recuperarpin" component={RecuperarPin}/>
             <Route exact path="/verificarBilhete/:codigoBilhete" component={VerificarBilhete}/>
             <Route exact path="/clientes" component={Clients}/>
             <Route exact path="/novasenha" component={NovaSenha}/>
             <Route exact path="/regulamento" component={Regulamento}/>
-            
+
             <Route exact path="/gerente" component={ManageHome}/>
             <Route exact path="/cambista" component={ManageHome}/>
             <Route exact path="/caixagerente" component={ManageCaixa}/>
@@ -80,7 +82,7 @@ export default function Routes() {
             <Route exact path="/editcambistagerente/:id" component={EditCambista}/>
             <Route exact path="/relatorios" component={Relatorios}/>
             <Route exact path="/novasenhagerente" component={NovaSenhaGerente}/>
-            
+
 
             <Route exact path="/admin" component={ManageHomeA}/>
             <Route exact path="/adm" component={LoginMangeA}/>
@@ -102,7 +104,7 @@ export default function Routes() {
             <Route exact path="/novasenhaadmin" component={NovaSenhaGerenteA}/>
             <Route exact path="/cadastrargerente" component={ManageHomeA}/>
             <Route exact path="/cadastrarbancadmin" component={Bancas}/>
-            
+
         </HashRouter>
     );
 }

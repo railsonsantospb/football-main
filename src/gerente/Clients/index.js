@@ -1,23 +1,21 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import {
-    Dialog, DialogActions, DialogContent, DialogTitle
-} from '@material-ui/core';
+import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { useParams } from "react-router";
+import {useHistory} from 'react-router-dom';
+import {useParams} from "react-router";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {KeyboardDatePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
-import { pt } from 'date-fns/locale';
+import {pt} from 'date-fns/locale';
 import {api} from "../../pages/Constantes";
 import Menu from '../Menu/index';
 
@@ -25,11 +23,10 @@ import Menu from '../Menu/index';
 let date = [];
 
 
-
 export default function Dashboard() {
 
     let history = useHistory();
-    let { campId } = useParams();
+    let {campId} = useParams();
     var betsAll = "";
     const [message, setMessage] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
@@ -41,7 +38,7 @@ export default function Dashboard() {
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
 
-    const columns = ["", "NOME","BANCA", "","", "EXCLUIR"];
+    const columns = ["", "NOME", "BANCA", "", "", "EXCLUIR"];
 
 
     const options = {
@@ -215,36 +212,34 @@ export default function Dashboard() {
 
         async function getDateAll() {
             axios.get('http://worldclockapi.com/api/json/utc/now',
-                {
+                {}).then(res => {
+                try {
 
-                }).then(res => {
-                    try {
+                    let d1 = Date.parse(res.data.currentDateTime);
+                    d1 = new Date(d1);
+                    d1 = d1.setDate(d1.getDate());
 
-                        let d1 = Date.parse(res.data.currentDateTime);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
+                    let d2 = Date.parse(res.data.currentDateTime);
+                    d2 = new Date(d2);
+                    d2 = d2.setDate(d2.getDate() + 1);
 
-                        let d2 = Date.parse(res.data.currentDateTime);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
-
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
+                    d1 = new Date(d1);
+                    d2 = new Date(d2);
 
 
-                        date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                            Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                            (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                                Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
+                    date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
+                        Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
+                    (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
+                        Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
 
-                        localStorage.setItem("date", date);
+                    localStorage.setItem("date", date);
 
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                });
+                } catch (e) {
+                    console.log(e);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
         }
 
         getDateAll();
@@ -257,10 +252,11 @@ export default function Dashboard() {
                     try {
                         if (res.data) {
                             res.data.clientes.map((b) => {
-                                l.push([<Typography></Typography>, b.nome,  <Typography>{b.nomeBanca}</Typography>,
+                                l.push([<Typography></Typography>, b.nome, <Typography>{b.nomeBanca}</Typography>,
                                     <Typography></Typography>, <Typography></Typography>,
                                     <Button variant="contained"
-                                            color="secondary" onClick={() => deleteClient(b.id)}><CancelIcon/></Button>]);
+                                            color="secondary"
+                                            onClick={() => deleteClient(b.id)}><CancelIcon/></Button>]);
                             });
                         }
                         setAux(l);
@@ -272,6 +268,7 @@ export default function Dashboard() {
             });
 
         }
+
         getClientAPI();
         setData(dataAux);
 
@@ -285,10 +282,10 @@ export default function Dashboard() {
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
             <Menu/>
             <main className={classes.content}>
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
                 <Container className={classes.container}>
                     <Grid container spacing={3}>
                         {/* Chart */}
@@ -302,13 +299,14 @@ export default function Dashboard() {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item >
+                                                        <Grid item>
 
 
                                                             <Typography variant="h5">CLIENTES</Typography>
                                                             <Grid container justify="space-around">
 
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
+                                                                                         locale={pt}>
                                                                     <KeyboardDatePicker
                                                                         label="Data Início"
                                                                         value={selectedDate1}
@@ -327,11 +325,12 @@ export default function Dashboard() {
 
                                                             </Grid>
 
-                                                            <br />
-                                                            <Button onClick={onClickHandler} variant="contained" color="primary">
+                                                            <br/>
+                                                            <Button onClick={onClickHandler} variant="contained"
+                                                                    color="primary">
                                                                 BUSCAR
                                                             </Button>
-                                                            <br /><br />
+                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
@@ -350,11 +349,11 @@ export default function Dashboard() {
 
                     </Grid>
 
-                    <Dialog style={{ wordWrap: 'break-word' }}
-                        open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}>AVISO!</DialogTitle>
-                        <DialogContent >
-                            <div className={classes.paper} style={{ fontSize: '18px' }}>
+                    <Dialog style={{wordWrap: 'break-word'}}
+                            open={openURL} onClose={handleCloseURL} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}>AVISO!</DialogTitle>
+                        <DialogContent>
+                            <div className={classes.paper} style={{fontSize: '18px'}}>
 
                                 {message.split('<br/>')}
 
@@ -373,10 +372,10 @@ export default function Dashboard() {
                         disableBackdropClick
                         disableEscapeKeyDown
                         open={openLoading} onClose={handleCloseLoading} aria-labelledby="form-dialog-title">
-                        <DialogTitle id="form-dialog-title" style={{ color: 'red' }}></DialogTitle>
+                        <DialogTitle id="form-dialog-title" style={{color: 'red'}}></DialogTitle>
                         <DialogContent>
                             <div className={classes.paper}>
-                                <CircularProgress color="secondary" />
+                                <CircularProgress color="secondary"/>
                             </div>
 
                         </DialogContent>
@@ -385,7 +384,7 @@ export default function Dashboard() {
                         </DialogActions>
                     </Dialog>
                 </Container>
-               <React.Fragment>
+                <React.Fragment>
 
 
                     <MUIDataTable

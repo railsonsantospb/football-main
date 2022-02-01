@@ -1,10 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState } from 'react';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { useHistory } from 'react-router-dom';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
+import {useHistory} from 'react-router-dom';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import EditIcon from '@material-ui/icons/Edit';
@@ -12,9 +12,9 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import * as yup from 'yup';
-import { useFormik } from 'formik';
+import {useFormik} from 'formik';
 import Menu from '../Menu/index';
 
 export default function Dashboard() {
@@ -126,11 +126,11 @@ export default function Dashboard() {
 
     const dataAux = [
         ["ELETRONICA", "R$ 1000.00", "R$ 1000.00", "1:5;5:10", "1:5;5:10",
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }}><CheckCircleIcon /></Button>,
-            <Button variant="outlined" style={{ color: 'blue', borderColor: 'blue' }}><EditIcon /></Button>,],
+            <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}><CheckCircleIcon/></Button>,
+            <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}><CheckCircleIcon/></Button>,
+            <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}><CheckCircleIcon/></Button>,
+            <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}><CheckCircleIcon/></Button>,
+            <Button variant="outlined" style={{color: 'blue', borderColor: 'blue'}}><EditIcon/></Button>,],
     ];
 
     const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
@@ -158,15 +158,15 @@ export default function Dashboard() {
             .string().min(4, 'Digite no minimo 4 digitos').required()
             .oneOf([yup.ref('password1'), ''], 'As senhas estão diferentes'),
         limitGeneral: yup
-        .number().required()
-        .min(1000, 'O valor é de no mínimo R$ 1000.00')
-        .max(parseFloat(sessionStorage.getItem('limiteApostaGeral'), 'O valor é de no máximo R$ '
-        +parseFloat(sessionStorage.getItem('limiteApostaGeral')))),
+            .number().required()
+            .min(1000, 'O valor é de no mínimo R$ 1000.00')
+            .max(parseFloat(sessionStorage.getItem('limiteApostaGeral'), 'O valor é de no máximo R$ '
+                + parseFloat(sessionStorage.getItem('limiteApostaGeral')))),
         limitSimple: yup
-        .number().required()
-        .min(1000, 'O valor é de no mínimo R$ 1000.00')
-        .max(parseFloat(sessionStorage.getItem('limiteApostaSimples'), 'O valor é de no máximo R$ '
-        +parseFloat(sessionStorage.getItem('limiteApostaSimples')))),
+            .number().required()
+            .min(1000, 'O valor é de no mínimo R$ 1000.00')
+            .max(parseFloat(sessionStorage.getItem('limiteApostaSimples'), 'O valor é de no máximo R$ '
+                + parseFloat(sessionStorage.getItem('limiteApostaSimples')))),
 
     });
 
@@ -210,8 +210,8 @@ export default function Dashboard() {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
         },
     });
 
@@ -257,15 +257,15 @@ export default function Dashboard() {
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
             <Menu/>
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
+                    <br/>
                     <React.Fragment>
                         <Typography variant="h6" gutterBottom>
                             Cadastrar Cambista
@@ -309,7 +309,7 @@ export default function Dashboard() {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
-                                  
+
                                         id="limitGeneral"
                                         name="limitGeneral"
                                         label="Limite Aposta Geral (R$)"
@@ -319,10 +319,10 @@ export default function Dashboard() {
                                         error={formik.touched.limitGeneral && Boolean(formik.errors.limitGeneral)}
                                         helperText={formik.touched.limitGeneral && formik.errors.limitGeneral}
                                         fullWidth
-                                     
+
                                     />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <TextField
                                         id="limitSimple"
                                         name="limitSimple"
@@ -334,8 +334,8 @@ export default function Dashboard() {
                                         helperText={formik.touched.limitSimple && formik.errors.limitSimple}
                                         fullWidth
                                     />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
 
                                     <TextField
                                         value={comissaoPreJogo}
@@ -343,7 +343,7 @@ export default function Dashboard() {
                                         label="Comissão (Pré-Jogo)"
                                         multiline
                                         rows={5}
-                                       
+
                                         InputLabelProps={{
                                             shrink: true
                                         }}
@@ -355,15 +355,15 @@ export default function Dashboard() {
                                         fullWidth
                                         onChange={e => setComissaoPreJogo(e.target.value)}
                                     />
-                                    <br />
-                                    <br />
+                                    <br/>
+                                    <br/>
                                     <TextField
                                         value={comissaoAoVivo}
                                         id="filled-multiline-static"
                                         label="Comissão (Ao Vivo)"
                                         multiline
                                         rows={5}
-                                       
+
                                         InputLabelProps={{
                                             shrink: true
                                         }}
@@ -408,34 +408,38 @@ export default function Dashboard() {
 
                                 <Grid item xs={12}>
                                     <FormControlLabel
-                                        control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasAoVivo}
-                                            onClick={handlerChangeApostasAovivo} />}
+                                        control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                           checked={apostasAoVivo}
+                                                           onClick={handlerChangeApostasAovivo}/>}
                                         label="Habilitar Apostas Ao Vivo"
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasPreJogo}
-                                            onClick={handlerChangeApostasPreJogo} />}
+                                        control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                           checked={apostasPreJogo}
+                                                           onClick={handlerChangeApostasPreJogo}/>}
                                         label="Habilitar Apostas Pre-Jogo"
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={imprimir}
-                                            onClick={handlerChangeImprimir} />}
+                                        control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                           checked={imprimir}
+                                                           onClick={handlerChangeImprimir}/>}
                                         label="Habilitar Imprimir Bilhete"
                                     />
                                     <FormControlLabel
-                                        control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostas}
-                                            onClick={handlerChangeAposta} />}
+                                        control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                           checked={apostas}
+                                                           onClick={handlerChangeAposta}/>}
                                         label="Apostas Ativas"
                                     />
 
                                     <FormControlLabel
                                         control={<Checkbox color="secondary" name="saveAddress" checked={status}
-                                            onClick={handlerChangeStatus} />}
+                                                           onClick={handlerChangeStatus}/>}
                                         label="Status"
                                     />
                                 </Grid>
                                 <Button variant="contained" color="primary" className={classes.submit}
-                                    type="submit" disableElevation >
+                                        type="submit" disableElevation>
                                     CADASTRAR
                                 </Button>
 
@@ -446,7 +450,7 @@ export default function Dashboard() {
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

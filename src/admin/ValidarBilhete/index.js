@@ -1,16 +1,15 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { useHistory, Link } from 'react-router-dom';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
+import {useHistory} from 'react-router-dom';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
 import MUIDataTable from "mui-datatables";
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import Menu from '../Menu/index';
 
 //let aux = [];
@@ -18,13 +17,8 @@ import Menu from '../Menu/index';
 export default function ValidarBilhete() {
 
     let history = useHistory();
-    const [date, setDate] = useState([]);
     const [dataAux, setDataAux] = useState([]);
-    const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("500px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
@@ -134,16 +128,13 @@ export default function ValidarBilhete() {
             console.log(dataToState);
         }
     };
-   
 
-    const columns = ["JOGO", "TIPO DE COTACAO",
-     "GANHOU", "PERDEU", "CANCELADO", "STATUS"];
+
+    const columns = ["JOGO", "DATA", "TIPO DE COTACAO",
+        "GANHOU", "PERDEU", "CANCELADO", "STATUS"];
 
 
     const classes = useStyles();
-
-
-
 
 
     function close(e) {
@@ -160,7 +151,7 @@ export default function ValidarBilhete() {
 
     function setStatusJogo(jogo, cotacao, status) {
 
-        api.put('/api/validarjogo', 
+        api.put('/api/validarjogo',
             {
                 'nomeDosTimes': jogo,
                 'tipoDeCotacao': cotacao,
@@ -180,6 +171,18 @@ export default function ValidarBilhete() {
 
     }
 
+    function custom_sort(a, b) {
+        let d1 = new Date(a.dataDoJogo.split(' ')[0].split('/')[2] + '/' +
+            a.dataDoJogo.split(' ')[0].split('/')[1] + '/' +
+            a.dataDoJogo.split(' ')[0].split('/')[0] + " " + a.dataDoJogo.split(' ')[2]);
+
+        let d2 = new Date(b.dataDoJogo.split(' ')[0].split('/')[2] + '/' +
+            b.dataDoJogo.split(' ')[0].split('/')[1] + '/' +
+            b.dataDoJogo.split(' ')[0].split('/')[0] + " " + b.dataDoJogo.split(' ')[2]);
+
+        return Date.parse(d1) - Date.parse(d2);
+    }
+
     let d = [];
     useEffect(() => {
 
@@ -190,45 +193,51 @@ export default function ValidarBilhete() {
         let unmounted = false;
 
 
-        
         async function getBancasAPI() {
             let dict = {};
             api.get('/api/getjogos')
                 .then(res => {
                     try {
-                 
+
+                        let bh = res.data.jogos.slice();
+                        bh.sort(custom_sort);
+                        console.log(bh);
                         if (res.data) {
-                           console.log(res.data);
-                            res.data.jogos.map((b) => {
-                                let valor = (b.nomeDosTimes+""+b.tipoDeCotacao);
-                                if(b.status == "Aberto"){
+                            bh.map((b) => {
+                                let valor = (b.nomeDosTimes + "" + b.tipoDeCotacao);
+
                                 dict[valor] = [
 
-                                    <Typography style={{cursor: 'pointer'}} onClick={() => window.open( 'https://www.google.com/search?q='+b.nomeDosTimes)}>{b.nomeDosTimes}</Typography>, 
+                                    <Typography style={{cursor: 'pointer'}}
+                                                onClick={() => window.open('https://www.google.com/search?q=' + b.nomeDosTimes)}>{b.nomeDosTimes}</Typography>,
+                                    b.dataDoJogo,
                                     b.tipoDeCotacao,
-                                    <Button variant="outlined" style={{ color: 'green', borderColor: 'green' }} onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Ganhou')}><CheckCircleIcon /></Button>,
-                                    <Button variant="outlined" style={{ color: 'red', borderColor: 'red' }} onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Perdeu')}><CancelIcon /></Button>,
-                                    <Button variant="outlined" style={{ color: 'gold', borderColor: 'gold' }} onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Cancelado')}><CancelIcon /></Button>,
+                                    <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
+                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Ganhou')}><CheckCircleIcon/></Button>,
+                                    <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
+                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Perdeu')}><CancelIcon/></Button>,
+                                    <Button variant="outlined" style={{color: 'gold', borderColor: 'gold'}}
+                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Cancelado')}><CancelIcon/></Button>,
                                     b.status];
-                                }
-                                
+
+
                             });
-                            for(let i in dict){
+                            for (let i in dict) {
                                 dataAux.push(dict[i]);
                             }
                             setDataAux(dataAux);
-                            
+
                         }
                     } catch (e) {
                         console.log(e);
-                       
+
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
-        
+
         setDataAux(d);
         getBancasAPI();
 
@@ -239,38 +248,36 @@ export default function ValidarBilhete() {
     }, []);
 
 
-
-
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
 
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
-                    {dataAux.length > 0 ? 
-                    <React.Fragment>
-                        <MUIDataTable
-                            title={'VALIDAR BILHETES'}
-                            data={dataAux}
-                            columns={columns}
-                            options={options}
+                    <br/>
+                    {dataAux.length > 0 ?
+                        <React.Fragment>
+                            <MUIDataTable
+                                title={'VALIDAR BILHETES'}
+                                data={dataAux}
+                                columns={columns}
+                                options={options}
 
-                        />
-                    </React.Fragment> : 
-                    <Typography component="h1" variant="h6" align="center">
-                        Nenhum Jogo Disponível!    
-                    </Typography>}
+                            />
+                        </React.Fragment> :
+                        <Typography component="h1" variant="h6" align="center">
+                            Nenhum Jogo Disponível!
+                        </Typography>}
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

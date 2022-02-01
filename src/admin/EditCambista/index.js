@@ -1,43 +1,17 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
+import {useHistory} from 'react-router-dom';
+import {api} from '../Constantes/index';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {useParams} from "react-router";
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import { api } from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
 import Menu from '../Menu/index';
@@ -48,17 +22,9 @@ export default function Dashboard() {
 
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
     const [date, setDate] = useState([]);
     const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
     const [nomeBanca, setNomeBanca] = useState("");
     const [limitG, setLimitG] = useState("");
     const [limitS, setLimitS] = useState("");
@@ -75,14 +41,7 @@ export default function Dashboard() {
     const [idCambista, setidCambista] = useState(0);
     const [manage, setManage] = useState({});
     const [ba, setB] = useState(-1);
-    const [nome, setNome] = useState("");
     const [bancas, setBancas] = useState("");
-    
-
-    
-
-
-
 
 
     const useStyles = makeStyles((theme) => ({
@@ -176,18 +135,16 @@ export default function Dashboard() {
         }
     }));
 
-    
+
     const validationSchema = yup.object({
         password1: yup
-        .string().min(4, 'Digite no minimo 4 digitos'),
+            .string().min(4, 'Digite no minimo 4 digitos'),
         password2: yup
             .string().min(4, 'Digite no minimo 4 digitos')
             .oneOf([yup.ref('password1'), ''], 'As senhas estão diferentes'),
-            
+
     });
 
-    const columns = ["NOME", "LIMITE GERAL", "LIMITE SIMPLES", "COMISSÕES PRÉ-JOGO", "COMISSÕES AO VIVO",
-        "APOSTAS", "STATUS", "PRÉ-JOGO", "AO VIVO", "EDITAR"];
 
 
     const classes = useStyles();
@@ -213,7 +170,7 @@ export default function Dashboard() {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            api.put('/api/updatebanca/'+id, {
+            api.put('/api/updatebanca/' + id, {
                 "nome": nomeBanca,
                 "login": nomeBanca,
                 "senha": values.password1 != '' ? values.password1 : senha,
@@ -229,20 +186,20 @@ export default function Dashboard() {
                 "ativarApostas": apostas,
                 "status": status,
                 "gerente_id": ba,
-    
+
             })
                 .then(res => {
                     try {
                         if (res.data) {
                             console.log(res.data);
                             history.push("/cadastrarbancadmin");
-                        }   
+                        }
                     } catch (e) {
-    
+
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
         },
     });
 
@@ -250,14 +207,14 @@ export default function Dashboard() {
 
         let banca =
             typeof e.target.value === "string" ? e.target.value : e.target.innerText &&
-                e.target.innerText.length > 0 ? e.target.innerText : '';
-        
+            e.target.innerText.length > 0 ? e.target.innerText : '';
+
         bancas.map((b) => {
-            if(b.nome == banca){
+            if (b.nome == banca) {
                 setB(manage[b.nome]);
             }
         })
-        
+
 
     }
 
@@ -271,51 +228,50 @@ export default function Dashboard() {
         let unmounted = false;
 
         async function getDateAll() {
-            
-                    try {
-                        let d = Date.parse(new Date());
-                        d = new Date(d);
-                        d = d.setDate(d.getDate());
+
+            try {
+                let d = Date.parse(new Date());
+                d = new Date(d);
+                d = d.setDate(d.getDate());
 
 
-                        let d1 = Date.parse(new Date());
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate() + 1);
+                let d1 = Date.parse(new Date());
+                d1 = new Date(d1);
+                d1 = d1.setDate(d1.getDate() + 1);
 
-                        let d2 = Date.parse(new Date());
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 2);
+                let d2 = Date.parse(new Date());
+                d2 = new Date(d2);
+                d2 = d2.setDate(d2.getDate() + 2);
 
-                        d = new Date(d);
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
-
-
-                        setDate([d.getFullYear() + "-" + Number(d.getMonth() + 1) + "-" +
-                            d.getDate(), d1.getFullYear() + "-" + Number(d1.getMonth() + 1) + "-" +
-                        d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
-                        d2.getDate()]);
-
-                        if (!unmounted) {
-                            setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                            console.log([d.getDay(), d1.getDay(), d2.getDay()]);
-                        }
+                d = new Date(d);
+                d1 = new Date(d1);
+                d2 = new Date(d2);
 
 
+                setDate([d.getFullYear() + "-" + Number(d.getMonth() + 1) + "-" +
+                d.getDate(), d1.getFullYear() + "-" + Number(d1.getMonth() + 1) + "-" +
+                d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
+                d2.getDate()]);
 
-                    } catch (e) {
-                        console.log(e);
-                    }
-                
+                if (!unmounted) {
+                    setDay([d.getDay(), d1.getDay(), d2.getDay()]);
+                    console.log([d.getDay(), d1.getDay(), d2.getDay()]);
+                }
+
+
+            } catch (e) {
+                console.log(e);
+            }
+
         }
 
         async function getBancaAPI() {
 
-            api.get('/api/getbanca/'+id)
+            api.get('/api/getbanca/' + id)
                 .then(res => {
                     try {
                         if (res.data) {
-                           
+
                             setApostasAoVivo(res.data.bancas.ativarApostasAoVivos);
                             setApostas(res.data.bancas.ativarApostas);
                             setApostasPreJogo(res.data.bancas.ativarApostasPreJogo);
@@ -332,47 +288,45 @@ export default function Dashboard() {
                             setidCambista(res.data.bancas.id);
                             setB(res.data.bancas.gerente);
 
-                            
-                                let gerentes = {};
-                                let ban = [];
-                                api.get('/api/getgerencia')
-                                    .then(res => {
-                                        try {
-                                            if (res.data) {
-                                                 
-                                               res.data.gerencias.map((b) => {
-                                                   gerentes[b.id] = b.nome;
-                                                   gerentes[b.nome] = b.id;
-                                                   ban.push({'nome': b.nome});
-                                                   console.log(ban);
-                                               });
-                                               
-                                               
-                                               setBancas(ban);
-                                               setManage(gerentes); 
-                                                      
-                                            }   
-                                            
-                                        } catch (e) {
-                    
+
+                            let gerentes = {};
+                            let ban = [];
+                            api.get('/api/getgerencia')
+                                .then(res => {
+                                    try {
+                                        if (res.data) {
+
+                                            res.data.gerencias.map((b) => {
+                                                gerentes[b.id] = b.nome;
+                                                gerentes[b.nome] = b.id;
+                                                ban.push({'nome': b.nome});
+                                                console.log(ban);
+                                            });
+
+
+                                            setBancas(ban);
+                                            setManage(gerentes);
+
                                         }
-                                    }).catch(error => {
-                                        console.log(error)
-                                    });
-                    
-                      
-                            
-                        }   
+
+                                    } catch (e) {
+
+                                    }
+                                }).catch(error => {
+                                console.log(error)
+                            });
+
+
+                        }
                     } catch (e) {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
 
-        
 
         getBancaAPI();
         getDateAll();
@@ -383,88 +337,86 @@ export default function Dashboard() {
         };
 
     }, []);
-    
-    
+
+
     function handlerChangeApostasAovivo() {
-        if(apostasAoVivo){
+        if (apostasAoVivo) {
             setApostasAoVivo(false);
         } else {
             setApostasAoVivo(true);
         }
     }
 
-    function handlerChangeApostasPreJogo(){
-        if(apostasPreJogo){
+    function handlerChangeApostasPreJogo() {
+        if (apostasPreJogo) {
             setApostasPreJogo(false);
         } else {
             setApostasPreJogo(true);
         }
     }
 
-    function handlerChangeImprimir(){
-        if(imprimir){
+    function handlerChangeImprimir() {
+        if (imprimir) {
             setImprimir(false);
         } else {
             setImprimir(true);
         }
     }
 
-    function handlerChangeAposta(){
-        if(apostas){
+    function handlerChangeAposta() {
+        if (apostas) {
             setApostas(false);
         } else {
             setApostas(true);
         }
     }
 
-    function handlerChangeStatus(){
-        if(status){
+    function handlerChangeStatus() {
+        if (status) {
             setStatus(false);
         } else {
             setStatus(true);
         }
     }
 
-    function deleteCambista(){
-        
-        api.delete('/api/deletebanca/'+idCambista)
+    function deleteCambista() {
+
+        api.delete('/api/deletebanca/' + idCambista)
             .then(res => {
                 try {
                     if (res.data) {
                         history.push("/cadastrarbancadmin");
-                    }   
+                    }
                 } catch (e) {
                     history.push("/cadastrarbancadmin");
                 }
             }).catch(error => {
-                history.push("/cadastrarbancadmin");
-                console.log(error);
-                
-            });
-    
-    }
+            history.push("/cadastrarbancadmin");
+            console.log(error);
 
-    
+        });
+
+    }
 
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
 
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
-                   
-                        <Typography variant="h6" gutterBottom>
-                            Editar Cambista
-                        </Typography>
-                        <form className={classes.form} onSubmit={formik.handleSubmit}>
+                    <br/>
+
+                    <Typography variant="h6" gutterBottom>
+                        Editar Cambista
+                    </Typography>
+                    <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -480,19 +432,19 @@ export default function Dashboard() {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                            <Autocomplete
-                                id={"resetField2"}
-                                freeSolo
-                                fullWidth
-                                onChange={verifyBancaHandler}
-                                options={bancas}
-                                getOptionLabel={(option) => option.nome}
-                                renderInput={(params) =>
-                                    <TextField
-                                        {...params}
+                                <Autocomplete
+                                    id={"resetField2"}
+                                    freeSolo
+                                    fullWidth
+                                    onChange={verifyBancaHandler}
+                                    options={bancas}
+                                    getOptionLabel={(option) => option.nome}
+                                    renderInput={(params) =>
+                                        <TextField
+                                            {...params}
 
-                                        label={manage[ba]}
-                                        variant="outlined" />}
+                                            label={manage[ba]}
+                                            variant="outlined"/>}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -527,8 +479,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setLimitG(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
                                 <TextField
                                     value={limitS}
                                     id="standard-number"
@@ -537,8 +489,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setLimitS(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
 
                                 <TextField
                                     value={comissaoPreJogo}
@@ -558,8 +510,8 @@ export default function Dashboard() {
                                     fullWidth
                                     onChange={e => setComissaoPreJogo(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
                                 <TextField
                                     value={comissaoAoVivo}
                                     id="filled-multiline-static"
@@ -611,49 +563,53 @@ export default function Dashboard() {
 
                             <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasAoVivo} 
-                                    onClick={handlerChangeApostasAovivo}/>}
-                                    label="Habilitar Apostas Ao Vivo" 
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostasAoVivo}
+                                                       onClick={handlerChangeApostasAovivo}/>}
+                                    label="Habilitar Apostas Ao Vivo"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostasPreJogo}
-                                    onClick={handlerChangeApostasPreJogo} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostasPreJogo}
+                                                       onClick={handlerChangeApostasPreJogo}/>}
                                     label="Habilitar Apostas Pre-Jogo"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={imprimir}
-                                    onClick={handlerChangeImprimir} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={imprimir}
+                                                       onClick={handlerChangeImprimir}/>}
                                     label="Habilitar Imprimir Bilhete"
                                 />
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress" value="yes" checked={apostas}
-                                    onClick={handlerChangeAposta} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" value="yes"
+                                                       checked={apostas}
+                                                       onClick={handlerChangeAposta}/>}
                                     label="Apostas Ativas"
                                 />
-                                
+
                                 <FormControlLabel
-                                    control={<Checkbox color="secondary" name="saveAddress"  checked={status}
-                                    onClick={handlerChangeStatus} />}
+                                    control={<Checkbox color="secondary" name="saveAddress" checked={status}
+                                                       onClick={handlerChangeStatus}/>}
                                     label="Status"
                                 />
                             </Grid>
                             <Button variant="contained" color="primary" className={classes.submit}
-                             type="submit" disableElevation >
+                                    type="submit" disableElevation>
                                 ATUALIZAR
                             </Button>
-                            
-                            <Button variant="contained" color="secondary" 
-                             disableElevation style={{marginLeft: '10px'}}
-                             onClick={deleteCambista}>
+
+                            <Button variant="contained" color="secondary"
+                                    disableElevation style={{marginLeft: '10px'}}
+                                    onClick={deleteCambista}>
                                 EXCLUIR
                             </Button>
                         </Grid>
-                        </form>
-                  
+                    </form>
+
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

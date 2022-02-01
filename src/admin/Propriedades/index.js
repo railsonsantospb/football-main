@@ -1,63 +1,24 @@
-import { makeStyles } from '@material-ui/core/styles';
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
+import {makeStyles} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import InboxIcon from '@material-ui/icons/Inbox';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import DescriptionIcon from '@material-ui/icons/Description';
-import { images } from '../Constantes/index';
-import { CircleArrow as ScrollUpButton } from "react-scroll-up-button";
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import PersonIcon from '@material-ui/icons/Person';
+import {useHistory} from 'react-router-dom';
+import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
-import MUIDataTable from "mui-datatables";
-import CancelIcon from '@material-ui/icons/Cancel';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import EditIcon from '@material-ui/icons/Edit';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import {useParams} from "react-router";
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-import { api } from '../Constantes/index';
+import {api} from '../Constantes/index';
 import * as yup from 'yup';
 import {useFormik} from 'formik';
 import Menu from '../Menu/index';
 
 export default function ValidarDados() {
-    let {id} = useParams();
-
 
     let history = useHistory();
-    const [ids, setIds] = useState([]);
-    const [dic, setDic] = useState({});
     const [date, setDate] = useState([]);
     const [day, setDay] = useState([]);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
-    const [responsive, setResponsive] = useState("horizontal");
-    const [tableBodyHeight, setTableBodyHeight] = useState("400px");
-    const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
     const [valorDeEntrada, setValorDeEntrada] = useState(0);
     const [valorDeSaida, setValorDeSaida] = useState(0);
     const [limitG, setLimitG] = useState(0);
@@ -66,20 +27,14 @@ export default function ValidarDados() {
     const [cotacaoMin, setCotacaoMin] = useState(0);
     const [cotaMax, setCotaMax] = useState(0);
     const [cotaMin, setCotaMin] = useState(0);
-    const [comissaoPreJogo, setComissaoPreJogo] = useState("");
-    const [senha, setSenha] = useState("");
     const [apostasAoVivo, setApostasAoVivo] = useState(false);
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
     const [imprimir, setImprimir] = useState(false);
     const [apostas, setApostas] = useState(false);
     const [status, setStatus] = useState(false);
+    const [configTime, setConfigTime] = useState(0);
+    const [qtdJogos, setQtdJogos] = useState(0);
     const [idCambista, setidCambista] = useState(0);
-    
-
-    
-
-
-
 
 
     const useStyles = makeStyles((theme) => ({
@@ -173,76 +128,18 @@ export default function ValidarDados() {
         }
     }));
 
-    const options = {
-        rowsPerPage: 50,
-        filter: true,
-        filterType: "dropdown",
-        responsive,
-        tableBodyHeight,
-        tableBodyMaxHeight,
-        selectableRows: false,
-        onRowClick: (rowData, rowMeta) => {
-            const dataToState = rowData;
-            console.log(dataToState);
-        }
-    };
 
-    
     const validationSchema = yup.object({
         password1: yup
-        .string().min(4, 'Digite no minimo 4 digitos'),
+            .string().min(4, 'Digite no minimo 4 digitos'),
         password2: yup
             .string().min(4, 'Digite no minimo 4 digitos')
             .oneOf([yup.ref('password1'), ''], 'As senhas estão diferentes'),
-            
+
     });
 
 
     const classes = useStyles();
-
-    const handleClick = () => {
-        setOpenNav(!openNav);
-    };
-
-    const handleClickA = index => {
-        if (openNavA === index) {
-            setOpenNavA("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavA(index);
-            setdrawerWidth(400);
-        }
-    }
-
-    const handleClickB = index => {
-        if (openNavB === index) {
-            setOpenNavB("");
-            setdrawerWidth(240);
-        } else {
-            setOpenNavB(index);
-            setdrawerWidth(400);
-        }
-    }
-
-
-
-    const handleDrawerOpen = () => {
-        if (document.getElementById('drawer').style.display == 'none' || document.getElementById('drawer').style.display == '') {
-            document.getElementById('drawer').style.display = 'block';
-            document.getElementById('drawer').style.marginLeft = '40px';
-        } else if (document.getElementById('drawer').style.display == 'block') {
-            document.getElementById('drawer').style.display = 'none';
-            document.getElementById('drawer').style.marginLeft = '0px';
-        }
-    };
-
-    const handleDrawerClose = () => {
-        setOpenNav(false);
-        setdrawerWidth(240);
-        setOpenNavA("");
-        setOpenNavB("");
-        document.getElementById('drawer').style.display = 'none';
-    };
 
     function close(e) {
 
@@ -277,20 +174,21 @@ export default function ValidarDados() {
                 "cotacaoMin": cotacaoMin,
                 "cotaMax": cotaMax,
                 "cotaMin": cotaMin,
-    
+                "qtdJogos": qtdJogos,
+                "configTime": configTime,
             })
                 .then(res => {
                     try {
                         if (res.data) {
                             history.go(0);
                             alert('Atualizado com Sucesso!');
-                        }   
+                        }
                     } catch (e) {
                         alert('Erro ao Atualizar!');
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
         },
     });
 
@@ -302,49 +200,44 @@ export default function ValidarDados() {
         }
 
         let unmounted = false;
-        
-
-
-      
 
 
         async function getDateAll() {
-            
-                    try {
-                        let d = Date.parse(new Date());
-                        d = new Date(d);
-                        d = d.setDate(d.getDate());
+
+            try {
+                let d = Date.parse(new Date());
+                d = new Date(d);
+                d = d.setDate(d.getDate());
 
 
-                        let d1 = Date.parse(new Date());
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate() + 1);
+                let d1 = Date.parse(new Date());
+                d1 = new Date(d1);
+                d1 = d1.setDate(d1.getDate() + 1);
 
-                        let d2 = Date.parse(new Date());
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 2);
+                let d2 = Date.parse(new Date());
+                d2 = new Date(d2);
+                d2 = d2.setDate(d2.getDate() + 2);
 
-                        d = new Date(d);
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
-
-
-                        setDate([d.getFullYear() + "-" + Number(d.getMonth() + 1) + "-" +
-                            d.getDate(), d1.getFullYear() + "-" + Number(d1.getMonth() + 1) + "-" +
-                        d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
-                        d2.getDate()]);
-
-                        if (!unmounted) {
-                            setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                            console.log([d.getDay(), d1.getDay(), d2.getDay()]);
-                        }
+                d = new Date(d);
+                d1 = new Date(d1);
+                d2 = new Date(d2);
 
 
+                setDate([d.getFullYear() + "-" + Number(d.getMonth() + 1) + "-" +
+                d.getDate(), d1.getFullYear() + "-" + Number(d1.getMonth() + 1) + "-" +
+                d1.getDate(), d2.getFullYear() + "-" + Number(d2.getMonth() + 1) + "-" +
+                d2.getDate()]);
 
-                    } catch (e) {
-                        console.log(e);
-                    }
-                
+                if (!unmounted) {
+                    setDay([d.getDay(), d1.getDay(), d2.getDay()]);
+                    console.log([d.getDay(), d1.getDay(), d2.getDay()]);
+                }
+
+
+            } catch (e) {
+                console.log(e);
+            }
+
         }
 
         async function getAdminAPI() {
@@ -362,13 +255,15 @@ export default function ValidarDados() {
                             setCotacaoMin(res.data.admin[0].cotacaoMin);
                             setCotaMin(res.data.admin[0].cotaMin);
                             setCotaMax(res.data.admin[0].cotaMax);
-                        }   
+                            setConfigTime(res.data.admin[0].configTime);
+                            setQtdJogos(res.data.admin[0].qtdJogos);
+                        }
                     } catch (e) {
 
                     }
                 }).catch(error => {
-                    console.log(error)
-                });
+                console.log(error)
+            });
 
         }
 
@@ -382,87 +277,85 @@ export default function ValidarDados() {
 
     }, []);
 
-    
+
     function handlerChangeApostasAovivo() {
-        if(apostasAoVivo){
+        if (apostasAoVivo) {
             setApostasAoVivo(false);
         } else {
             setApostasAoVivo(true);
         }
     }
 
-    function handlerChangeApostasPreJogo(){
-        if(apostasPreJogo){
+    function handlerChangeApostasPreJogo() {
+        if (apostasPreJogo) {
             setApostasPreJogo(false);
         } else {
             setApostasPreJogo(true);
         }
     }
 
-    function handlerChangeImprimir(){
-        if(imprimir){
+    function handlerChangeImprimir() {
+        if (imprimir) {
             setImprimir(false);
         } else {
             setImprimir(true);
         }
     }
 
-    function handlerChangeAposta(){
-        if(apostas){
+    function handlerChangeAposta() {
+        if (apostas) {
             setApostas(false);
         } else {
             setApostas(true);
         }
     }
 
-    function handlerChangeStatus(){
-        if(status){
+    function handlerChangeStatus() {
+        if (status) {
             setStatus(false);
         } else {
             setStatus(true);
         }
     }
 
-    function deleteCambista(){
-        
-        api.delete('/api/deletebanca/'+idCambista)
+    function deleteCambista() {
+
+        api.delete('/api/deletebanca/' + idCambista)
             .then(res => {
                 try {
                     if (res.data) {
                         history.push("/gerenteReload");
-                    }   
+                    }
                 } catch (e) {
                     history.push("/gerenteReload");
                 }
             }).catch(error => {
-                history.push("/gerenteReload");
-                console.log(error);
-                
-            });
-    
-    }
+            history.push("/gerenteReload");
+            console.log(error);
 
-    
+        });
+
+    }
 
 
     return (
         <div className={classes.root} onClick={close}>
-            <CssBaseline />
+            <CssBaseline/>
 
             <Menu/>
 
             <main className={classes.content}>
 
-                <div className={classes.appBarSpacer} />
+                <div className={classes.appBarSpacer}/>
 
                 <Container maxWidth="lg" className={classes.container}>
 
-                    <br />
-                   
-                        <Typography variant="h6" gutterBottom>
-                            Configurar Valores 
-                        </Typography>
-                        <form className={classes.form} onSubmit={formik.handleSubmit}>
+                    <br/>
+
+                    <Typography variant="h6" gutterBottom>
+                        Configurar Valores
+                    </Typography>
+                    <form className={classes.form} onSubmit={formik.handleSubmit}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
@@ -542,7 +435,7 @@ export default function ValidarDados() {
                                     onChange={e => setCotacao(e.target.value)}
                                 />
                             </Grid>
-                            
+
                             <Grid item xs={12}>
                                 <TextField
                                     value={limitG}
@@ -553,8 +446,8 @@ export default function ValidarDados() {
                                     fullWidth
                                     onChange={e => setLimitG(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/>
+                                <br/>
                                 <TextField
                                     value={limitS}
                                     required
@@ -564,12 +457,39 @@ export default function ValidarDados() {
                                     fullWidth
                                     onChange={e => setLimitS(e.target.value)}
                                 />
-                                <br />
-                                <br />
+                                <br/><br/>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        value={configTime}
+                                        required
+                                        type="number"
+                                        id="configTime"
+                                        name="configTime"
+                                        label="Tempo Máximo de Cancelar Bilhete (min)"
+                                        fullWidth
+                                        autoComplete="given-name"
+                                        onChange={e => setConfigTime(e.target.value)}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        value={qtdJogos}
+                                        required
+                                        id="qtdJogos"
+                                        type="number"
+                                        name="qtdJogos"
+                                        label="Quantidade de Jogos por Bilhete"
+                                        fullWidth
+                                        autoComplete="family-name"
+                                        onChange={e => setQtdJogos(e.target.value)}
+                                    />
+                                </Grid>
+                                <br/>
+                                <br/>
 
-                                
+
                             </Grid>
-                            
+
 
                             {/* <Grid item xs={12}>
                                 <FormControlLabel
@@ -600,17 +520,17 @@ export default function ValidarDados() {
                                 />
                             </Grid> */}
                             <Button variant="contained" color="primary" className={classes.submit}
-                             type="submit" disableElevation >
+                                    type="submit" disableElevation>
                                 ATUALIZAR
                             </Button>
-                            
+
                         </Grid>
-                        </form>
-                  
+                    </form>
+
                 </Container>
 
                 <div>
-                    <ScrollUpButton />
+                    <ScrollUpButton/>
                 </div>
             </main>
 

@@ -232,7 +232,7 @@ export const GlobalStyle = createGlobalStyle `
     }
  
   @media print {
-    @page { size: auto auto; margin: 0; }
+    @page { size: auto; margin: 0; }
   }
 
   @media only screen and (max-width: 600px) {
@@ -255,9 +255,8 @@ export const GlobalStyle = createGlobalStyle `
 
     #bets3 {
       display: block;
-      
       margin-top:-45px;
-      margin-left: -28px;
+      margin-left: -10px;
     }
     #font {
       font-size: 12px;
@@ -270,8 +269,22 @@ export const GlobalStyle = createGlobalStyle `
       font-size: 12px;
     }
 
- 
 
+    .button {
+      background-color: #2237CF;
+      border: none;
+      color: white;
+      width: 60px;
+      padding: 8px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 1px;
+
+    }
 
 
     .buttonPlus {
@@ -284,7 +297,7 @@ export const GlobalStyle = createGlobalStyle `
       text-decoration: none;
       display: inline-block;
       font-size: 16px;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       margin: 4px 2px;
 
