@@ -45,7 +45,9 @@ export default function Dashboard(props) {
     const [clientes, setClientes] = useState([]);
     const [campeonato, setCampeonato] = useState([]);
     const {height, width} = useWindowDimensions();
-
+    const [inputValue, setInputValue] = React.useState('');
+    const [value, setValue] = React.useState("");
+    const [entrada, setEntrada] = useState(0)
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
 
 
@@ -123,6 +125,8 @@ export default function Dashboard(props) {
     }, 1000);
 
     function InitOdds() {
+        localStorage.setItem("retorno", "");
+        localStorage.setItem("valorIn", "");
         if (localStorage.getItem("betsAll2") === null) {
             localStorage.setItem("betsAll2", "");
             noneBets();
@@ -405,86 +409,95 @@ export default function Dashboard(props) {
                 d = (res.data.date);
 
                 let comissaoValor = 0;
-                let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
-                for (let valores of bilhetes.sort()) {
-                    if (qtd <= valores.split(':')[0]) {
+
+
+                let qtd = parseFloat(localStorage.getItem('betsAll2').split("=").length - 1);
+
+                for (let valores of bilhetes) {
+
+                    if (qtd >= parseFloat(valores.split(':')[0])) {
                         comissaoValor = parseFloat(valores.split(':')[1]) / 100;
-                        break
+
                     }
                 }
 
 
-                api.post('/api/addbilhete',
-                    {
-                        "codigo": codigo,
-                        "bancaId": bancaId,
-                        "gerenteId": gerenteId,
-                        "nomeCliente": client,
-                        "nomeBanca": nomeBanca,
-                        "dataDaAposta": d,
-                        "valorDeEntrada": parseFloat(localStorage.getItem('valorIn')),
-                        "valorDeSaida": parseFloat(document.getElementById('retorno').innerHTML),
-                        "cotacao": parseFloat(document.getElementById('cotacao').innerHTML),
-                        "tipoDeJogo": "Pre-Jogo",
-                        "quantidadeJogos": qtd,
-                        "tipoSimplesouMultiplo": qtd > 1 ? "M" : "S",
-                        "comissao": (parseFloat(localStorage.getItem('valorIn')) * comissaoValor).toFixed(2),
-                        "status": "Aberto"
+                    api.post('/api/addbilhete',
+                        {
+                            "codigo": codigo,
+                            "bancaId": bancaId,
+                            "gerenteId": gerenteId,
+                            "nomeCliente": client,
+                            "nomeBanca": nomeBanca,
+                            "dataDaAposta": d,
+                            "valorDeEntrada": parseFloat(entrada),
+                            "valorDeSaida": parseFloat(document.getElementById('retorno').innerHTML),
+                            "cotacao": parseFloat(document.getElementById('cotacao').innerHTML),
+                            "tipoDeJogo": "Pre-Jogo",
+                            "quantidadeJogos": qtd,
+                            "tipoSimplesouMultiplo": qtd > 1 ? "M" : "S",
+                            "comissao": (parseFloat(entrada) * comissaoValor).toFixed(2),
+                            "status": "Aberto"
 
-                    })
-                    .then(res => {
-                        let prejogo = localStorage.getItem('betsAll2');
-                        try {
-                            prejogo.split('=').slice(0, -1).map((b) => {
-                                let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
-                                let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
-                                let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
-                                let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
-                                api.post('/api/addjogo',
-                                    {
-                                        "codigoBilhete": codigo,
-                                        "dataDoJogo": data,
-                                        "nomeDoCampeonato": campeonato,
-                                        "nomeDosTimes": times,
-                                        "tipoDeCotacao": typeBets,
-                                        "cotacao": parseFloat(value),
-                                        "status": "Aberto",
-                                    })
-                                    .then(res => {
-                                        try {
-                                            if (res.data) {
-                                                localStorage.removeItem(b.split('-')[0] + 'x');
-                                                localStorage.removeItem(b.split('-')[0]);
-                                                clearOdds();
-                                                localStorage.setItem('betsAll2', localStorage.getItem('betsAll2').replace(b + '=', ''));
-                                                geraBilhete();
-                                                document.getElementById("retorno").innerHTML = '0.00';
+                        })
+                        .then(res => {
+                            let prejogo = localStorage.getItem('betsAll2');
+                            try {
+                                prejogo.split('=').slice(0, -1).map((b) => {
+                                    let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
+                                    let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
+                                    let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                                    let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
+                                    let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
+                                    api.post('/api/addjogo',
+                                        {
+                                            "codigoBilhete": codigo,
+                                            "dataDoJogo": data,
+                                            "nomeDoCampeonato": campeonato,
+                                            "nomeDosTimes": times,
+                                            "tipoDeCotacao": typeBets,
+                                            "cotacao": parseFloat(value),
+                                            "status": "Aberto",
+                                        })
+                                        .then(res => {
+                                            try {
+                                                if (res.data) {
+                                                    localStorage.removeItem(b.split('-')[0] + 'x');
+                                                    localStorage.removeItem(b.split('-')[0]);
+                                                    clearOdds();
+                                                    localStorage.setItem('betsAll2', localStorage.getItem('betsAll2').replace(b + '=', ''));
+                                                    geraBilhete();
+                                                    document.getElementById("retorno").innerHTML = '0.00';
+                                                }
+                                            } catch (e) {
+                                                console.log(e);
                                             }
-                                        } catch (e) {
-                                            console.log(e);
-                                        }
 
-                                    }).catch(error => {
-                                    console.log(error);
+                                        }).catch(error => {
+                                        console.log(error);
+                                    });
+
                                 });
+                                setEntrada(0);
+                                localStorage.setItem("retorno", "");
+                                setClient("");
+                                addVeiryClient("");
 
-                            });
 
-                        } catch (e) {
+                            } catch (e) {
 
-                        }
+                            }
 
-                    }).catch(error => {
-                    console.log(error);
-                });
+                        }).catch(error => {
+                        console.log(error);
+                    });
+
 
             }).catch(error => {
             console.log(error);
         });
 
     }
-
 
     function cotacaoHandler() {
         try {
@@ -521,8 +534,15 @@ export default function Dashboard(props) {
 
             if (parseFloat(value) >= valorMin && parseFloat(value) <= valorMax) {
                 handleCloseURL();
-                localStorage.setItem("retorno", (cotacao * Number(value)).toFixed(2));
-                document.getElementById('retorno').innerHTML = ((cotacao * Number(value)).toFixed(2));
+                setEntrada(value);
+
+                document.getElementById('retorno').innerHTML =
+                    ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                        ((cotacao * Number(value)).toFixed(2));
+
+                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                    ((cotacao * Number(value)).toFixed(2)));
+
             } else if (parseFloat(value) < valorMin) {
                 document.getElementById('retorno').innerHTML = '0.00';
                 setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));
@@ -534,6 +554,9 @@ export default function Dashboard(props) {
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
+            setEntrada(0);
+            localStorage.setItem("retorno", "");
+            localStorage.setItem('valorIn', "");
             handleCloseURL();
         }
 
@@ -542,21 +565,22 @@ export default function Dashboard(props) {
     }
 
     function addVeiryClient(e) {
-        setClient(e.target.value);
+        setValue(e.target.value);
 
     }
 
     function addClient() {
-        if (client.length > 3) {
+        if (value.length > 3) {
             if (getClient() == false) {
                 api.post('/api/addcliente', {
-                    'nome': client,
+                    'nome': value,
                     'banca': sessionStorage.getItem('login'),
                     'gerenteId': sessionStorage.getItem('gerenteId'),
                     'nomeBanca': sessionStorage.getItem('nomeBanca')
                 })
                     .then(res => {
                         try {
+                            let nomes = [];
                             if (res.data) {
                                 setMessage(`Cliente cadastrado com sucesso!`);
                                 handleClickOpenURL();
@@ -564,11 +588,14 @@ export default function Dashboard(props) {
                                     .then(res => {
                                         try {
                                             if (res.data) {
-                                                setClientes(res.data);
+                                                res.data.clientes.map((c) =>{
+                                                    nomes.push(c.nome);
+                                                });
                                             }
                                         } catch (e) {
 
                                         }
+                                        setClientes((nomes));
                                     }).catch(error => {
                                     console.log(error);
                                 });
@@ -576,6 +603,7 @@ export default function Dashboard(props) {
                         } catch (e) {
 
                         }
+                        setValue("");
 
                     }).catch(error => {
                     console.log(error);
@@ -594,9 +622,9 @@ export default function Dashboard(props) {
     function getClient() {
         let r = false;
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
-            clientes.clientes.map((f) => {
-                console.log(f);
-                if (f.nome == client) {
+            clientes.map((f) => {
+
+                if (f == client) {
                     r = true;
                 }
             });
@@ -617,205 +645,213 @@ export default function Dashboard(props) {
 
 
     function betsDone() {
-        handleClickOpenLoading();
+        let qtd = localStorage.getItem('betsAll2').split("=").length-1;
+        let qtdJogos = sessionStorage.getItem("qtdJogos");
+        if(qtd <= qtdJogos) {
+            handleClickOpenLoading();
 
 
-        setTimeout(function () {
+            setTimeout(function () {
 
-            let valid1 = false;
-            let valid2 = true;
-            let valid3 = false;
-            let oddValue = false;
-            let teams = [];
-            let cotacaoAux = 1;
-            let cotAux = parseFloat(document.getElementById('cotacao').innerHTML);
-            let betsAll = localStorage.getItem("betsAll2").split("=");
-            var id = localStorage.getItem('betsAll2').split('=');
+                let valid1 = false;
+                let valid2 = true;
+                let valid3 = false;
+                let oddValue = false;
+                let teams = [];
+                let cotacaoAux = 1;
+                let cotAux = parseFloat(document.getElementById('cotacao').innerHTML);
+                let betsAll = localStorage.getItem("betsAll2").split("=");
+                var id = localStorage.getItem('betsAll2').split('=');
 
-            if (id !== null && id[0] !== '') {
-                for (let n in id.slice(0, id.length - 1)) {
-                    cotacaoAux *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
+                if (id !== null && id[0] !== '') {
+                    for (let n in id.slice(0, id.length - 1)) {
+                        cotacaoAux *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
 
+                    }
                 }
-            }
-            betsAll = betsAll.slice(0, betsAll.length - 1);
-            let i = 0;
-            betsAll.map((bets) => {
+                betsAll = betsAll.slice(0, betsAll.length - 1);
+                let i = 0;
+                betsAll.map((bets) => {
 
-                let auxBets = localStorage.getItem(bets.split('-')[0] + "x").split(',');
-                let id = auxBets.slice(-1)[0];
-                let opcao = auxBets[0].split(':')[0];
-                let key = auxBets[0].split(':')[1];
-
-
-                api.get('/api/getmaispre/' + id)
-                    .then(res => {
-
-                        let valores = new Set();
-                        let cotacoes = {};
+                    let auxBets = localStorage.getItem(bets.split('-')[0] + "x").split(',');
+                    let id = auxBets.slice(-1)[0];
+                    let opcao = auxBets[0].split(':')[0];
+                    let key = auxBets[0].split(':')[1];
 
 
-                        try {
+                    api.get('/api/getmaispre/' + id)
+                        .then(res => {
+
+                            let valores = new Set();
+                            let cotacoes = {};
 
 
-                            i++;
+                            try {
 
 
-                            if (res.data) {
-                                res.data.mais.modalidades.map((m) => {
-                                    m.cotacoes.map((c) => {
-                                        if (c.subeventos != null) {
-                                            c.subeventos.map((e) => {
-                                                if (m.titulo + "--" +
-                                                    ((m.titulo.indexOf('Handicap') != -1) ?
-                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                i++;
 
 
-                                                    oddValue = true;
-                                                    valid2 = false;
+                                if (res.data) {
+                                    res.data.mais.modalidades.map((m) => {
+                                        m.cotacoes.map((c) => {
+                                            if (c.subeventos != null) {
+                                                c.subeventos.map((e) => {
+                                                    if (m.titulo + "--" +
+                                                        ((m.titulo.indexOf('Handicap') != -1) ?
+                                                            (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
 
-                                                    if (Number(auxBets[4]) == 15 &&
-                                                        Number(auxBets[4]) > Number((e.cotacao / 100).toFixed(2))) {
-                                                        valid1 = true;
-                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
-                                                    } else if (Number(auxBets[4]) != Number((e.cotacao / 100).toFixed(2))) {
-                                                        valid1 = true;
-                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
+
+                                                        oddValue = true;
+                                                        valid2 = false;
+
+                                                        if (Number(auxBets[4]) == 15 &&
+                                                            Number(auxBets[4]) > Number((e.cotacao / 100).toFixed(2))) {
+                                                            valid1 = true;
+                                                            auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        } else if (Number(auxBets[4]) != Number((e.cotacao / 100).toFixed(2))) {
+                                                            valid1 = true;
+                                                            auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        }
                                                     }
-                                                }
-                                            })
-                                        }
+                                                })
+                                            }
+                                        })
                                     })
-                                })
 
 
-                                if (betsAll.length == i) {
+                                    if (betsAll.length == i) {
 
 
-                                    if (Number(document.getElementById('retorno').innerHTML) > 0) {
-                                        if (cotacaoAux > parseFloat(sessionStorage.getItem('cotacaoAdminMin'))) {
-                                            if (getClient() == false) {
-                                                setMessage(`Por favor adicione um cliente válido!`);
-                                                handleClickOpenURL();
-                                            } else if (valid2) {
-                                                setMessage(`Algumas apostas foram suspenas, aguarde um momento e confirme sua aposta!`);
-                                                handleClickOpenURL();
-                                            } else if (valid1) {
+                                        if (Number(document.getElementById('retorno').innerHTML) > 0) {
+                                            if (cotacaoAux > parseFloat(sessionStorage.getItem('cotacaoAdminMin'))) {
+                                                if (getClient() == false) {
+                                                    setMessage(`Por favor adicione um cliente válido!`);
+                                                    handleClickOpenURL();
+                                                } else if (valid2) {
+                                                    setMessage(`Algumas apostas foram suspenas, aguarde um momento e confirme sua aposta!`);
+                                                    handleClickOpenURL();
+                                                } else if (valid1) {
 
-                                                var resultCotaca = 1;
-                                                var id = localStorage.getItem('betsAll2').split('=');
+                                                    var resultCotaca = 1;
+                                                    var id = localStorage.getItem('betsAll2').split('=');
 
-                                                if (id !== null && id[0] !== '') {
-                                                    for (let n in id.slice(0, id.length - 1)) {
-                                                        resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
+                                                    if (id !== null && id[0] !== '') {
+                                                        for (let n in id.slice(0, id.length - 1)) {
+                                                            resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
+
+                                                        }
+                                                    } else {
+                                                        resultCotaca = 0;
+                                                    }
+                                                    let r = parseFloat(document.getElementById('retorno').innerHTML);
+                                                    if(resultCotaca != r && resultCotaca <= 10000){
+                                                        document.getElementById('retorno').innerHTML = ' ' +
+                                                            Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
+                                                        setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
+                                                    } else {
+                                                        setMessage(`Algumas apostas foram alteradas, pode finalizar sua aposta!`);
+                                                    }
+                                                    handleClickOpenURL();
+
+
+                                                }
+                                                if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
+                                                    if (!valid1 && !valid2 && !valid3) {
+                                                        let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
+
+
+                                                        if (500 >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                            //salvarBilhete();
+                                                            let codigoPIn = Math.ceil(Math.random() * Math.pow(10, 6));
+                                                            api.post('/api/addbilhetetemporario', {
+                                                                'codigoPin': codigoPIn,
+                                                                'bilhete': {...localStorage}
+                                                            })
+                                                                .then(res => {
+                                                                    if (res.data) {
+                                                                        noneBets();
+                                                                        clearOdds();
+                                                                        localStorage.removeItem("valorIn");
+                                                                        localStorage.clear();
+
+                                                                        document.getElementById("bilhete").innerHTML =
+                                                                            "<center><h1>" + codigoPIn + "</h1></center>";
+                                                                    }
+                                                                    clearOdds();
+                                                                }).catch(error => {
+                                                                console.log(error)
+                                                            });
+
+                                                        } else {
+                                                            alert('Sem limite para apostar!');
+                                                        }
 
                                                     }
                                                 } else {
-                                                    resultCotaca = 0;
-                                                }
-                                                setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
+                                                    if (getClient() && !valid1 && !valid2 && !valid3) {
+                                                        let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
+                                                        let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
 
+                                                        if (auxSaldo >= parseFloat(entrada)) {
+                                                            salvarBilhete();
+                                                            handlePrint();
+                                                            noneBets();
+                                                            clearOdds();
+                                                            geraBilhete();
+                                                        } else {
+                                                            alert('Sem limite para apostar!');
+                                                        }
 
-                                                document.getElementById('retorno').innerHTML = ' ' +
-                                                    Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
-
-                                                handleClickOpenURL();
-
-
-                                            }
-                                            if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
-                                                if (!valid1 && !valid2 && !valid3) {
-                                                    let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
-
-
-                                                    if (500 >= parseFloat(localStorage.getItem('valorIn'))) {
-                                                        //salvarBilhete();
-                                                        let codigoPIn = Math.ceil(Math.random() * Math.pow(10,6));
-                                                        api.post('/api/addbilhetetemporario', {
-                                                            'codigoPin': codigoPIn,
-                                                            'bilhete': {...localStorage}
-                                                        })
-                                                            .then(res => {
-                                                                if(res.data){
-                                                                    noneBets();
-                                                                    clearOdds();
-                                                                    localStorage.removeItem("valorIn");
-                                                                    localStorage.clear();
-
-                                                                    document.getElementById("bilhete").innerHTML =
-                                                                        "<center><h1>" + codigoPIn + "</h1></center>";
-                                                                }
-                                                                clearOdds();
-                                                            }).catch(error => {
-                                                            console.log(error)
-                                                        });
-
-                                                    } else {
-                                                        alert('Sem limite para apostar!');
                                                     }
-
                                                 }
                                             } else {
-                                                if (getClient() && !valid1 && !valid2 && !valid3) {
-                                                    let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
-                                                    let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
-
-                                                    if (auxSaldo >= parseFloat(localStorage.getItem('valorIn'))) {
-                                                        salvarBilhete();
-                                                        handlePrint();
-                                                        noneBets();
-                                                        clearOdds();
-                                                        geraBilhete();
-                                                    } else {
-                                                        alert('Sem limite para apostar!');
-                                                    }
-
-                                                }
+                                                setMessage('A cotação mínima é de R$ ' + parseFloat(sessionStorage.getItem('cotacaoAdminMin'))
+                                                    .toFixed(2));
+                                                handleClickOpenURL();
                                             }
                                         } else {
-                                            setMessage('A cotação mínima é de R$ ' + parseFloat(sessionStorage.getItem('cotacaoAdminMin'))
-                                                .toFixed(2));
+                                            setMessage('Por favor insira um valor de no mínimo R$ ' + sessionStorage.getItem('valorDeEntrada') + ',00');
                                             handleClickOpenURL();
                                         }
-                                    } else {
-                                        setMessage('Por favor insira um valor de no mínimo R$ ' + sessionStorage.getItem('valorDeEntrada') + ',00');
-                                        handleClickOpenURL();
+                                        handleCloseLoading();
                                     }
-                                    handleCloseLoading();
                                 }
+
+
+                            } catch (e) {
+                                alert('O seguinte jogo indisponível: ' + auxBets[5]);
+                                handleCloseLoading();
+                                console.log(e);
+                                valid1 = true;
+                                valid2 = true;
                             }
+                        }).catch(error => {
+                        alert('O seguinte jogo indisponível: ' + auxBets[5]);
+                        handleCloseLoading();
+                    });
 
 
-                        } catch (e) {
-                            alert('O seguinte jogo indisponível: ' + auxBets[5]);
-                            handleCloseLoading();
-                            console.log(e);
-                            valid1 = true;
-                            valid2 = true;
-                        }
-                    }).catch(error => {
-                    alert('O seguinte jogo indisponível: ' + auxBets[5]);
-                    handleCloseLoading();
                 });
 
 
-            });
-
-
-        }, 0);
+            }, 0);
+        } else {
+                alert('Você selecionou ' + qtd + ' jogos, o máximo é ' + qtdJogos);
+        }
     }
 
     function onClickHandler() {
+        document.getElementById('resetField1').value = '';
         localStorage.removeItem("valorIn");
-        let qtd = localStorage.getItem('betsAll2').split("=").length;
-        console.log(qtd);
-        if (qtd <= 20) {
+
+        if (1) {
             document.getElementById('bilheteP').innerHTML = '';
             const team = localStorage.getItem('click2');
             document.getElementById("retorno").innerHTML = '0.00';
@@ -874,6 +910,7 @@ export default function Dashboard(props) {
                         ).style.background = "";
                     }
                     localStorage.setItem(betsGame.slice(-1)[0] + "x", betsGame);
+
                     betsAll = localStorage.getItem("betsAll2");
                     betsAll = betsAll.replace(
                         betsGame.slice(-1)[0] +
@@ -1366,16 +1403,23 @@ export default function Dashboard(props) {
         }
 
         async function getClienteAPI() {
-
+            let nomes = [];
             api.get('/api/getclientes/' + sessionStorage.getItem('login'))
                 .then(res => {
                     try {
+
                         if (res.data) {
-                            setClientes(res.data);
+
+                            res.data.clientes.map((c) =>{
+                                nomes.push(c.nome);
+
+                            })
                         }
                     } catch (e) {
 
                     }
+                    setClientes(nomes);
+
                 }).catch(error => {
                 console.log(error);
             });
@@ -1466,11 +1510,12 @@ export default function Dashboard(props) {
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}></b><br/>
-                                        Valor da Aposta:<b></b><br/><br/>
+                                        Valor da Aposta:<b>{localStorage.getItem("valorIn") != null &&
+                                    localStorage.getItem("valorIn") != "" ?
+                                        localStorage.getItem("valorIn") : ""
+                                    }</b><br/><br/>
                                     </Typography>
                                     <center>
-                                        {localStorage.getItem("valorIn") != null &&
-                                        localStorage.getItem("valorIn") != "" ?
                                             <div id={"value"}>
                                                 <TextField
                                                     fullWidth
@@ -1478,22 +1523,6 @@ export default function Dashboard(props) {
 
                                                     label="Digite um Valor"
                                                     type="number"
-                                                    value={localStorage.getItem("valorIn")}
-                                                    onChange={valueBetsHandler}
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value
-                                                    }}
-                                                    variant="filled"
-                                                /></div>  : <div id={"value"}>
-                                                <TextField
-                                                    fullWidth
-                                                    id={"resetField1"}
-
-                                                    label="Digite um Valor"
-                                                    type="number"
 
                                                     onChange={valueBetsHandler}
                                                     InputLabelProps={{
@@ -1503,17 +1532,22 @@ export default function Dashboard(props) {
                                                         e.target.value = e.target.value
                                                     }}
                                                     variant="filled"
-                                                /></div>}
+                                                /></div>
                                     </center>
 
                                     <br style={{marginBottom: '10px'}}/>
                                     <div id={"clients"}>
                                         <Autocomplete
-                                            id={"resetField2"}
-                                            freeSolo
-                                            onChange={verifyClientHandler}
-                                            options={clientes.clientes}
-                                            getOptionLabel={(option) => option.nome}
+                                            id="controllable-states-demo"
+                                            value={client}
+                                            onChange={(event, newValue) => {
+                                                setClient(newValue);
+                                            }}
+                                            inputValue={inputValue}
+                                            onInputChange={(event, newInputValue) => {
+                                                setInputValue(newInputValue);
+                                            }}
+                                            options={clientes}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -1533,6 +1567,7 @@ export default function Dashboard(props) {
                                         <div id={"fieldClient"}>
                                             <TextField
                                                 id={"resetField3"}
+                                                value={value}
                                                 label="Cadastrar Cliente"
                                                 type="search"
                                                 fullWidth

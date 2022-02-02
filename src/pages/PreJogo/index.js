@@ -59,6 +59,9 @@ export default function Dashboard1(props) {
     const [entrada, setEntrada] = useState(0);
     // const [cotacao, setCotacao] = useState([]);
     const {height, width} = useWindowDimensions();
+    const [inputValue, setInputValue] = React.useState('');
+    const [value, setValue] = React.useState("");
+
 
     const [titulo, setTitulo] = useState([]);
 
@@ -143,7 +146,8 @@ export default function Dashboard1(props) {
 
 
     function InitOdds() {
-
+        localStorage.setItem("retorno", "");
+        localStorage.setItem("valorIn", "");
         if (localStorage.getItem("betsAll2") === null) {
             localStorage.setItem("betsAll2", "");
             localStorage.setItem('displayBets2', 'none');
@@ -426,15 +430,16 @@ export default function Dashboard1(props) {
                 d = (res.data.date);
 
                 let comissaoValor = 0;
-                let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
-                for (let valores of bilhetes.sort()) {
-                    if (qtd <= valores.split(':')[0]) {
+                let qtd = parseFloat(localStorage.getItem('betsAll2').split("=").length - 1);
+
+                for (let valores of bilhetes) {
+
+                    if (qtd >= parseFloat(valores.split(':')[0])) {
                         comissaoValor = parseFloat(valores.split(':')[1]) / 100;
-                        break
+
                     }
                 }
 
-                console.log(parseFloat(entrada), comissaoValor.toFixed(2));
                 api.post('/api/addbilhete',
                     {
                         "codigo": codigo,
@@ -443,7 +448,7 @@ export default function Dashboard1(props) {
                         "nomeCliente": client,
                         "nomeBanca": nomeBanca,
                         "dataDaAposta": d,
-                        "valorDeEntrada": parseFloat(localStorage.getItem('valorIn')),
+                        "valorDeEntrada": parseFloat(entrada),
                         "valorDeSaida": parseFloat(document.getElementById('retorno').innerHTML),
                         "cotacao": parseFloat(document.getElementById('cotacao').innerHTML),
                         "tipoDeJogo": "Pre-Jogo",
@@ -491,8 +496,11 @@ export default function Dashboard1(props) {
                                 });
 
                             });
+                            setEntrada(0);
+                            localStorage.setItem("retorno", "");
                             setClient("");
-                            setEntrada("");
+                            addVeiryClient("");
+
 
                         } catch (e) {
 
@@ -546,8 +554,14 @@ export default function Dashboard1(props) {
             if (parseFloat(value) >= valorMin && parseFloat(value) <= valorMax) {
                 handleCloseURL();
                 setEntrada(value);
-                localStorage.setItem("retorno", (cotacao * Number(value)).toFixed(2));
-                document.getElementById('retorno').innerHTML = ((cotacao * Number(value)).toFixed(2));
+
+                document.getElementById('retorno').innerHTML =
+                    ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                        ((cotacao * Number(value)).toFixed(2));
+
+                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                    ((cotacao * Number(value)).toFixed(2)));
+
             } else if (parseFloat(value) < valorMin) {
                 document.getElementById('retorno').innerHTML = '0.00';
                 setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));
@@ -559,6 +573,9 @@ export default function Dashboard1(props) {
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
+            setEntrada(0);
+            localStorage.setItem("retorno", "");
+            localStorage.setItem('valorIn', "");
             handleCloseURL();
         }
 
@@ -568,21 +585,23 @@ export default function Dashboard1(props) {
     }
 
     function addVeiryClient(e) {
-        setClient(e.target.value);
+        setValue(e.target.value);
 
     }
 
     function addClient() {
-        if (client.length > 3) {
+
+        if (value.length > 3) {
             if (getClient() == false) {
                 api.post('/api/addcliente', {
-                    'nome': client,
+                    'nome': value,
                     'banca': sessionStorage.getItem('login'),
                     'gerenteId': sessionStorage.getItem('gerenteId'),
                     'nomeBanca': sessionStorage.getItem('nomeBanca')
                 })
                     .then(res => {
                         try {
+                            let nomes = [];
                             if (res.data) {
                                 setMessage(`Cliente cadastrado com sucesso!`);
                                 handleClickOpenURL();
@@ -590,11 +609,14 @@ export default function Dashboard1(props) {
                                     .then(res => {
                                         try {
                                             if (res.data) {
-                                                setClientes(res.data);
+                                                res.data.clientes.map((c) =>{
+                                                    nomes.push(c.nome);
+                                                });
                                             }
                                         } catch (e) {
 
                                         }
+                                        setClientes((nomes));
                                     }).catch(error => {
                                     console.log(error);
                                 });
@@ -602,10 +624,9 @@ export default function Dashboard1(props) {
                         } catch (e) {
 
                         }
-
+                        setValue("");
                     }).catch(error => {
                     console.log(error);
-
                 });
             } else {
                 setMessage(`Cliente já existe nessa banca!`);
@@ -619,12 +640,11 @@ export default function Dashboard1(props) {
 
 
     function getClient() {
-
         let r = false;
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
-            clientes.clientes.map((f) => {
+            clientes.map((f) => {
                 console.log(f);
-                if (f.nome == client) {
+                if (f == client) {
                     r = true;
                 }
             });
@@ -645,6 +665,9 @@ export default function Dashboard1(props) {
 
 
     function betsDone() {
+        let qtd = localStorage.getItem('betsAll2').split("=").length-1;
+        let qtdJogos = sessionStorage.getItem("qtdJogos");
+        if(qtd <= qtdJogos) {
         handleClickOpenLoading();
 
 
@@ -743,12 +766,14 @@ export default function Dashboard1(props) {
                                                 } else {
                                                     resultCotaca = 0;
                                                 }
-                                                setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
-
-
-                                                document.getElementById('retorno').innerHTML = ' ' +
-                                                    Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
-
+                                                let r = parseFloat(document.getElementById('retorno').innerHTML);
+                                                if(resultCotaca != r && resultCotaca <= 10000){
+                                                    document.getElementById('retorno').innerHTML = ' ' +
+                                                        Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
+                                                    setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
+                                                } else {
+                                                    setMessage(`Algumas apostas foram alteradas, pode finalizar sua aposta!`);
+                                                }
                                                 handleClickOpenURL();
 
 
@@ -790,7 +815,7 @@ export default function Dashboard1(props) {
                                                     let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
                                                     let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
 
-                                                    if (auxSaldo >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                    if (auxSaldo >= parseFloat(entrada)) {
                                                         salvarBilhete();
                                                         handlePrint();
                                                         noneBets();
@@ -833,15 +858,18 @@ export default function Dashboard1(props) {
 
 
         }, 0);
+        } else {
+            alert('Você selecionou ' + qtd + ' jogos, o máximo é ' + qtdJogos);
+        }
+
     }
 
 
     function onClickHandler() {
+        document.getElementById('resetField1').value = '';
         localStorage.removeItem("valorIn");
-        let qtd = localStorage.getItem('betsAll2').split("=").length;
-        let qtdJogos = sessionStorage.getItem("qtdJogos");
 
-        if (qtd <= qtdJogos) {
+        if (1) {
             document.getElementById('bilheteP').innerHTML = '';
             const team = localStorage.getItem('click2');
             document.getElementById("retorno").innerHTML = '0.00';
@@ -918,8 +946,6 @@ export default function Dashboard1(props) {
             } catch (e) {
                 console.log(e);
             }
-        } else {
-            alert('Você passou o número máximo de 20 jogos por apostas!');
         }
     };
 
@@ -1344,16 +1370,23 @@ export default function Dashboard1(props) {
 
 
         async function getClienteAPI() {
-
+            let nomes = [];
             api.get('/api/getclientes/' + sessionStorage.getItem('login'))
                 .then(res => {
                     try {
+
                         if (res.data) {
-                            setClientes(res.data);
+
+                            res.data.clientes.map((c) =>{
+                                nomes.push(c.nome);
+
+                            })
                         }
                     } catch (e) {
 
                     }
+                    setClientes(nomes);
+
                 }).catch(error => {
                 console.log(error);
             });
@@ -1491,11 +1524,16 @@ export default function Dashboard1(props) {
 
                                     <div id={"clients"}>
                                         <Autocomplete
-                                            id={"resetField2"}
-                                            freeSolo
-                                            onChange={verifyClientHandler}
-                                            options={clientes.clientes}
-                                            getOptionLabel={(option) => option.nome}
+                                            id="controllable-states-demo"
+                                            value={client}
+                                            onChange={(event, newValue) => {
+                                                setClient(newValue);
+                                            }}
+                                            inputValue={inputValue}
+                                            onInputChange={(event, newInputValue) => {
+                                                setInputValue(newInputValue);
+                                            }}
+                                            options={clientes}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -1519,6 +1557,7 @@ export default function Dashboard1(props) {
                                                 label="Cadastrar Cliente"
                                                 type="search"
                                                 fullWidth
+                                                value={value}
                                                 onChange={addVeiryClient}
                                                 variant="outlined"/></div>
                                     </center>

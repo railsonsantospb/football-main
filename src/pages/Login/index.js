@@ -124,7 +124,7 @@ export default function SignInSide() {
               if(res.data.bancas.status == 1){
                 sessionStorage.setItem("senhaBanca", encryptData2(values.password));
                 sessionStorage.setItem("userBanca", values.user);
-                history.push("/inicio");
+                history.push("/");
               } else {
                 alert('Usuário não tem permissão. Fale com seu gerente!');
                 handleCloseLoading();

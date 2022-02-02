@@ -105,26 +105,10 @@ export default function SignInSide() {
             });
         },
     });
-    useEffect(() => {
-        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "" ||
-            (new Date().getMinutes() - sessionStorage.getItem('minutos')) >= 10) {
-            history.push('/');
 
-        } else {
-            sessionStorage.setItem('minutos', new Date().getMinutes());
-        }
-
-        async function loginAll() {
-
-        }
-
-        loginAll();
-
-
-    }, [])
 
     function init() {
-        history.push('/home');
+        history.push('/inicio');
     }
 
 
