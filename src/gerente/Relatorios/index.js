@@ -399,41 +399,7 @@ export default function Dashboard() {
         if (sessionStorage.getItem('manage') == null || sessionStorage.getItem('manage') == "") {
             history.push('/login')
         }
-
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {}).then(res => {
-                try {
-
-                    let d1 = Date.parse(res.data.currentDateTime);
-                    d1 = new Date(d1);
-                    d1 = d1.setDate(d1.getDate());
-
-                    let d2 = Date.parse(res.data.currentDateTime);
-                    d2 = new Date(d2);
-                    d2 = d2.setDate(d2.getDate() + 1);
-
-                    d1 = new Date(d1);
-                    d2 = new Date(d2);
-
-
-                    date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                        Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                    (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                        Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
-
-                    localStorage.setItem("date", date);
-
-
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-                console.log(error);
-            });
-        }
-
-        getDateAll();
+        
 
         async function getBancasAPI() {
 

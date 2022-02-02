@@ -253,14 +253,7 @@ export default function Dashboard() {
     let comissaoV = 0;
     for (let datas of dataAuxB) {
 
-        let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-        let result = ((st.split(',').length == datas[8]));
-        let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-            st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                    st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                        st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+        let valor =  datas[3];
 
         if (datas[0] == 'Pre-Jogo') {
             if (valor != 'Cancelado') {
@@ -321,14 +314,7 @@ export default function Dashboard() {
 
         for (let datas of dataAux) {
 
-            let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-            let result = ((st.split(',').length == datas[8]));
-            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-                st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                    st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+            let valor = datas[3];
 
             if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
@@ -559,15 +545,8 @@ export default function Dashboard() {
                                 perdeu = 0;
                                 comissao = 0;
 
-                                let st = b.status.replaceAll('{', '').replaceAll('}', '');
-                                let result = ((st.split(',').length == b.quantidadeJogos));
-                                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-                                    st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                                        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
 
+                                let valor = b.status;
 
                                 if (valor != 'Cancelado') {
                                     entradas += parseFloat(b.valorDeEntrada);

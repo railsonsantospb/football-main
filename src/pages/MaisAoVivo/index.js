@@ -400,7 +400,7 @@ export default function Dashboard(props) {
                 d = (res.data.date);
 
                 let comissaoValor = 0;
-                let qtd = parseFloat(localStorage.getItem('betsAll2').split("=").length - 1);
+                let qtd = parseFloat(localStorage.getItem('betsAll').split("=").length - 1);
 
                 for (let valores of bilhetes) {
 

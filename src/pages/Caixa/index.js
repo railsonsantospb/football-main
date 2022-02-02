@@ -319,7 +319,7 @@ export default function Dashboard(props) {
         d1.setDate(d1.getDate()-1);
         if (days <= 6 && d2.getDay() >= d1.getDay()) {
             let valor = datas[3];
-
+            console.log(datas);
             if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
                 comissao += parseFloat(datas[5]);
