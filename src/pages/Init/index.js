@@ -527,13 +527,9 @@ export default function Dashboard(props) {
 
     function valueBetsHandler(e) {
         var value = e.target.value;
-        let valorMax = sessionStorage.getItem('valorDeSaida');
-        let valorMin = sessionStorage.getItem('valorDeEntrada');
         let cotacao = Number(document.getElementById('cotacao').innerHTML);
         if (value) {
 
-            if (parseFloat(value) >= valorMin && parseFloat(value) <= valorMax) {
-                handleCloseURL();
                 setEntrada(value);
 
                 document.getElementById('retorno').innerHTML =
@@ -543,14 +539,6 @@ export default function Dashboard(props) {
                 localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
-            } else if (parseFloat(value) < valorMin) {
-                document.getElementById('retorno').innerHTML = '0.00';
-                setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));
-                handleClickOpenURL();
-            } else {
-                setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2));
-                handleClickOpenURL();
-            }
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
@@ -641,6 +629,20 @@ export default function Dashboard(props) {
             e.target.innerText.length > 0 ? e.target.innerText : '';
         setClient(auxClient);
 
+    }
+
+
+    function validIn(){
+	
+	let valorMax = sessionStorage.getItem('valorDeSaida');                                                          let valorMin = sessionStorage.getItem('valorDeEntrada');
+	    
+	if (parseFloat(entrada) >= valorMin && parseFloat(entrada) <= valorMax) {                                               betsDone();                                                                                             } else if (parseFloat(entrada) < valorMin) {
+	
+		document.getElementById('retorno').innerHTML = '0.00';                                                          setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));                         
+          handleClickOpenURL();
+	} else {                                                    setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2)); 
+          handleClickOpenURL();
+	}
     }
 
 
@@ -767,7 +769,7 @@ export default function Dashboard(props) {
                                                         let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
 
 
-                                                        if (500 >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                        if (500 >= parseFloat(entrada)) {
                                                             //salvarBilhete();
                                                             let codigoPIn = Math.ceil(Math.random() * Math.pow(10, 6));
                                                             api.post('/api/addbilhetetemporario', {
@@ -1558,7 +1560,7 @@ export default function Dashboard(props) {
 
                                     <br style={{marginBottom: '10px'}}/>
                                     <Button id={"done"}
-                                            onClick={betsDone} variant="contained" color="secondary">
+                                            onClick={validIn} variant="contained" color="secondary">
                                         <b>FINALIZAR APOSTA</b>
                                     </Button>
 

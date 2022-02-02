@@ -522,7 +522,7 @@ export default function Dashboard1(props) {
 
             if (id !== null && id[0] !== '') {
                 for (let n in id.slice(0, id.length - 1)) {
-                    resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[3]);
+                    resultCotaca *= parseFloat(localStorage.getItem(id[n].split('-')[0] + 'x').split(',')[4]);
 
                 }
             } else {
@@ -545,13 +545,11 @@ export default function Dashboard1(props) {
     function valueBetsHandler(e) {
         var value = e.target.value;
 
-        let valorMax = sessionStorage.getItem('valorDeSaida');
-        let valorMin = sessionStorage.getItem('valorDeEntrada');
-        let cotacao = Number(document.getElementById('cotacao').innerHTML);
-        if (value) {
 
-            if (parseFloat(value) >= valorMin && parseFloat(value) <= valorMax) {
-                handleCloseURL();
+        let cotacao = Number(document.getElementById('cotacao').innerHTML);
+        if (1) {
+
+            
                 setEntrada(value);
 
                 document.getElementById('retorno').innerHTML =
@@ -561,14 +559,6 @@ export default function Dashboard1(props) {
                 localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
-            } else if (parseFloat(value) < valorMin) {
-                document.getElementById('retorno').innerHTML = '0.00';
-                setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));
-                handleClickOpenURL();
-            } else {
-                setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2));
-                handleClickOpenURL();
-            }
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
@@ -661,6 +651,19 @@ export default function Dashboard1(props) {
         setClient(auxClient);
 
     }
+
+    
+    function validIn(){
+
+        let valorMax = sessionStorage.getItem('valorDeSaida');                                                          let valorMin = sessionStorage.getItem('valorDeEntrada');                                                
+        if (parseFloat(entrada) >= valorMin && parseFloat(entrada) <= valorMax) {                                               betsDone();                             
+        } else if (parseFloat(entrada) < valorMin) {
+
+          document.getElementById('retorno').innerHTML = '0.00';
+                setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2)
+);                                                                handleClickOpenURL();
+        } else {                                                    setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2));
+          handleClickOpenURL();                                 }                                                   }
 
 
     function betsDone() {
@@ -782,7 +785,7 @@ export default function Dashboard1(props) {
                                                     let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
 
 
-                                                    if (500 >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                    if (500 >= parseFloat(entrada)) {
                                                         //salvarBilhete();
                                                         let codigoPIn = Math.ceil(Math.random() * Math.pow(10,6));
                                                         api.post('/api/addbilhetetemporario', {
@@ -1542,7 +1545,7 @@ export default function Dashboard1(props) {
 
                                     <br style={{marginBottom: '10px'}}/>
                                     <Button id={"done"}
-                                            onClick={betsDone} variant="contained" color="secondary">
+                                            onClick={validIn} variant="contained" color="secondary">
                                         <b>FINALIZAR APOSTA</b>
                                     </Button>
 
