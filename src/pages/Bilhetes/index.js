@@ -17,7 +17,7 @@ import {pt} from 'date-fns/locale';
 import Menu from '../Menu/index';
 import {DataGrid, GridToolbar, ptBR} from '@mui/x-data-grid';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
-
+import CancelIcon from '@material-ui/icons/Cancel';
 
 let tab;
 let date = [];
@@ -60,6 +60,14 @@ export default function Dashboard(props) {
 
     // const columns = ["CUPOM", "CLIENTE", "DATA", "SITUAÇÃO", "ENTRADA", "COMISSÕES", "COTAÇÃO", "RETORNO",
     //     "TIPO", "APOSTA"];
+	
+    function setStatusBilhete(codigoBilhete) {                                                                          api.put('/api/updatebilhete/' + codigoBilhete,  { status: 'Cancelado'})                                               .then(res => {
+                try {                                                       if (res.data) {                                             history.go(0);                                      }                                                   } catch (e) {                                                                                                   }
+            }).catch(error => {                                     console.log(error)
+        });                                                                                                         }
+
+
+
     let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
     const columns = [
         {
@@ -113,6 +121,8 @@ export default function Dashboard(props) {
             field: 'Aposta', headerName: 'Aposta', width: 90, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
+	
+	{                                                           field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',                                         renderCell: (params) => (params.value != 0 ? <Button onClick={() =>                                                 setStatusBilhete(params.value)}                                                                          variant="contained" color="secondary">                         <CancelIcon/></Button> : <Button disabled                                                                                                        variant="contained" color="secondary"> <CancelIcon/></Button>)         },
 
     ];
 
@@ -270,6 +280,7 @@ export default function Dashboard(props) {
                                 var difference = d2.getTime() - d1.getTime();
 
                                 let days = difference / (1000 * 3600 * 24);
+				    let minutes = Math.floor((d2 - d1) / 1000 / 60);
 
                                 if (days <= 15) {
 
@@ -285,7 +296,7 @@ export default function Dashboard(props) {
                                         Cotacao: b.cotacao.toFixed(2),
                                         Retorno: b.valorDeSaida.toFixed(2),
                                         Tipo: b.tipoSimplesouMultiplo,
-                                        Aposta: b.tipoDeJogo,
+                                        Aposta: b.tipoDeJogo, Cancelar:                                                                                     minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
                                     });
                                 }
                                 ax.push({
@@ -299,7 +310,7 @@ export default function Dashboard(props) {
                                     Cotacao: b.cotacao.toFixed(2),
                                     Retorno: b.valorDeSaida.toFixed(2),
                                     Tipo: b.tipoSimplesouMultiplo,
-                                    Aposta: b.tipoDeJogo,
+                                    Aposta: b.tipoDeJogo, Cancelar:                                                                                     minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
                                 });
 
                             });

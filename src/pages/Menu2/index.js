@@ -110,6 +110,8 @@ export default function Menu(props) {
         }
     };
 
+   
+
 
     useEffect(() => {
 
@@ -161,6 +163,8 @@ export default function Menu(props) {
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
             getLoginAPI();
         }
+	
+
     },[])
 
     function exit(){

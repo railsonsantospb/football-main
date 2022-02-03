@@ -84,7 +84,9 @@ export default function Menu(props) {
         content: {
             flexGrow: 1,
             padding: theme.spacing(3),
+	
         },
+	
         button: {
             width: 10,
         },
@@ -109,7 +111,7 @@ export default function Menu(props) {
         } else {
             setOpenNavA(index);
         }
-    };
+    };                                                                            
 
 
     useEffect(() => {
@@ -162,6 +164,8 @@ export default function Menu(props) {
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
             getLoginAPI();
         }
+
+
     },[])
     
     function exit(){
