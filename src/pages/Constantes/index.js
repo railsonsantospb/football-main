@@ -4,7 +4,6 @@
 // https://restcountries.eu/rest/v2/all
 import World from "../Home/world.jpg";
 import axios from 'axios';
-import {useHistory} from "react-router-dom";
 
 
 const images = {
@@ -154,18 +153,6 @@ const regions = ['BRA', 'EUR', 'ENG', 'ITA', 'FRA', 'ESP', 'GER', 'POR', 'TUR', 
 
 const cc = require('coupon-code');
 
-
-if (document.addEventListener) {
-    document.addEventListener('contextmenu', function (e) {
-
-        e.preventDefault();
-    }, false);
-} else {
-    document.attachEvent('oncontextmenu', function () {
-
-        window.event.returnValue = false;
-    });
-}
 
 const nome_cotacoes = []
 

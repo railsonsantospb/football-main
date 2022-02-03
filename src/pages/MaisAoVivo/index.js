@@ -690,17 +690,17 @@ export default function Dashboard(props) {
 
                                                     oddValue = true;
                                                     valid2 = false;
-
+let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacao[m.titulo][1] / 100))).toFixed(2);
                                                     if (Number(auxBets[4]) == 15 &&
-                                                        Number(auxBets[4]) > Number((e.cotacao / 100).toFixed(2))) {
+                                                        Number(auxBets[4]) > cot) {
                                                         valid1 = true;
-                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                        auxBets[4] = cot;
                                                         localStorage.setItem((bets.split('-')[0] + "x"),
                                                             auxBets.join(','));
                                                         geraBilhete();
-                                                    } else if (Number(auxBets[4]) != Number((e.cotacao / 100).toFixed(2))) {
+                                                    } else if (Number(auxBets[4]) != cot) {
                                                         valid1 = true;
-                                                        auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                        auxBets[4] = cot;
                                                         localStorage.setItem((bets.split('-')[0] + "x"),
                                                             auxBets.join(','));
                                                         geraBilhete();

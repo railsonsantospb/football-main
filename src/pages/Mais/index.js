@@ -714,17 +714,17 @@ export default function Dashboard(props) {
 
                                                         oddValue = true;
                                                         valid2 = false;
-
+let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacao[m.titulo][1] / 100))).toFixed(2);
                                                         if (Number(auxBets[4]) == 15 &&
-                                                            Number(auxBets[4]) > Number((e.cotacao / 100).toFixed(2))) {
+                                                            Number(auxBets[4]) > cot) {
                                                             valid1 = true;
-                                                            auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                            auxBets[4] = cot;
                                                             localStorage.setItem((bets.split('-')[0] + "x"),
                                                                 auxBets.join(','));
                                                             geraBilhete();
-                                                        } else if (Number(auxBets[4]) != Number((e.cotacao / 100).toFixed(2))) {
+                                                        } else if (Number(auxBets[4]) != cot) {
                                                             valid1 = true;
-                                                            auxBets[4] = (e.cotacao / 100).toFixed(2);
+                                                            auxBets[4] = cot;
                                                             localStorage.setItem((bets.split('-')[0] + "x"),
                                                                 auxBets.join(','));
                                                             geraBilhete();
@@ -879,7 +879,7 @@ export default function Dashboard(props) {
                     let betsGame = team.split("=");
                     if (betsGame[4] != 0) {
                         console.log(betsGame);
-                        console.log(betsGame[2] + betsGame.slice(-1)[0]);
+                        
 
                         console.log(betsGame);
                         var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
@@ -1146,20 +1146,20 @@ export default function Dashboard(props) {
                                                                     ( '+3 +4 +5 +6 +7 -3 -4 -5 -6 -7'.indexOf(n.nome) == -1 ? <tr  >
 
                                                                         <StyledTableCell id='font'>
-                                                                            <b >{(nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome}</b>
+                                                                            <b >{(bet.titulo + ' (' + n.nome + ')')}</b>
                                                                         </StyledTableCell>
 
                                                                         <td align="right" id='font'>
                                                                            <span onClick={onClickHandler}
 
                                                                                  variant="contained" color={"primary"} class="buttonPlus"
-                                                                                 id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ?  ((nome.titulo+((nome.titulo.indexOf('Handicap') != -1) ?
-                                                                                     (n.titulo + ' (' + n.nome + ')') : n.nome))
+                                                                                 id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ?
+											(nome.titulo + (bet.titulo + ' (' + n.nome + ')')
                                                                                      .replace(/[^0-9a-z]/gi, '')+n.idOpcao+nomeTime[1]):'')}
 
-                                                                                 data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
-                                                                                     ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo+((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
-                                                                                     "=" + nomeTime[1] + "-" + (nome.titulo+((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
+                                                                                 data-item={nome.titulo + ':' +   (bet.titulo + ' (' + n.nome + ')') + '=' + nome.titulo + "--" +
+                                                                                (bet.titulo + ' (' + n.nome + ')') + "=" + ((nome.titulo+(bet.titulo + ' (' + n.nome + ')')).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
+                                                                                     "=" + nomeTime[1] + "-" + (nome.titulo+(bet.titulo + ' (' + n.nome + ')')).replace(/[^0-9a-z]/gi, '') + "=" +
                                                                                      (
                                                                                          (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
                                                                                              (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
