@@ -399,7 +399,7 @@ export default function Dashboard() {
         if (sessionStorage.getItem('manage') == null || sessionStorage.getItem('manage') == "") {
             history.push('/login')
         }
-        
+
 
         async function getBancasAPI() {
 

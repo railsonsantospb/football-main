@@ -318,7 +318,7 @@ export default function Menu(props) {
                     variant="contained"
                     color="primary"
                 >
-                    LOGIN
+                    ENTRAR
                 </Button>}
 
         </List></fieldset>

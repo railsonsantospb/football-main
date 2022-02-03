@@ -47,7 +47,7 @@ export default function Dashboard() {
     const [entradasAbertas, setEntradasAbertas] = useState({});
     const [saidas, setSaidas] = useState({});
     const [comissoes, setComissoes] = useState({});
-    const [nomesBancas, setNomesBancas] = useState(new Set());
+    const [nomesBancas, setNomesBancas] = useState([]);
     const [total, setTotal] = useState({});
     const [dataCambista, setDataCambista] = useState([]);
     const [dataAux, setDataAux] = useState([]);
@@ -174,76 +174,7 @@ export default function Dashboard() {
     let perdeu = 0;
     let comissao = 0;
 
-    function loadCaixa(banca) {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
 
-        for (let datas of dataAux) {
-
-            let d1 = new Date(datas[2].split(' ')[0].split('/')[1] + '/' +
-                datas[2].split(' ')[0].split('/')[0] + '/' +
-                datas[2].split(' ')[0].split('/')[2] + " " + datas[2].split(' ')[1]);
-
-            let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
-                sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
-                sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
-                sessionStorage.getItem('date').split(' ')[1]);
-
-            var difference = d2.getTime() - d1.getTime();
-
-            let days = difference / (1000 * 3600 * 24);
-
-            d2.setDate(d2.getDate()-1);
-            d1.setDate(d1.getDate()-1);
-            if (days <= 6 && d2.getDay() >= d1.getDay()) {
-
-                let valor = datas[3];
-
-                if (valor != 'Cancelado') {
-                    entradas += parseFloat(datas[4]);
-                    comissao += parseFloat(datas[5]);
-                }
-
-                if (valor == 'Aberto') {
-                    abertos += parseFloat(datas[4]);
-                } else if (valor == 'Ganhou') {
-                    ganhos += parseFloat(datas[7]);
-                } else if (valor == 'Perdeu') {
-                    perdeu += parseFloat(datas[4]);
-                }
-            }
-
-        }
-
-        if ((totalEntrada[banca]) != undefined) {
-            totalEntrada[banca] = totalEntrada[banca] + entradas
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = entradasAbertas[banca] + abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = saidas[banca] + ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissoes[banca] + comissao
-            setComissoes(comissoes);
-            total[banca] = total[banca] + ((entradas - ganhos - comissao));
-            setTotal(total);
-        } else {
-            totalEntrada[banca] = entradas;
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissao;
-            setComissoes(comissoes);
-            total[banca] = ((entradas - ganhos - comissao));
-            setTotal(total);
-        }
-
-
-    }
 
 
 
@@ -255,72 +186,31 @@ export default function Dashboard() {
         }
 
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {}).then(res => {
-                try {
-
-                    let d1 = Date.parse(res.data.currentDateTime);
-                    d1 = new Date(d1);
-                    d1 = d1.setDate(d1.getDate());
-
-                    let d2 = Date.parse(res.data.currentDateTime);
-                    d2 = new Date(d2);
-                    d2 = d2.setDate(d2.getDate() + 1);
-
-                    d1 = new Date(d1);
-                    d2 = new Date(d2);
-
-
-                    date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                        Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                    (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                        Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
-
-                    localStorage.setItem("date", date);
-
-
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-                console.log(error);
-            });
-        }
-
-        getDateAll();
-
 
         async function getBancasAPI() {
 
-            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
+            api.get('/api/getbilhetesgerentecaixa/' + sessionStorage.getItem('manage'))
                 .then(res => {
                     try {
+                        let bancas = [];
                         if (res.data) {
-                            //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-                            //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-                            //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-                            // ];
+                            console.log(res.data.bilhetes);
+                            for(let b in res.data.bilhetes){
+                                bancas.push(b);
+                                totalEntrada[b] = res.data.bilhetes[b].totalEntrada;
+                                setTotalEntrada(totalEntrada);
+                                entradasAbertas[b] = res.data.bilhetes[b].entradasAberto;
+                                setEntradasAbertas(entradasAbertas);
+                                saidas[b] = res.data.bilhetes[b].saidas;
+                                setSaidas(saidas);
+                                comissoes[b] = res.data.bilhetes[b].comissoes;
+                                setComissoes(comissoes);
+                                total[b] = res.data.bilhetes[b].total;
+                                setTotal(total);
 
-                            res.data.bilhetes.map((b) => {
-                                nomesBancas.add(b.nomeBanca);
+                            }
 
-                                dataAux.push([
-                                    b.codigo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida,
-                                    b.quantidadeJogos
-                                ]);
-                                loadCaixa(b.nomeBanca);
-                                dataAux.pop();
-                            })
-                            setNomesBancas(nomesBancas);
-
+                            setNomesBancas(bancas);
                         }
                     } catch (e) {
                         console.log(e);
@@ -342,95 +232,38 @@ export default function Dashboard() {
 
 
     const getDatas = () => {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
+
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
 
         if (new Date(auxDate1) < new Date(auxDate2)) {
-            [...nomesBancas].map((banca) => {
-                if ((totalEntrada[banca]) != undefined) {
-                    totalEntrada[banca] = totalEntrada[banca] + entradas
-                    setTotalEntrada(totalEntrada);
-                    entradasAbertas[banca] = entradasAbertas[banca] + abertos;
-                    setEntradasAbertas(entradasAbertas);
-                    saidas[banca] = saidas[banca] + ganhos;
-                    setSaidas(saidas);
-                    comissoes[banca] = comissoes[banca] + comissao
-                    setComissoes(comissoes);
-                    total[banca] = total[banca] + ((perdeu + (entradas - ganhos - comissao)));
-                    setTotal(total);
-                } else {
-                    totalEntrada[banca] = entradas;
-                    setTotalEntrada(totalEntrada);
-                    entradasAbertas[banca] = abertos;
-                    setEntradasAbertas(entradasAbertas);
-                    saidas[banca] = ganhos;
-                    setSaidas(saidas);
-                    comissoes[banca] = comissao;
-                    setComissoes(comissoes);
-                    total[banca] = ((perdeu + (entradas - ganhos - comissao)));
-                    setTotal(total);
-                }
-            })
 
 
-            api.get('/api/getbilhetesgerentedates/' + sessionStorage.getItem('manage') + '/' + auxDate1 + '/' + auxDate2)
+            api.get('/api/getbilhetesgerentedates2/' + sessionStorage.getItem('manage') + '/' + auxDate1 + '/' + auxDate2)
                 .then(res => {
                     try {
 
+
+                        let bancas = [];
                         if (res.data) {
+                            console.log(res.data.bilhetes);
+                            for(let b in res.data.bilhetes){
+                                bancas.push(b);
+                                totalEntrada[b] = res.data.bilhetes[b].totalEntrada;
+                                setTotalEntrada(totalEntrada);
+                                entradasAbertas[b] = res.data.bilhetes[b].entradasAberto;
+                                setEntradasAbertas(entradasAbertas);
+                                saidas[b] = res.data.bilhetes[b].saidas;
+                                setSaidas(saidas);
+                                comissoes[b] = res.data.bilhetes[b].comissoes;
+                                setComissoes(comissoes);
+                                total[b] = res.data.bilhetes[b].total;
+                                setTotal(total);
 
-                            res.data.bilhetes.map((b) => {
+                            }
 
-
-                                let valor = b.status;
-
-                                if (valor != 'Cancelado') {
-                                    entradas += parseFloat(b.valorDeEntrada);
-                                    comissao += parseFloat(b.comissao);
-                                }
-
-                                if (valor == 'Aberto') {
-                                    abertos += parseFloat(b.valorDeEntrada);
-                                } else if (valor == 'Ganhou') {
-                                    ganhos += parseFloat(b.valorDeSaida);
-                                } else if (valor == 'Perdeu') {
-                                    perdeu += parseFloat(b.valorDeEntrada);
-                                }
-
-                                if ((totalEntrada[b.nomeBanca]) != undefined) {
-                                    totalEntrada[b.nomeBanca] = totalEntrada[b.nomeBanca] + entradas
-                                    setTotalEntrada(totalEntrada);
-                                    entradasAbertas[b.nomeBanca] = entradasAbertas[b.nomeBanca] + abertos;
-                                    setEntradasAbertas(entradasAbertas);
-                                    saidas[b.nomeBanca] = saidas[b.nomeBanca] + ganhos;
-                                    setSaidas(saidas);
-                                    comissoes[b.nomeBanca] = comissoes[b.nomeBanca] + comissao
-                                    setComissoes(comissoes);
-                                    total[b.nomeBanca] = total[b.nomeBanca] + ((entradas - ganhos - comissao));
-                                    setTotal(total);
-                                } else {
-                                    totalEntrada[b.nomeBanca] = entradas;
-                                    setTotalEntrada(totalEntrada);
-                                    entradasAbertas[b.nomeBanca] = abertos;
-                                    setEntradasAbertas(entradasAbertas);
-                                    saidas[b.nomeBanca] = ganhos;
-                                    setSaidas(saidas);
-                                    comissoes[b.nomeBanca] = comissao;
-                                    setComissoes(comissoes);
-                                    total[b.nomeBanca] = ((entradas - ganhos - comissao));
-                                    setTotal(total);
-                                }
-
-
-                                setDataAux([]);
-
-                            })
+                            setNomesBancas(bancas);
 
                         }
                     } catch (e) {
@@ -439,8 +272,7 @@ export default function Dashboard() {
                 }).catch(error => {
                 console.log(error)
             });
-            setNomesBancas(nomesBancas);
-            setDataAux([]);
+
         }
 
     }
@@ -522,7 +354,7 @@ export default function Dashboard() {
 
                                                 <TableBody>
 
-                                                    {[...nomesBancas].map((banca) => (
+                                                    {nomesBancas.map((banca) => (
                                                         <StyledTableRow>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5">
