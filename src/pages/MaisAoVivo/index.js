@@ -901,7 +901,8 @@ export default function Dashboard(props) {
 
         async function getMaisAPI() {
             if (Number(new Date().getMinutes() - Number(sessionStorage.getItem('minutos'))) >= 10) {
-                history.push('/');
+                history.push('/banca');
+                sessionStorage.setItem('minutos', new Date().getMinutes());
             }
             api.get('/api/getmaison/' + id)
                 .then(res => {
@@ -1117,27 +1118,73 @@ export default function Dashboard(props) {
                                                                         </StyledTableCell>
 
                                                                         <td align="right" id='font'>
-                                                                           <span onClick={onClickHandler}
+                                                                          <span onClick={onClickHandler}
 
-                                                                                 variant="contained" color={"primary"}
-                                                                                 class="buttonPlus"
-                                                                                 id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ?
-                                                                                     (n.titulo + ' (' + n.nome + ')') : n.nome))
-                                                                                     .replace(/[^0-9a-z]/gi, '') + n.idOpcao + nomeTime[1]) : '')}
+                                                                                variant="contained" color={"primary"}
+                                                                                className="buttonPlus"
+                                                                                id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ?
+                                                                                    (n.titulo + ' (' + n.nome + ')') : n.nome))
+                                                                                    .replace(/[^0-9a-z]/gi, '') + n.idOpcao + nomeTime[1]) : '')}
 
-                                                                                 data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
-                                                                                     ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
-                                                                                     "=" + nomeTime[1] + "-" + (nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
-                                                                                     ((n.cotacao / 100).toFixed(2) < parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                                         (n.cotacao / 100).toFixed(2) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                                     "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
- 
-                                                                         <b data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
-                                                                             ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
-                                                                             "=" + nomeTime[1] + "-" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')) + "=" +
-                                                                             ((n.cotacao / 100).toFixed(2) < parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                                 (n.cotacao / 100).toFixed(2) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                             "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                                data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
+                                                                                    ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
+                                                                                    "=" + nomeTime[1] + "-" + (nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
+                                                                                    (
+                                                                                        (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                                (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
+                                                                                                n.cotacao > 0
+                                                                                                && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                                    (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                            ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
+                                                                                                        parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                            (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
+                                                                                                    : <span
+                                                                                                        style={{color: "red"}}>0</span>) :
+                                                                                            <span
+                                                                                                style={{color: "red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                                            (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                                    (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
+                                                                                                    n.cotacao > 0
+                                                                                                    && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                                        (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                                ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
+                                                                                                            parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                                (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
+                                                                                                        : <span
+                                                                                                            style={{color: "red"}}>0</span>) :
+                                                                                                <span
+                                                                                                    style={{color: "red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
+                                                                                    "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
+
+                                                                        <b data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
+                                                                            ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
+                                                                            "=" + nomeTime[1] + "-" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')) + "=" +
+                                                                            (
+                                                                                (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                        (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
+                                                                                        n.cotacao > 0
+                                                                                        && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                            (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                    ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
+                                                                                                parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                    (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
+                                                                                            : <span
+                                                                                                style={{color: "red"}}>0</span>) :
+                                                                                    <span
+                                                                                        style={{color: "red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                                    (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                            (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
+                                                                                            n.cotacao > 0
+                                                                                            && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                                (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                        ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
+                                                                                                    parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                        (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
+                                                                                                : <span
+                                                                                                    style={{color: "red"}}>0</span>) :
+                                                                                        <span
+                                                                                            style={{color: "red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
+                                                                            "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
                                                                             {(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
                                                                                     (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :

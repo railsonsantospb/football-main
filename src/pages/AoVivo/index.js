@@ -901,7 +901,8 @@ export default function Dashboard(props) {
 
         async function getLoginAPI() {
             if (Number(new Date().getMinutes() - Number(sessionStorage.getItem('minutos'))) >= 10) {
-                history.push('/');
+                history.push('/banca');
+                sessionStorage.setItem('minutos', new Date().getMinutes());
             }
 
             api.get('/api/getbanca/' + sessionStorage.getItem('login'))
@@ -952,45 +953,6 @@ export default function Dashboard(props) {
                                                                         live.subeventos[2].aposta +
                                                                         live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
 
-                                                            let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                                    live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                + live.subeventos[0].aposta + "=" +
-                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                    'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
-                                                                (live.subeventos.length >= 3 ? (live.subeventos[0].cotacao / 100).toFixed(2) >
-                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[0].cotacao / 100).toFixed(2) : 0)
-                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
-                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
-                                                            let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                                    live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                + live.subeventos[1].aposta + "=" +
-                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                    'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
-                                                                (live.subeventos.length >= 3 ? (live.subeventos[1].cotacao / 100).toFixed(2) >
-                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[1].cotacao / 100).toFixed(2) : 0)
-                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
-                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
-                                                            let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                                    live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
-                                                                + live.subeventos[2].aposta + "=" +
-                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                                    'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
-                                                                (live.subeventos.length >= 3 ? (live.subeventos[2].cotacao / 100).toFixed(2) >
-                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[2].cotacao / 100).toFixed(2) : 0)
-                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
-                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
                                                             let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                                 ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
                                                                 live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
@@ -1020,6 +982,58 @@ export default function Dashboard(props) {
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
                                                                     : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+
+
+                                                            let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa).toFixed(2) :
+                                                                (live.subeventos[0].cotacao / 100).toFixed(2);
+
+                                                            let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[0].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? xcasa >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xcasa : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                                            let xempate = Number.isInteger(parseInt(valorEmpate)) == true ? parseFloat(valorEmpate).toFixed(2) :
+                                                                (live.subeventos[1].cotacao / 100).toFixed(2);
+
+                                                            let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[1].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? xempate >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xempate : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                                            let xfora = Number.isInteger(parseInt(valorFora)) == true ? parseFloat(valorFora).toFixed(2) :
+                                                                (live.subeventos[2].cotacao / 100).toFixed(2);
+
+                                                            let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                                    live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
+                                                                + live.subeventos[2].aposta + "=" +
+                                                                (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                                                + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                                    'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
+                                                                (live.subeventos.length >= 3 ? xfora >
+                                                                parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xfora : 0)
+                                                                + "=" + (live.casa + ' x ' + live.fora) + "="
+                                                                + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                                                "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+
+
 
                                                             let date = (new Date(live.data).getDate() < 10
                                                                     ? "0" + new Date(live.data).getDate()
@@ -1146,7 +1160,8 @@ export default function Dashboard(props) {
 
         async function gamesLivre(){
             if (Number(new Date().getMinutes() - Number(sessionStorage.getItem('minutos'))) >= 10) {
-                history.push('/');
+                history.push('/banca');
+                sessionStorage.setItem('minutos', new Date().getMinutes());
             }
             let l = [];
             let cotacao = {};
