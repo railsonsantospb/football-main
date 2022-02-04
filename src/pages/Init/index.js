@@ -699,14 +699,15 @@ export default function Dashboard(props) {
                                         m.cotacoes.map((c) => {
                                             if (c.subeventos != null) {
                                                 c.subeventos.map((e) => {
-                                                    if (m.titulo + "--" +
-                                                        ((m.titulo.indexOf('Handicap') != -1) ?
-                                                            (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                    if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
+                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
 
-
+                                                        try{
                                                         oddValue = true;
                                                         valid2 = false;
-let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacoes[m.titulo][1] / 100))).toFixed(2);
+                                                        let cot =  (Number(e.cotacao / 100) +
+                                                            (Number(e.cotacao / 100) *
+                                                                (cotacoes[m.titulo][1] / 100))).toFixed(2);
                                                         if (Number(auxBets[4]) == 15 &&
                                                             Number(auxBets[4]) > cot) {
                                                             valid1 = true;
@@ -720,6 +721,9 @@ let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacoes[m.ti
                                                             localStorage.setItem((bets.split('-')[0] + "x"),
                                                                 auxBets.join(','));
                                                             geraBilhete();
+                                                        }
+                                                        }catch (e) {
+
                                                         }
                                                     }
                                                 })
@@ -960,7 +964,9 @@ let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacoes[m.ti
                             api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.id).then(res => {
 
                                 try {
+
                                     res.data.cotacoes.map((o) => {
+
                                         cotacao[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                     })
                                 } catch (e) {

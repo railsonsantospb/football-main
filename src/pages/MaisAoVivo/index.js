@@ -683,27 +683,32 @@ export default function Dashboard(props) {
                                     m.cotacoes.map((c) => {
                                         if (c.subeventos != null) {
                                             c.subeventos.map((e) => {
-                                                if (m.titulo + "--" +
-                                                    ((m.titulo.indexOf('Handicap') != -1) ?
-                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
+                                                    (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
 
 
-                                                    oddValue = true;
-                                                    valid2 = false;
-let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacao[m.titulo][1] / 100))).toFixed(2);
-                                                    if (Number(auxBets[4]) == 15 &&
-                                                        Number(auxBets[4]) > cot) {
-                                                        valid1 = true;
-                                                        auxBets[4] = cot;
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
-                                                    } else if (Number(auxBets[4]) != cot) {
-                                                        valid1 = true;
-                                                        auxBets[4] = cot;
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
+                                                    try{
+                                                        oddValue = true;
+                                                        valid2 = false;
+                                                        let cot =  (Number(e.cotacao / 100) +
+                                                            (Number(e.cotacao / 100) *
+                                                                (cotacoes[m.titulo][1] / 100))).toFixed(2);
+                                                        if (Number(auxBets[4]) == 15 &&
+                                                            Number(auxBets[4]) > cot) {
+                                                            valid1 = true;
+                                                            auxBets[4] = cot;
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        } else if (Number(auxBets[4]) != cot) {
+                                                            valid1 = true;
+                                                            auxBets[4] = cot;
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        }
+                                                    }catch (e) {
+
                                                     }
                                                 }
                                             })
@@ -1114,90 +1119,86 @@ let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacao[m.tit
                                                                     <tr>
 
                                                                         <StyledTableCell id='font'>
-                                                                            <b>{(nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome}</b>
+                                                                            <b >{((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome)}</b>
                                                                         </StyledTableCell>
 
                                                                         <td align="right" id='font'>
-                                                                          <span onClick={onClickHandler}
+                                                                           <span onClick={onClickHandler}
 
-                                                                                variant="contained" color={"primary"}
-                                                                                className="buttonPlus"
-                                                                                id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ?
-                                                                                    (n.titulo + ' (' + n.nome + ')') : n.nome))
-                                                                                    .replace(/[^0-9a-z]/gi, '') + n.idOpcao + nomeTime[1]) : '')}
+                                                                                 variant="contained" color={"primary"} class="buttonPlus"
+                                                                                 id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ?
+                                                                                     ((nome.titulo + ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome))
+                                                                                         .replace(/[^0-9a-z]/gi, '')+n.idOpcao+nomeTime[1]):'')}
 
-                                                                                data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
-                                                                                    ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
-                                                                                    "=" + nomeTime[1] + "-" + (nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
-                                                                                    (
-                                                                                        (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
-                                                                                                (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
-                                                                                                n.cotacao > 0
-                                                                                                && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
-                                                                                                    (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                                                            ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
-                                                                                                        parseFloat(cotacao[nome.titulo] != undefined ?
-                                                                                                            (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
-                                                                                                    : <span
-                                                                                                        style={{color: "red"}}>0</span>) :
-                                                                                            <span
-                                                                                                style={{color: "red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                                            (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
-                                                                                                    (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
-                                                                                                    n.cotacao > 0
-                                                                                                    && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
-                                                                                                        (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                                                                ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
-                                                                                                            parseFloat(cotacao[nome.titulo] != undefined ?
-                                                                                                                (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
-                                                                                                        : <span
-                                                                                                            style={{color: "red"}}>0</span>) :
-                                                                                                <span
-                                                                                                    style={{color: "red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                                    "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                                 data-item={nome.titulo + ':' +   ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
+                                                                                     ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome) + "=" +
+                                                                                     ((nome.titulo+((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
+                                                                                     "=" + nomeTime[1] + "-" + (nome.titulo+((nome.titulo != 'Vencedor do Encontro')  ?
+                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
+                                                                                     (
+                                                                                         (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                             (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
+                                                                                             n.cotacao > 0
+                                                                                             &&  (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                                 (parseFloat(((n.cotacao/100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                         ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
+                                                                                                     parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                         (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
+                                                                                                 : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                                             (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                                 (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
+                                                                                                 n.cotacao > 0
+                                                                                                 &&  (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                                     (parseFloat(((n.cotacao/100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                             ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
+                                                                                                         parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                             (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
+                                                                                                     : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
+                                                                                     "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
-                                                                        <b data-item={nome.titulo + ':' + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
-                                                                            ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome) + "=" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + n.idOpcao) +
-                                                                            "=" + nomeTime[1] + "-" + ((nome.titulo + ((nome.titulo.indexOf('Handicap') != -1) ? (n.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')) + "=" +
+                                                                        <b  data-item={nome.titulo + ':' +   ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
+                                                                            ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome) + "=" +
+                                                                            ((nome.titulo+((nome.titulo != 'Vencedor do Encontro') ?
+                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
+                                                                            "=" + nomeTime[1] + "-" + (nome.titulo+((nome.titulo != 'Vencedor do Encontro')  ?
+                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
                                                                             (
-                                                                                (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
-                                                                                        (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
+                                                                                (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                    (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
+                                                                                    n.cotacao > 0
+                                                                                    &&  (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                        (parseFloat(((n.cotacao/100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
+                                                                                            parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                                (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
+                                                                                        : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                                                    (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                        (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
                                                                                         n.cotacao > 0
-                                                                                        && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
-                                                                                            (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                                                    ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
+                                                                                        &&  (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                            (parseFloat(((n.cotacao/100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                                    ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
                                                                                                 parseFloat(cotacao[nome.titulo] != undefined ?
-                                                                                                    (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
-                                                                                            : <span
-                                                                                                style={{color: "red"}}>0</span>) :
-                                                                                    <span
-                                                                                        style={{color: "red"}}>0</span>) < parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                                                    (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
-                                                                                            (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
-                                                                                            n.cotacao > 0
-                                                                                            && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
-                                                                                                (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                                                        ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
-                                                                                                    parseFloat(cotacao[nome.titulo] != undefined ?
-                                                                                                        (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
-                                                                                                : <span
-                                                                                                    style={{color: "red"}}>0</span>) :
-                                                                                        <span
-                                                                                            style={{color: "red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
+                                                                                                    (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
+                                                                                            : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
                                                                             "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
-                                                                            {(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao / 100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
-                                                                                    (((n.cotacao / 100).toFixed(2)) - ((((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) * -1)) :
-                                                                                    n.cotacao > 0
-                                                                                    && (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
-                                                                                        (parseFloat(((n.cotacao / 100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                                                ? sessionStorage.getItem('cotaMax') : ((n.cotacao / 100).toFixed(2))) +
-                                                                                            parseFloat(cotacao[nome.titulo] != undefined ?
-                                                                                                (((n.cotacao / 100).toFixed(2)) * (cotacao[nome.titulo][1] / 100)) : 0)).toFixed(2)
-                                                                                        : <span
-                                                                                            style={{color: "red"}}>0</span>) :
-                                                                                <span
-                                                                                    style={{color: "red"}}>0</span>)}</b>
+                                                                            {(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
+                                                                                (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
+                                                                                n.cotacao > 0
+                                                                                &&  (cotacao[nome.titulo] != undefined ? cotacao[nome.titulo][0] : true) == true ?
+                                                                                    (parseFloat(((n.cotacao/100).toFixed(2)) > parseFloat(sessionStorage.getItem('cotaMax'))
+                                                                                            ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
+                                                                                        parseFloat(cotacao[nome.titulo] != undefined ?
+                                                                                            (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
+                                                                                    : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>)}</b>
                                                                     </span>
                                                                         </td>
 

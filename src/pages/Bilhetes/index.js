@@ -103,7 +103,7 @@ export default function Dashboard(props) {
         },
 
         {
-            field: 'Cotacao', headerName: 'Cotação', width: 100, align: 'center',
+            field: 'Cotacao', headerName: 'Cotação', width: 90, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
@@ -296,7 +296,9 @@ export default function Dashboard(props) {
                                         Cotacao: b.cotacao.toFixed(2),
                                         Retorno: b.valorDeSaida.toFixed(2),
                                         Tipo: b.tipoSimplesouMultiplo,
-                                        Aposta: b.tipoDeJogo, Cancelar:                                                                                     minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
+                                        Aposta: b.tipoDeJogo,
+                                        Cancelar: minutes <= Number(sessionStorage.getItem('configTime'))
+                                        && b.tipoDeJogo != "Ao Vivo" ? b.codigo : 0,
                                     });
                                 }
                                 ax.push({
@@ -310,7 +312,9 @@ export default function Dashboard(props) {
                                     Cotacao: b.cotacao.toFixed(2),
                                     Retorno: b.valorDeSaida.toFixed(2),
                                     Tipo: b.tipoSimplesouMultiplo,
-                                    Aposta: b.tipoDeJogo, Cancelar:                                                                                     minutes <= Number(sessionStorage.getItem('configTime')) ? b.codigo : 0,
+                                    Aposta: b.tipoDeJogo,
+                                    Cancelar: minutes <= Number(sessionStorage.getItem('configTime'))
+                                    && b.tipoDeJogo != "Ao Vivo" ? b.codigo : 0,
                                 });
 
                             });

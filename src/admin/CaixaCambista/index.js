@@ -232,7 +232,11 @@ export default function Dashboard() {
         comissao = 0;
 
         for (let datas of dataAux) {
-            entradas += parseFloat(datas[4]);
+            if(datas[3] != 'Cancelado'){
+                entradas += parseFloat(datas[4]);
+                comissao += parseFloat(datas[5]);
+            }
+
             if (datas[3] == 'Aberto') {
                 abertos += parseFloat(datas[4]);
             } else if (datas[3] == 'Ganhou') {
@@ -241,7 +245,7 @@ export default function Dashboard() {
                 perdeu += parseFloat(datas[4]);
 
             }
-            comissao += parseFloat(datas[5]);
+
         }
 
         if ((totalEntrada[banca]) != undefined) {

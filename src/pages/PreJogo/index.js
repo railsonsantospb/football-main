@@ -714,28 +714,31 @@ export default function Dashboard1(props) {
                                     m.cotacoes.map((c) => {
                                         if (c.subeventos != null) {
                                             c.subeventos.map((e) => {
-                                                if (m.titulo + "--" +
-                                                    ((m.titulo.indexOf('Handicap') != -1) ?
-                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
+                                                    (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
 
+                                                    try{
+                                                        oddValue = true;
+                                                        valid2 = false;
+                                                        let cot =  (Number(e.cotacao / 100) +
+                                                            (Number(e.cotacao / 100) *
+                                                                (cotacoes[m.titulo][1] / 100))).toFixed(2);
+                                                        if (Number(auxBets[4]) == 15 &&
+                                                            Number(auxBets[4]) > cot) {
+                                                            valid1 = true;
+                                                            auxBets[4] = cot;
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        } else if (Number(auxBets[4]) != cot) {
+                                                            valid1 = true;
+                                                            auxBets[4] = cot;
+                                                            localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                auxBets.join(','));
+                                                            geraBilhete();
+                                                        }
+                                                    }catch (e) {
 
-                                                    oddValue = true;
-                                                    valid2 = false;
-						
-let cot =   (Number(e.cotacao / 100) + (Number(e.cotacao / 100) * (cotacoes[m.titulo][1] / 100))).toFixed(2);
-                                                    if (Number(auxBets[4]) == 15 &&
-                                                        Number(auxBets[4]) > cot) {
-                                                        valid1 = true;
-                                                        auxBets[4] = cot;
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
-                                                    } else if (Number(auxBets[4]) != cot) {
-                                                        valid1 = true;
-                                                        auxBets[4] = cot;
-                                                        localStorage.setItem((bets.split('-')[0] + "x"),
-                                                            auxBets.join(','));
-                                                        geraBilhete();
                                                     }
                                                 }
                                             })

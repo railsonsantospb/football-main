@@ -177,21 +177,12 @@ export default function Dashboard() {
         let comissao = 0;
         for (let datas of dataAux) {
 
-            let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-            let result = ((st.split(',').length == datas[10]));
-
-            let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-                st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                    st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                            st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+            let valor = datas[3];
 
             if (valor != 'Cancelado') {
                 entradas += parseFloat(datas[4]);
                 comissao += parseFloat(datas[5]);
             }
-
 
             if (valor == 'Aberto') {
                 abertos += parseFloat(datas[4]);
@@ -202,11 +193,12 @@ export default function Dashboard() {
             }
 
         }
+
         setTotalEntrada(entradas);
         setEntradasAbertas(abertos);
         setSaidas(ganhos);
         setComissoes(comissao);
-        setTotal(perdeu + (entradas - ganhos - comissao));
+        setTotal((entradas - ganhos - comissao));
 
     }
 
@@ -229,12 +221,7 @@ export default function Dashboard() {
                 let st = datas[3].replaceAll('{', '').replaceAll('}', '');
                 let result = ((st.split(',').length == datas[10]));
 
-                let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-                    st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                        st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                            st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                                st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                                st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
+                let valor = datas[3];
 
                 if (valor != 'Cancelado') {
                     entradas += parseFloat(datas[4]);
@@ -284,40 +271,6 @@ export default function Dashboard() {
 
         let unmounted = false;
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {}).then(res => {
-                try {
-
-                    let d1 = Date.parse(res.data.currentDateTime);
-                    d1 = new Date(d1);
-                    d1 = d1.setDate(d1.getDate());
-
-                    let d2 = Date.parse(res.data.currentDateTime);
-                    d2 = new Date(d2);
-                    d2 = d2.setDate(d2.getDate() + 1);
-
-                    d1 = new Date(d1);
-                    d2 = new Date(d2);
-
-
-                    date = [d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" + (Number(d1.getMonth()) + 1) :
-                        Number(d1.getMonth()) + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                    (Number(d2.getMonth()) + 1 < 10 ? "0" + (Number(d2.getMonth()) + 1) :
-                        Number(d2.getMonth()) + 1) + "-" + d2.getDate()];
-
-                    localStorage.setItem("date", date);
-
-
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-                console.log(error);
-            });
-        }
-
-        getDateAll();
 
 
         async function getBancasAPI() {
@@ -469,7 +422,7 @@ export default function Dashboard() {
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            {saidas > total ? <Typography variant="h5">
+                                                            {saidas > totalEntrada ? <Typography variant="h5">
                                                                 <b style={{color: 'red'}}>R$ {Math.abs(total).toFixed(2)}</b>
                                                             </Typography> : <Typography variant="h5">
                                                                 <b style={{color: 'green'}}>R$ {Math.abs(total).toFixed(2)}</b>
