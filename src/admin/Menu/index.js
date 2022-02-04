@@ -231,7 +231,7 @@ export default function MenuAdmin(props) {
                         <ListItemIcon>
                             <FileCopyIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="Validar Bilhetes"/>
+                        <ListItemText primary="Processar Jogos"/>
                     </ListItem>
                     <ListItem button component={Link} to={'/validarDados'}>
                         <ListItemIcon>

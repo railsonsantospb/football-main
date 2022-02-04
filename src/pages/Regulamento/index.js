@@ -96,10 +96,9 @@ export default function Dashboard(props) {
                                         </Typography>
                                         <Typography sx={{mb: 1.5}} color="text.secondary">
                                             1º - O valor máximo por aposta é de R$
-                                            {" " + parseFloat(sessionStorage.getItem('valorDeSaida')).toFixed(2)}.<br/>
-                                            2º - O valor máximo por ganho de aposta é de R$
-                                            {" " + parseFloat(sessionStorage.getItem('cotacaoAdmin')).toFixed(2)}.<br/>
-                                            4º - Limite de Times selecionados serão de até 20 Palpites.<br/>
+                                            {" " + parseFloat(sessionStorage.getItem('valorDeSaida')).toFixed(2)};<br/>
+                                            2º - A premiação máxima por ganho de aposta é de R$ 10000;<br/>
+                                            4º - Limite de Times selecionados serão de até 20 Palpites;<br/>
                                             3º - Todos os Prêmios serão pagos em até 120 horas.<br/>
 
 
@@ -189,12 +188,12 @@ export default function Dashboard(props) {
 
                                             1. O jogo deve ser visto como uma forma de entretenimento e não como uma
                                             forma de <br/>
-                                            fazer dinheiro.<br/>
-                                            2. Aposte com sensatez e nunca persiga perdas.<br/>
-                                            3. Aposte apenas aquilo que se pode dar ao luxo de perder.<br/>
-                                            4. Monitorize o tempo que passa a jogar.<br/>
+                                            fazer dinheiro;<br/>
+                                            2. Aposte com sensatez e nunca persiga perdas;<br/>
+                                            3. Aposte apenas aquilo que se pode dar ao luxo de perder;<br/>
+                                            4. Monitorize o tempo que passa a jogar;<br/>
                                             5. Faça pausas do jogo regularmente. Jogar de forma contínua <br/>
-                                            pode fazer com que perca noção de tempo e perspectiva.<br/>
+                                            pode fazer com que perca noção de tempo e perspectiva;<br/>
                                             6. Não jogue sob influência de álcool ou quando se sente aborrecido(a) <br/>
                                             ou deprimido(a).<br/>
 

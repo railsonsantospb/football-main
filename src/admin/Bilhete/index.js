@@ -96,11 +96,8 @@ export default function Dashboard(props) {
 
 
     function print() {
-        if (impressao == 1) {
-            handlePrint();
-        } else {
-            alert('Sem permissão para imprimir. Fale com seu gerente!');
-        }
+        handlePrint();
+
     }
 
     function getCodigo(e) {
@@ -261,7 +258,8 @@ export default function Dashboard(props) {
                                     '                        \n' +
                                     '\n' +
                                     '                        <div>\n' +
-                                    '                            <span>Boa Sorte!</span>\n' +
+                                    '                            <span>Ao realizar apostas na SONHOBETS, você concorda ' +
+                                    ' com todos os termos e regras do site. Boa Sorte!</span>\n' +
                                     '                        </div>\n' +
                                     '\n' +
                                     '                    </div>\n' +
@@ -288,30 +286,7 @@ export default function Dashboard(props) {
     useEffect(() => {
 
 
-        async function getLoginAPI() {
 
-            api.get('/api/getbanca/' + sessionStorage.getItem('login'))
-                .then(res => {
-                    try {
-                        if (res.data) {
-                            setSaldoSimples(res.data.bancas.saldoSimples);
-                            setSaldoGeral(res.data.bancas.saldoGeral);
-                            setNomeBanca(res.data.bancas.nome);
-                            setGerenteId(res.data.bancas.gerente);
-                            setComissao(res.data.bancas.comissaoPreJogo.split(';'));
-                            setBancaId(res.data.bancas.id);
-                            setImpressao(res.data.bancas.habilitarImpressao);
-                        }
-                    } catch (e) {
-
-                    }
-                }).catch(error => {
-                console.log(error)
-            });
-
-        }
-
-        getLoginAPI();
 
         if (codigoBilhete != 'all') {
             bilhete(codigoBilhete);

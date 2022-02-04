@@ -419,7 +419,7 @@ export default function Dashboard1(props) {
             '                        \n' +
             '\n' +
             '                        <div>\n' +
-            '                            <span>Boa Sorte!</span>\n' +
+            '                            <span>Ao realizar apostas na SONHOBETS, você concorda com todos os termos e regras do site. Boa Sorte!</span>\n' +
             '                        </div>\n' +
             '\n' +
             '                    </div>\n' +

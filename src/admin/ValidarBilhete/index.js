@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import {useHistory} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Button from '@material-ui/core/Button';
 import MUIDataTable from "mui-datatables";
@@ -11,6 +11,11 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import {api} from '../Constantes/index';
 import Menu from '../Menu/index';
+import Grid from "@material-ui/core/Grid";
+import Checkbox from "@material-ui/core/Checkbox";
+import {Dialog, DialogActions, DialogContent, DialogTitle} from "@material-ui/core";
+
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 //let aux = [];
 
@@ -22,6 +27,15 @@ export default function ValidarBilhete() {
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("500px");
     const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
+    const [jogos, setJogos] = useState([]);
+    const [openLoading, setOpenLoading] = React.useState(false);
+    const handleClickOpenLoading = () => {
+        setOpenLoading(true);
+    };
+
+    const handleCloseLoading = () => {
+        setOpenLoading(false);
+    };
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -148,28 +162,44 @@ export default function ValidarBilhete() {
         }
     }
 
+    function processarJogos(){
+        let count = 0;
+        setTimeout(function () {
+            handleClickOpenLoading();
+        for(let i of jogos){
+            api.put('/api/validarjogo',
+                {
+                    'nomeDosTimes': i[0],
+                    'tipoDeCotacao': i[1],
+                    'status': i[2]
+                })
+                .then(res => {
+                    try {
+                        count += 1;
+                        if (res.data) {
+                            if(count == jogos.length){
+                                handleCloseLoading();
+                                history.go(0);
+                            }
+                        }
+                    } catch (e) {
 
-    function setStatusJogo(jogo, cotacao, status) {
-
-        api.put('/api/validarjogo',
-            {
-                'nomeDosTimes': jogo,
-                'tipoDeCotacao': cotacao,
-                'status': status
-            })
-            .then(res => {
-                try {
-                    if (res.data) {
-                        history.go(0);
                     }
-                } catch (e) {
+                }).catch(error => {
+                console.log(error)
+            });
+        }
+        }, 1000);
 
-                }
-            }).catch(error => {
-            console.log(error)
-        });
 
     }
+
+    function addJogo(jogo, cotacao, status) {
+        let j = jogos;
+        j.push([jogo, cotacao, status]);
+        setJogos(j);
+    }
+
 
     function custom_sort(a, b) {
         let d1 = new Date(a.dataDoJogo.split(' ')[0].split('/')[2] + '/' +
@@ -212,12 +242,9 @@ export default function ValidarBilhete() {
                                                 onClick={() => window.open('https://www.google.com/search?q=' + b.nomeDosTimes)}>{b.nomeDosTimes}</Typography>,
                                     b.dataDoJogo,
                                     b.tipoDeCotacao,
-                                    <Button variant="outlined" style={{color: 'green', borderColor: 'green'}}
-                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Ganhou')}><CheckCircleIcon/></Button>,
-                                    <Button variant="outlined" style={{color: 'red', borderColor: 'red'}}
-                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Perdeu')}><CancelIcon/></Button>,
-                                    <Button variant="outlined" style={{color: 'gold', borderColor: 'gold'}}
-                                            onClick={() => setStatusJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Cancelado')}><CancelIcon/></Button>,
+                                    <Checkbox  style={{color: 'green'}} onClick={() => addJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Ganhou')}/>,
+                                    <Checkbox  style={{color: 'red'}} onClick={() => addJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Perdeu')}/>,
+                                    <Checkbox  style={{color: 'gold'}} onClick={() => addJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Cancelado')}/>,
                                     b.status];
 
 
@@ -264,7 +291,16 @@ export default function ValidarBilhete() {
                     {dataAux.length > 0 ?
                         <React.Fragment>
                             <MUIDataTable
-                                title={'VALIDAR BILHETES'}
+                                title={<Grid container direction={'row'}>
+
+                                    <br/>
+                                    <Grid item style={{paddingLeft: '10px'}}></Grid>
+                                    <Grid item>
+                                        <Button variant="contained" color="primary" onClick={processarJogos}>
+                                            PROCESSAR JOGOS
+                                        </Button>
+                                    </Grid>
+                                </Grid>}
                                 data={dataAux}
                                 columns={columns}
                                 options={options}
@@ -281,7 +317,24 @@ export default function ValidarBilhete() {
                 </div>
             </main>
 
-
+            <Dialog
+                disableBackdropClick
+                disableEscapeKeyDown
+                open={openLoading}
+                onClose={handleCloseLoading}
+                aria-labelledby="form-dialog-title"
+            >
+                <DialogTitle
+                    id="form-dialog-title"
+                    style={{color: "red"}}
+                ></DialogTitle>
+                <DialogContent>
+                    <div className={classes.paper}>
+                        <CircularProgress color="secondary"/>
+                    </div>
+                </DialogContent>
+                <DialogActions></DialogActions>
+            </Dialog>
         </div>
 
 
