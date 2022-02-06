@@ -247,7 +247,6 @@ export default function Dashboard() {
 
                         let bancas = [];
                         if (res.data) {
-                            console.log(res.data.bilhetes);
                             for(let b in res.data.bilhetes){
                                 bancas.push(b);
                                 totalEntrada[b] = res.data.bilhetes[b].totalEntrada;

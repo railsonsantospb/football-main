@@ -93,9 +93,12 @@ export default function Dashboard(props) {
                 try {
                     if (res.data) {
                         let b = JSON.parse(res.data.bilhete[0].bilhete.replace(/'/g, '"'))
+                        sessionStorage.setItem('valorIn', b['valorIn']);
+                        sessionStorage.setItem('retorno', b['retorno']);
                         for(let v in b){
                             localStorage.setItem(v, b[v]);
                         }
+                        sessionStorage.setItem("pin", "pin");
                         history.push('/');
                     }
                 } catch (e) {

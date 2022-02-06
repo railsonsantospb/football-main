@@ -146,20 +146,13 @@ export default function Dashboard1(props) {
 
 
     function InitOdds() {
-        localStorage.setItem("retorno", "");
-        localStorage.setItem("valorIn", "");
+
         if (localStorage.getItem("betsAll2") === null) {
             localStorage.setItem("betsAll2", "");
             localStorage.setItem('displayBets2', 'none');
         } else {
             let bets = localStorage.getItem("betsAll2");
-            try{
-                if(localStorage.getItem("retorno") != null && localStorage.getItem("retorno") != ""){
-                    document.getElementById('retorno').innerHTML = localStorage.getItem("retorno");
-                }
-            } catch (e) {
 
-            }
             for (var n in bets.split('=').slice(0, bets.split('=').length - 1)) {
                 try {
 
@@ -399,7 +392,7 @@ export default function Dashboard1(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -497,7 +490,6 @@ export default function Dashboard1(props) {
 
                             });
                             setEntrada(0);
-                            localStorage.setItem("retorno", "");
                             setClient("");
                             addVeiryClient("");
 
@@ -555,19 +547,17 @@ export default function Dashboard1(props) {
                     ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                         ((cotacao * Number(value)).toFixed(2));
 
-                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-            localStorage.setItem("retorno", "");
-            localStorage.setItem('valorIn', "");
             handleCloseURL();
         }
 
-        localStorage.setItem('valorIn', value);
+        sessionStorage.setItem('valorIn', value);
 
 
     }
@@ -790,6 +780,8 @@ export default function Dashboard1(props) {
 
                                                     if (500 >= parseFloat(entrada)) {
                                                         //salvarBilhete();
+                                                        localStorage.setItem("valorIn", sessionStorage.getItem("valorIn"));
+                                                        localStorage.setItem("retorno", sessionStorage.getItem("retorno"));
                                                         let codigoPIn = Math.ceil(Math.random() * Math.pow(10,6));
                                                         api.post('/api/addbilhetetemporario', {
                                                             'codigoPin': codigoPIn,
@@ -799,7 +791,6 @@ export default function Dashboard1(props) {
                                                                 if(res.data){
                                                                     noneBets();
                                                                     clearOdds();
-                                                                    localStorage.removeItem("valorIn");
                                                                     localStorage.clear();
 
                                                                     document.getElementById("bilhete").innerHTML =
@@ -872,7 +863,7 @@ export default function Dashboard1(props) {
 
     function onClickHandler() {
         document.getElementById('resetField1').value = '';
-        localStorage.removeItem("valorIn");
+
 
         if (1) {
             document.getElementById('bilheteP').innerHTML = '';
@@ -909,8 +900,7 @@ export default function Dashboard1(props) {
                     localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                     localStorage.removeItem(betsGame.slice(-1)[0]);
                     localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                    localStorage.removeItem("retorno");
-                    localStorage.removeItem("valorIn");
+
                     betsAll = localStorage.getItem("betsAll2");
                     betsAll = betsAll.replace(
                         betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -989,6 +979,7 @@ export default function Dashboard1(props) {
                             if (res.data.bancas.ativarApostasPreJogo == true) {
 
                                 api.get('/api/getprejogo').then(res => {
+                                    document.getElementById('retorno').innerHTML = '';
 
                                     try {
                                         let l = [];
@@ -1002,6 +993,7 @@ export default function Dashboard1(props) {
                                             })
                                             camp[0].momentos.map((e) => {
                                                 e.eventos.map((live) => {
+
 
                                                     let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
                                                         (live.subeventos.length >= 3 ?
@@ -1198,9 +1190,7 @@ export default function Dashboard1(props) {
         async function gamesLivres(){
             let cotacao = {};
             api.get('/api/getprejogo').then(res => {
-                document.getElementById('retorno').innerHTML =
-                    localStorage.getItem("retorno") != "" && localStorage.getItem("retorno") != null ?
-                        parseFloat(localStorage.getItem("retorno")) : "0.00";
+
 
                 try {
                     let l = [];
@@ -1513,10 +1503,7 @@ export default function Dashboard1(props) {
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}></b><br/>
-                                        Valor da Aposta:<b>{localStorage.getItem("valorIn") != null &&
-                                        localStorage.getItem("valorIn") != "" ?
-                                        localStorage.getItem("valorIn") : ""
-                                        }</b><br/><br/>
+                                        Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
                                         <div id={"value"}>

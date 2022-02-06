@@ -178,38 +178,6 @@ export default function Dashboard(props) {
     };
 
 
-    const onClickHandler = () => {
-        let listAux = [];
-        let init = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-
-        console.log(dataAux.length, count.length);
-        for (let datas of dataAux) {
-
-            let d = datas['Data'].split(' ')[0].split('/');
-            d.reverse();
-
-            let dateReverse = new Date(d.join('-'));
-
-            console.log(dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2));
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-                listAux.push(datas);
-                init = 1;
-            }
-        }
-
-        if (init == 0) {
-            setAux(dataAux);
-        } else {
-            setAux(listAux);
-        }
-        if (dataAux.length != count.length) {
-            setAux(count);
-        }
-
-    };
 
     function custom_sort(a, b) {
         let d1 = new Date(a.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
@@ -257,7 +225,7 @@ export default function Dashboard(props) {
 
         async function getBilhetesAPI() {
 
-            api.get('/api/getbilhetes/' + sessionStorage.getItem('login'))
+            api.get('/api/getbilhetesb/' + sessionStorage.getItem('login'))
                 .then(res => {
                     let l = [];
                     let ax = [];
@@ -279,10 +247,9 @@ export default function Dashboard(props) {
 
                                 var difference = d2.getTime() - d1.getTime();
 
-                                let days = difference / (1000 * 3600 * 24);
-				    let minutes = Math.floor((d2 - d1) / 1000 / 60);
+				                let minutes = Math.floor((d2 - d1) / 1000 / 60);
 
-                                if (days <= 15) {
+
 
                                     l.push({
                                         id: b.id,
@@ -300,7 +267,7 @@ export default function Dashboard(props) {
                                         Cancelar: minutes <= Number(sessionStorage.getItem('configTime'))
                                         && b.tipoDeJogo != "Ao Vivo" ? b.codigo : 0,
                                     });
-                                }
+
                                 ax.push({
                                     id: b.id, Cupom: b.codigo,
                                     Banca: b.nomeBanca,
@@ -388,34 +355,8 @@ export default function Dashboard(props) {
 
 
                                                             <Typography variant="h5">BILHETES</Typography>
-                                                            <Grid container justify="space-around">
-
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
-                                                                                         locale={pt}>
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Início"
-                                                                        value={selectedDate1}
-                                                                        onChange={date1 => handleDateChange1(date1)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Final"
-                                                                        value={selectedDate2}
-                                                                        onChange={date2 => handleDateChange2(date2)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-                                                                </MuiPickersUtilsProvider>
 
 
-                                                            </Grid>
-
-                                                            <br/>
-                                                            <Button onClick={onClickHandler} variant="contained"
-                                                                    color="primary">
-                                                                BUSCAR
-                                                            </Button>
-                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>

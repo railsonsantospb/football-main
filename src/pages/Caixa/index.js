@@ -108,119 +108,13 @@ export default function Dashboard(props) {
     };
 
 
-    const onClickHandler = () => {
-        let init = 0;
-
-        let entradas = 0;
-        let abertos = 0;
-        let ganhos = 0;
-        let perdeu = 0;
-        let comissao = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-        for (let datas of dataAux) {
-
-            let d = datas[2].split(' ')[0].split('/');
-            d.reverse();
-
-            let dateReverse = new Date(d.join('-'));
-
-            let valor = datas[3];
-
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-
-                if (valor != 'Cancelado') {
-                    entradas += parseFloat(datas[4]);
-                    comissao += parseFloat(datas[5]);
-                }
-
-                if (valor == 'Aberto') {
-                    abertos += parseFloat(datas[4]);
-                } else if (valor == 'Ganhou') {
-                    ganhos += parseFloat(datas[7]);
-                } else if (valor == 'Perdeu') {
-                    perdeu += parseFloat(datas[4]);
-                }
-
-                init = 1;
-                document.getElementById('entradas').innerText = 'R$ ' + entradas.toFixed(2);
-                document.getElementById('abertos').innerText = 'R$ ' + abertos.toFixed(2);
-                document.getElementById('ganhos').innerText = 'R$ ' + ganhos.toFixed(2);
-                document.getElementById('comissao').innerText = 'R$ ' + comissao.toFixed(2);
-                if (entradas > ganhos) {
-                    document.getElementById('total').innerHTML = '<span style="color: green">R$ ' +
-                        (entradas - ganhos - comissao).toFixed(2) + '</span>';
-                } else {
-                    document.getElementById('total').innerHTML = '<span style="color: red">R$ ' +
-                        (entradas - ganhos - comissao).toFixed(2) + '</span>';
-                }
-
-            }
-        }
-
-        if (dataAux.length != count.length) {
-            setDataAux(count);
-        }
-
-
-        if (init == 0) {
-
-
-        } else {
-
-        }
-    };
 
     useEffect(() => {
 
 
         let unmounted = false;
 
-        async function getDateAll() {
-            api.get("/api/getdate")
-                .then((res) => {
-                    try {
-                        let d1 = Date.parse(res.data.date);
-                        d1 = new Date(d1);
-                        d1 = d1.setDate(d1.getDate());
 
-                        let d2 = Date.parse(res.data.date);
-                        d2 = new Date(d2);
-                        d2 = d2.setDate(d2.getDate() + 1);
-
-                        d1 = new Date(d1);
-                        d2 = new Date(d2);
-
-                        date = [
-                            d1.getFullYear() +
-                            "-" +
-                            (Number(d1.getMonth()) + 1 < 10
-                                ? "0" + (Number(d1.getMonth()) + 1)
-                                : Number(d1.getMonth()) + 1) +
-                            "-" +
-                            ((Number(d1.getDate())) < 10 ? "0" + d1.getDate() : d1.getDate()),
-                            d2.getFullYear() +
-                            "-" +
-                            (Number(d2.getMonth()) + 1 < 10
-                                ? "0" + (Number(d2.getMonth()) + 1)
-                                : Number(d2.getMonth()) + 1) +
-                            "-" +
-                            ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()),
-                        ];
-
-                        localStorage.setItem("date", date);
-
-                    } catch (e) {
-                        console.log(e);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-
-        getDateAll();
 
 
         async function getLoginAPI() {
@@ -243,23 +137,38 @@ export default function Dashboard(props) {
         }
 
         async function getBilhetesAPI() {
-
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
             api.get('/api/getbilhetes/' + sessionStorage.getItem('login'))
                 .then(res => {
-
                     try {
                         if (res.data) {
+                            let total = res.data.bilhetes.totalEntrada.toFixed(2) -
+                                res.data.bilhetes.saidas.toFixed(2) -
+                                res.data.bilhetes.comissoes.toFixed(2);
 
-                            res.data.bilhetes.map((b) => {
-                                dataAux.push([b.codigo, b.nomeCliente, b.dataDaAposta, b.status, b.valorDeEntrada, b.comissao, b.cotacao, b.valorDeSaida,
-                                    b.tipoSimplesouMultiplo, b.tipoDeJogo, b.quantidadeJogos]);
+                            document.getElementById('entradas').innerText = 'R$ ' +
+                                res.data.bilhetes.totalEntrada.toFixed(2);
+                            document.getElementById('abertos').innerText = 'R$ ' +
+                                res.data.bilhetes.entradasAberto.toFixed(2);
+                            document.getElementById('ganhos').innerText = 'R$ ' +
+                                res.data.bilhetes.saidas.toFixed(2);
+                            document.getElementById('comissao').innerText = 'R$ ' +
+                                res.data.bilhetes.comissoes.toFixed(2);
+
+                            if(total >= 0){
+                                document.getElementById('total').innerHTML = '<b style="color: green">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            } else {
+                                document.getElementById('total').innerHTML = '<b style="color: red">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            }
 
 
-                            });
-                            setDataAux(dataAux);
-                            setCount(dataAux);
 
                         }
+                        document.getElementById("re").style.display = "block";
+                        document.getElementById("load").style.display = "none";
                     } catch (e) {
 
                     }
@@ -269,22 +178,6 @@ export default function Dashboard(props) {
 
         }
 
-        async function getDateAfter() {
-            api.get('/api/getdateafter').then(res => {
-
-                try {
-
-                    setDateAfter(res.data.date);
-
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-                console.log(error)
-            });
-        }
-
-        getDateAfter();
 
 
         getBilhetesAPI();
@@ -298,44 +191,6 @@ export default function Dashboard(props) {
 
     }, []);
 
-    let entradas = 0;
-    let abertos = 0;
-    let ganhos = 0;
-    let perdeu = 0;
-    let comissao = 0;
-
-    for (let datas of dataAux) {
-        let d1 = new Date(datas[2].split(' ')[0].split('/')[1] + '/' +
-            datas[2].split(' ')[0].split('/')[0] + '/' +
-            datas[2].split(' ')[0].split('/')[2]);
-
-        let d2 = new Date(sessionStorage.getItem('date').split('/')[1] + '/' +
-            sessionStorage.getItem('date').split('/')[0] + '/' +
-            sessionStorage.getItem('date').split('/')[2]);
-
-        var difference = d2.getTime() - d1.getTime();
-        let days = difference / (1000 * 3600 * 24);
-        d2.setDate(d2.getDate()-1);
-        d1.setDate(d1.getDate()-1);
-        if (days <= 6 && d2.getDay() >= d1.getDay()) {
-            let valor = datas[3];
-            console.log(datas);
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-        }
-
-
-    }
 
 
     return (
@@ -358,104 +213,69 @@ export default function Dashboard(props) {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item>
 
-
-                                                            <Grid container justify="space-around">
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
-                                                                                         locale={pt}>
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Início"
-                                                                        value={selectedDate1}
-                                                                        onChange={date1 => handleDateChange1(date1)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Final"
-                                                                        placeholder="2018/10/10"
-                                                                        value={selectedDate2}
-                                                                        onChange={date2 => handleDateChange2(date2)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-                                                                </MuiPickersUtilsProvider>
-
-
-                                                            </Grid>
-
-                                                            <br/>
-                                                            <Button onClick={onClickHandler} variant="contained"
-                                                                    color="primary">
-                                                                BUSCAR
-                                                            </Button>
-                                                            <br/><br/>
-                                                        </Grid>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
+                                            <div id="load" style={{textAlign: 'center'}}>Carregando...</div>
                                         </Paper>
+                                        <div id="re">
+                                            <TableContainer component={Paper}>
 
-                                        <TableContainer component={Paper}>
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>BANCA</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>TOTAL DE
+                                                                ENTRADAS</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>ENTRADAS EM
+                                                                ABERTO</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>SAÍDAS</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>COMISSÕES</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
+                                                        </TableRow>
+                                                    </TableHead>
 
-                                            <Table stickyHeader aria-label="sticky table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <StyledTableCell align={"center"}><b>BANCA</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>ENTRADAS</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>ABERTO</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>SAÍDAS</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>COMISSÕES</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
-                                                    </TableRow>
-                                                </TableHead>
+                                                    <TableBody>
 
-                                                <TableBody>
+                                                        <StyledTableRow>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5">
+                                                                    {nomeBanca}
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="entradas">
 
-                                                    <StyledTableRow>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5">
-                                                                {nomeBanca}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5" id="entradas">
-                                                                R$ {entradas.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5" id="abertos">
-                                                                R$ {abertos.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5" id="ganhos">
-                                                                R$ {ganhos.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5" id="comissao">
-                                                                R$ {comissao.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            {ganhos > entradas ? <Typography variant="h5">
-                                                                <b style={{color: 'red'}} id="total">R$
-                                                                    -{Math.abs((entradas - ganhos - comissao)).toFixed(2)}</b>
-                                                            </Typography> : <Typography variant="h5">
-                                                                <b style={{color: 'green'}}
-                                                                   id="total">R$ {Math.abs((entradas - ganhos - comissao)).toFixed(2)}</b>
-                                                            </Typography>}
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="abertos">
 
-                                                        </StyledTableCell>
-                                                    </StyledTableRow>
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="ganhos">
 
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="comissao">
+
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="total">
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer></div>
 
                                     </Grid>
 

@@ -45,7 +45,7 @@ export default function Dashboard(props) {
     let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
     const columns = [
         {
-            field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
+            field: 'Banca', headerName: 'Banca', width: 150, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
@@ -57,7 +57,7 @@ export default function Dashboard(props) {
         },
 
         {
-            field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
+            field: 'Cliente', headerName: 'Cliente', width: 120, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
@@ -233,7 +233,7 @@ export default function Dashboard(props) {
 
         async function getBilhetesAPI() {
 
-            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
+            api.get('/api/getbilhetesgerenteb/' + sessionStorage.getItem('manage'))
                 .then(res => {
                     let l = [];
                     let ax = [];

@@ -169,88 +169,8 @@ export default function Dashboard() {
     };
 
 
-    function loadCaixa() {
-        let entradas = 0;
-        let abertos = 0;
-        let ganhos = 0;
-        let perdeu = 0;
-        let comissao = 0;
-        for (let datas of dataAux) {
-
-            let valor = datas[3];
-
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-
-        }
-
-        setTotalEntrada(entradas);
-        setEntradasAbertas(abertos);
-        setSaidas(ganhos);
-        setComissoes(comissao);
-        setTotal((entradas - ganhos - comissao));
-
-    }
 
 
-    const onClickHandler = () => {
-        let init = 0;
-        let entradas = 0;
-        let abertos = 0;
-        let ganhos = 0;
-        let perdeu = 0;
-        let comissao = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-        for (let datas of dataAux) {
-            let dateReverse = new Date('20' + (datas[2].split(' ')[0]).split('/').reverse().join('-'));
-
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-
-                let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-                let result = ((st.split(',').length == datas[10]));
-
-                let valor = datas[3];
-
-                if (valor != 'Cancelado') {
-                    entradas += parseFloat(datas[4]);
-                    comissao += parseFloat(datas[5]);
-                }
-
-
-                if (datas[3] == 'Aberto') {
-                    abertos += parseFloat(datas[4]);
-                } else if (datas[3] == 'Ganhou') {
-                    ganhos += parseFloat(datas[7]);
-                } else if (datas[3] == 'Perdeu') {
-                    perdeu += parseFloat(datas[4]);
-                }
-
-                init = 1;
-            }
-        }
-
-        if (init == 0) {
-            loadCaixa();
-        } else {
-            setTotalEntrada(entradas);
-            setEntradasAbertas(abertos);
-            setSaidas(ganhos);
-            setComissoes(comissao);
-            setTotal(perdeu + (entradas - ganhos - comissao));
-        }
-    };
 
     function close(e) {
         try {
@@ -274,33 +194,39 @@ export default function Dashboard() {
 
 
         async function getBancasAPI() {
-
-            api.get('/api/getbilhetes')
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
+            api.get('/api/getbilhetesa')
                 .then(res => {
                     try {
                         if (res.data) {
-                            //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-                            //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-                            //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-                            // ];
-                            res.data.bilhetes.map((b) => {
+                            console.log(res.data)
+                            let total = (res.data.bilhetes.totalEntrada.toFixed(2) -
+                                res.data.bilhetes.saidas.toFixed(2) -
+                                res.data.bilhetes.comissoes.toFixed(2));
 
-                                dataAux.push([
-                                    b.codigo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida,
-                                ])
-                            })
+                            document.getElementById('entradas').innerText = 'R$ ' +
+                                res.data.bilhetes.totalEntrada.toFixed(2);
+                            document.getElementById('abertos').innerText = 'R$ ' +
+                                res.data.bilhetes.entradasAberto.toFixed(2);
+                            document.getElementById('ganhos').innerText = 'R$ ' +
+                                res.data.bilhetes.saidas.toFixed(2);
+                            document.getElementById('comissao').innerText = 'R$ ' +
+                                res.data.bilhetes.comissoes.toFixed(2);
 
-                            setDataAux(dataAux);
-                            loadCaixa();
+                            if(total >= 0){
+                                document.getElementById('total').innerHTML = '<b style="color: green">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            } else {
+                                document.getElementById('total').innerHTML = '<b style="color: red">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            }
+
+
 
                         }
+                        document.getElementById("re").style.display = "block";
+                        document.getElementById("load").style.display = "none";
                     } catch (e) {
                         console.log(e);
 
@@ -313,7 +239,7 @@ export default function Dashboard() {
 
         setDataAux(d);
         getBancasAPI();
-        loadCaixa();
+
 
         return () => {
             unmounted = true;
@@ -346,94 +272,64 @@ export default function Dashboard() {
                                                         <Grid item>
 
 
-                                                            <Grid container justify="space-around">
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
-                                                                                         locale={pt}>
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Início"
-                                                                        value={selectedDate1}
-                                                                        onChange={date1 => handleDateChange1(date1)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Final"
-                                                                        placeholder="2018/10/10"
-                                                                        value={selectedDate2}
-                                                                        onChange={date2 => handleDateChange2(date2)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-                                                                </MuiPickersUtilsProvider>
-
-
-                                                            </Grid>
-
-                                                            <br/>
-                                                            <Button onClick={onClickHandler} variant="contained"
-                                                                    color="primary">
-                                                                BUSCAR
-                                                            </Button>
-                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
+                                            <div id="load" style={{textAlign: 'center'}}>Carregando...</div>
                                         </Paper>
+                                        <div id="re">
+                                            <TableContainer component={Paper}>
 
-                                        <TableContainer component={Paper}>
+                                                <Table stickyHeader aria-label="sticky table">
+                                                    <TableHead>
+                                                        <TableRow>
 
-                                            <Table stickyHeader aria-label="sticky table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <StyledTableCell align={"center"}><b>TOTAL DE
-                                                            ENTRADAS</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>ENTRADAS EM
-                                                            ABERTO</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>SAÍDAS</b></StyledTableCell>
-                                                        <StyledTableCell
-                                                            align={"center"}><b>COMISSÕES</b></StyledTableCell>
-                                                        <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
-                                                    </TableRow>
-                                                </TableHead>
+                                                            <StyledTableCell align={"center"}><b>TOTAL DE
+                                                                ENTRADAS</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>ENTRADAS EM
+                                                                ABERTO</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>SAÍDAS</b></StyledTableCell>
+                                                            <StyledTableCell
+                                                                align={"center"}><b>COMISSÕES</b></StyledTableCell>
+                                                            <StyledTableCell align={"center"}><b>TOTAL</b></StyledTableCell>
+                                                        </TableRow>
+                                                    </TableHead>
 
-                                                <TableBody>
+                                                    <TableBody>
 
-                                                    <StyledTableRow>
+                                                        <StyledTableRow>
 
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5">
-                                                                R$ {totalEntrada.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5">
-                                                                R$ {entradasAbertas.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5">
-                                                                R$ {saidas.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            <Typography variant="h5">
-                                                                R$ {comissoes.toFixed(2)}
-                                                            </Typography>
-                                                        </StyledTableCell>
-                                                        <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            {saidas > totalEntrada ? <Typography variant="h5">
-                                                                <b style={{color: 'red'}}>R$ {Math.abs(total).toFixed(2)}</b>
-                                                            </Typography> : <Typography variant="h5">
-                                                                <b style={{color: 'green'}}>R$ {Math.abs(total).toFixed(2)}</b>
-                                                            </Typography>}
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="entradas">
 
-                                                        </StyledTableCell>
-                                                    </StyledTableRow>
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="abertos">
 
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="ganhos">
+
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="comissao">
+
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                            <StyledTableCell align={"center"} style={{width: '10px'}}>
+                                                                <Typography variant="h5" id="total">
+                                                                </Typography>
+                                                            </StyledTableCell>
+                                                        </StyledTableRow>
+
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer></div>
 
                                     </Grid>
 

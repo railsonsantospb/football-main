@@ -22,6 +22,9 @@ import {api, cc, images} from "../Constantes/index";
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import useWindowDimensions from '../Size/index';
 import Menu from '../Menu/index';
+import ReactDOM from "react-dom";
+import ReactDOMServer from "react-dom/server";
+import LockIcon from '@mui/icons-material/Lock';
 
 let date = [];
 
@@ -50,6 +53,7 @@ export default function Dashboard(props) {
     const [entrada, setEntrada] = useState(0)
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
     const [cotacoes, setCotacoes] = useState({});
+    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon/>);
 
     const drawerWidth = 240;
 
@@ -125,20 +129,14 @@ export default function Dashboard(props) {
     }, 1000);
 
     function InitOdds() {
-        localStorage.setItem("retorno", "");
-        localStorage.setItem("valorIn", "");
+
         if (localStorage.getItem("betsAll2") === null) {
             localStorage.setItem("betsAll2", "");
             noneBets();
         } else {
             let bets = localStorage.getItem("betsAll2");
-            try{
-                if(localStorage.getItem("retorno") != null && localStorage.getItem("retorno") != ""){
-                    document.getElementById('retorno').innerHTML = localStorage.getItem("retorno");
-                }
-            } catch (e) {
 
-            }
+
 
             for (var n in bets.split('=').slice(0, bets.split('=').length - 1)) {
                 try {
@@ -248,6 +246,12 @@ export default function Dashboard(props) {
 
         try {
             document.getElementById("bilhete").innerHTML = '';
+            if(sessionStorage.getItem("pin") != "" && sessionStorage.getItem("pin") != null) {
+                document.getElementById("resetField1").value = sessionStorage.getItem("valorIn");
+                setEntrada(sessionStorage.getItem("valorIn"));
+                document.getElementById("retorno").innerHTML = sessionStorage.getItem("retorno");
+                sessionStorage.setItem("pin", "");
+            }
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
@@ -378,7 +382,7 @@ export default function Dashboard(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -479,7 +483,6 @@ export default function Dashboard(props) {
 
                                 });
                                 setEntrada(0);
-                                localStorage.setItem("retorno", "");
                                 setClient("");
                                 addVeiryClient("");
 
@@ -536,19 +539,18 @@ export default function Dashboard(props) {
                     ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                         ((cotacao * Number(value)).toFixed(2));
 
-                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-            localStorage.setItem("retorno", "");
-            localStorage.setItem('valorIn', "");
+            sessionStorage.removeItem("retorno")
             handleCloseURL();
         }
 
-        localStorage.setItem('valorIn', value);
+        sessionStorage.setItem('valorIn', value);
 
     }
 
@@ -775,6 +777,8 @@ export default function Dashboard(props) {
 
                                                         if (500 >= parseFloat(entrada)) {
                                                             //salvarBilhete();
+                                                            localStorage.setItem("valorIn", sessionStorage.getItem("valorIn"));
+                                                            localStorage.setItem("retorno", sessionStorage.getItem("retorno"));
                                                             let codigoPIn = Math.ceil(Math.random() * Math.pow(10, 6));
                                                             api.post('/api/addbilhetetemporario', {
                                                                 'codigoPin': codigoPIn,
@@ -784,9 +788,9 @@ export default function Dashboard(props) {
                                                                     if (res.data) {
                                                                         noneBets();
                                                                         clearOdds();
-                                                                        localStorage.removeItem("valorIn");
                                                                         localStorage.clear();
-
+                                                                        sessionStorage.setItem("retorno", "");
+                                                                        sessionStorage.setItem("valorIn", "");
                                                                         document.getElementById("bilhete").innerHTML =
                                                                             "<center><h1>" + codigoPIn + "</h1></center>";
                                                                     }
@@ -806,11 +810,15 @@ export default function Dashboard(props) {
                                                         let auxSaldo = qtd > 1 ? saldoGeral : saldoSimples;
 
                                                         if (auxSaldo >= parseFloat(entrada)) {
+
                                                             salvarBilhete();
                                                             handlePrint();
                                                             noneBets();
                                                             clearOdds();
                                                             geraBilhete();
+                                                            sessionStorage.setItem("retorno", "");
+                                                            sessionStorage.setItem("valorIn", "");
+                                                            sessionStorage.setItem("pin", "");
                                                         } else {
                                                             alert('Sem limite para apostar!');
                                                         }
@@ -855,7 +863,7 @@ export default function Dashboard(props) {
 
     function onClickHandler() {
         document.getElementById('resetField1').value = '';
-        localStorage.removeItem("valorIn");
+
 
         if (1) {
             document.getElementById('bilheteP').innerHTML = '';
@@ -891,7 +899,7 @@ export default function Dashboard(props) {
                     localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                     localStorage.removeItem(betsGame.slice(-1)[0]);
                     localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                    localStorage.removeItem("valorIn");
+
                     betsAll = localStorage.getItem("betsAll2");
                     betsAll = betsAll.replace(
                         betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -941,9 +949,6 @@ export default function Dashboard(props) {
 
     useEffect(() => {
 
-        if(localStorage.getItem("retorno") != null && localStorage.getItem("retorno") != ""){
-            document.getElementById('retorno').innerHTML = localStorage.getItem("retorno");
-        }
 
 
         async function getLoginAPI() {
@@ -1529,10 +1534,7 @@ export default function Dashboard(props) {
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}></b><br/>
-                                        Valor da Aposta:<b>{localStorage.getItem("valorIn") != null &&
-                                    localStorage.getItem("valorIn") != "" ?
-                                        localStorage.getItem("valorIn") : ""
-                                    }</b><br/><br/>
+                                        Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
                                             <div id={"value"}>

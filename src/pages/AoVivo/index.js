@@ -25,6 +25,9 @@ import {api, cc} from '../Constantes/index';
 import Menu from '../Menu/index';
 import useWindowDimensions from '../Size/index';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
+import ReactDOMServer from "react-dom/server";
+import LockIcon from "@mui/icons-material/Lock";
+import ReactDOM from "react-dom";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -61,7 +64,7 @@ export default function Dashboard(props) {
     const {height, width} = useWindowDimensions();
     const [inputValue, setInputValue] = React.useState('');
     const [value, setValue] = React.useState("");
-
+    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon style={{fontSize: 15}}/>);
     const [cotacoes, setCotacoes] = useState({});
     const drawerWidth = 240;
 
@@ -134,8 +137,7 @@ export default function Dashboard(props) {
 
 
     function InitOdds() {
-        localStorage.setItem("retorno", "");
-        localStorage.setItem("valorIn", "");
+
         if (localStorage.getItem("betsAll") === null) {
             localStorage.setItem("betsAll", "");
             localStorage.setItem('displayBets', 'none');
@@ -381,7 +383,7 @@ export default function Dashboard(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -533,18 +535,14 @@ export default function Dashboard(props) {
                     ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                         ((cotacao * Number(value)).toFixed(2));
 
-                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
-                    ((cotacao * Number(value)).toFixed(2)));
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-            localStorage.setItem("retorno", "");
-            localStorage.setItem('valorIn', "");
+
             handleCloseURL();
         }
 
-        localStorage.setItem('valorIn', value);
 
     }
 
@@ -815,7 +813,7 @@ export default function Dashboard(props) {
     function onClickHandler() {
         document.getElementById('resetField1').value = '';
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
-            localStorage.removeItem("valorIn");
+
             if (1) {
                 sessionStorage.setItem('minutos', new Date().getMinutes());
                 document.getElementById('bilheteP').innerHTML = '';
@@ -851,8 +849,7 @@ export default function Dashboard(props) {
                         localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                         localStorage.removeItem(betsGame.slice(-1)[0]);
                         localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                        localStorage.removeItem("valorIn");
-                        localStorage.removeItem("retorno");
+
                         betsAll = localStorage.getItem("betsAll");
                         betsAll = betsAll.replace(
                             betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -966,7 +963,7 @@ setCotacoes(cotacao);
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                                    : html) : html)
 
                                                             let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                                 ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -976,7 +973,7 @@ setCotacoes(cotacao);
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                                    : html) : html)
 
                                                             let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                                 ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -986,7 +983,7 @@ setCotacoes(cotacao);
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                                    : html) : html)
 
 
                                                             let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa).toFixed(2) :
@@ -1493,10 +1490,7 @@ setCotacoes(cotacao);
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}>0.00</b><br/>
-                                        Valor da Aposta:<b>{localStorage.getItem("valorIn") != null &&
-                                    localStorage.getItem("valorIn") != "" ?
-                                        localStorage.getItem("valorIn") : ""
-                                    }</b><br/><br/>
+                                        Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
                                         <div id={"value"}>

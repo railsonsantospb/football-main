@@ -81,7 +81,7 @@ export default function Dashboard() {
     const [selectedDate1, handleDateChange1] = useState(new Date());
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
-    const [nome, setNome] = React.useState('');
+    const [nome, setNome] = React.useState('Todas');
     const [openS, setOpenS] = React.useState(false);
 
     const handleChangeS = (event) => {
@@ -231,157 +231,6 @@ export default function Dashboard() {
         setOpenLoading(false);
     };
 
-
-    let b = 0;
-
-    let entradas = 0;
-    let abertos = 0;
-    let ganhos = 0;
-    let perdeu = 0;
-    let comissao = 0;
-    let entradasV = 0;
-    let abertosV = 0;
-    let ganhosV = 0;
-    let perdeuV = 0;
-    let comissaoV = 0;
-    for (let datas of dataAuxB) {
-
-        let st = datas[3].replaceAll('{', '').replaceAll('}', '');
-        let result = ((st.split(',').length == datas[8]));
-        let valor = (result == true && st.indexOf('Aberto') != -1 ? 'Aberto' :
-            st.indexOf('Perdeu') != -1 ? 'Perdeu' :
-                st.indexOf('Perdeu') == -1 && st.indexOf('Aberto') == -1 && st.indexOf('Cancelado') == -1 ? 'Ganhou' :
-                    st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') == -1 && st.indexOf('Aberto') == -1 ? 'Cancelado' :
-                        st.indexOf('Perdeu') == -1 && st.indexOf('Ganhou') != -1 || st.indexOf('Cacenlado') != -1 &&
-                        st.indexOf('Aberto') == -1 ? 'Ganhou' : 'Aberto');
-
-        if (datas[0] == 'Pre-Jogo') {
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-
-        } else {
-            if (valor != 'Cancelado') {
-                entradasV += parseFloat(datas[4]);
-                comissaoV += parseFloat(datas[5]);
-            }
-            if (valor == 'Aberto') {
-                abertosV += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhosV += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeuV += parseFloat(datas[4]);
-            }
-        }
-        relatorios[0]['Pré-Jogo'] = entradas.toFixed(2);
-        relatorios[0]['Ao Vivo'] = entradasV.toFixed(2);
-
-        relatorios[1]['Pré-Jogo'] = abertos.toFixed(2);
-        relatorios[1]['Ao Vivo'] = abertosV.toFixed(2);
-
-        relatorios[2]['Pré-Jogo'] = ganhos.toFixed(2);
-        relatorios[2]['Ao Vivo'] = ganhosV.toFixed(2);
-
-        relatorios[3]['Pré-Jogo'] = comissao.toFixed(2);
-        relatorios[3]['Ao Vivo'] = comissaoV.toFixed(2);
-
-        relatorios[4]['Pré-Jogo'] = ((((entradas - ganhos - comissao)))).toFixed(2);
-        relatorios[4]['Ao Vivo'] = ((((entradasV - ganhosV - comissaoV)))).toFixed(2);
-        b = (((entradas + entradasV) - (ganhos + ganhosV) - (comissao + comissaoV)));
-
-    }
-
-    entradas = 0;
-    abertos = 0;
-    ganhos = 0;
-    perdeu = 0;
-    comissao = 0;
-
-    function loadCaixa(banca) {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
-
-        for (let datas of dataAux) {
-
-            let d1 = new Date(datas[2].split(' ')[0].split('/')[1] + '/' +
-                datas[2].split(' ')[0].split('/')[0] + '/' +
-                datas[2].split(' ')[0].split('/')[2] + " " + datas[2].split(' ')[1]);
-
-            let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
-                sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
-                sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
-                sessionStorage.getItem('date').split(' ')[1]);
-
-            var difference = d2.getTime() - d1.getTime();
-
-            let days = difference / (1000 * 3600 * 24);
-
-            d2.setDate(d2.getDate()-1);
-            d1.setDate(d1.getDate()-1);
-            if (days <= 6 && d2.getDay() >= d1.getDay()) {
-
-                let valor = datas[3];
-
-                if (valor != 'Cancelado') {
-                    entradas += parseFloat(datas[4]);
-                    comissao += parseFloat(datas[5]);
-                }
-
-                if (valor == 'Aberto') {
-                    abertos += parseFloat(datas[4]);
-                } else if (valor == 'Ganhou') {
-                    ganhos += parseFloat(datas[7]);
-                } else if (valor == 'Perdeu') {
-                    perdeu += parseFloat(datas[4]);
-                }
-            }
-
-        }
-
-        if ((totalEntrada[banca]) != undefined) {
-            totalEntrada[banca] = totalEntrada[banca] + entradas
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = entradasAbertas[banca] + abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = saidas[banca] + ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissoes[banca] + comissao
-            setComissoes(comissoes);
-            total[banca] = total[banca] + ((entradas - ganhos - comissao));
-            setTotal(total);
-        } else {
-            totalEntrada[banca] = entradas;
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissao;
-            setComissoes(comissoes);
-            total[banca] = ((entradas - ganhos - comissao));
-            setTotal(total);
-        }
-
-        let v = 0;
-        for (let i in total) {
-            v += total[i];
-        }
-        setDone(v);
-
-    }
-
-
     function close(e) {
         try {
             if (e.clientX > 250) {
@@ -402,49 +251,74 @@ export default function Dashboard() {
 
 
         async function getBancasAPI() {
-
-            api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
+            api.get('/api/getbilhetesgerentecaixa2/' + sessionStorage.getItem('manage'))
                 .then(res => {
                     try {
+                        let bancas = [];
+                        let entradas = 0;
+                        let abertos = 0;
+                        let ganhos = 0;
+                        let comissao = 0;
+                        let entradasV = 0;
+                        let abertosV = 0;
+                        let ganhosV = 0;
+                        let comissaoV = 0;
+                        let totalPP = 0;
+                        let totalVV = 0;
+                        let b = 0;
                         if (res.data) {
-                            //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-                            //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-                            //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-                            // ];
+                            for(let b in res.data.bilhetes){
+                                bancas.push(b);
+                                nomesAux.add(b);
+                                totalEntrada[b] = res.data.bilhetes[b].totalEntrada[0]+res.data.bilhetes[b].totalEntrada[1];
+                                setTotalEntrada(totalEntrada);
+                                entradasAbertas[b] = res.data.bilhetes[b].entradasAberto[0]+res.data.bilhetes[b].entradasAberto[1];
+                                setEntradasAbertas(entradasAbertas);
+                                saidas[b] = res.data.bilhetes[b].saidas[0]+res.data.bilhetes[b].saidas[1];
+                                setSaidas(saidas);
+                                comissoes[b] = res.data.bilhetes[b].comissoes[0]+res.data.bilhetes[b].comissoes[1];
+                                setComissoes(comissoes);
+                                total[b] = res.data.bilhetes[b].total[0]+res.data.bilhetes[b].total[1];
+                                setTotal(total);
 
-                            res.data.bilhetes.map((b) => {
-                                console.log(b);
-                                nomesBancas.add(b.nomeBanca);
-                                nomesAux.add(b.nomeBanca);
+                                entradas += res.data.bilhetes[b].totalEntrada[0];
+                                entradasV += res.data.bilhetes[b].totalEntrada[1];
 
-                                dataAux.push([
-                                    b.tipoDeJogo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida,
-                                    b.quantidadeJogos
-                                ]);
-                                dataAuxB.push([
-                                    b.tipoDeJogo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida,
-                                    b.quantidadeJogos
-                                ]);
-                                loadCaixa(b.nomeBanca);
 
-                                dataAux.pop();
-                            })
-                            setNomesBancas(nomesBancas);
+                                abertos += res.data.bilhetes[b].entradasAberto[0];
+                                abertosV += res.data.bilhetes[b].entradasAberto[1];
+
+                                ganhos += res.data.bilhetes[b].saidas[0];
+                                ganhosV += res.data.bilhetes[b].saidas[1];
+
+                                comissao += res.data.bilhetes[b].comissoes[0];
+                                comissaoV += res.data.bilhetes[b].comissoes[1];
+
+                                totalPP += res.data.bilhetes[b].total[0];
+                                totalVV += res.data.bilhetes[b].total[1];
+
+                                setDone((((entradas + entradasV) -
+                                    (ganhos + ganhosV) -
+                                    (comissao + comissaoV))));
+                                setTotalEntradaP(entradas);
+                                setTotalEntradaV(entradasV);
+                                setEntradasAbertasP(abertos);
+                                setEntradasAbertasV(abertosV);
+                                setSaidasP(ganhos);
+                                setSaidasV(ganhosV);
+                                setComissoesP(comissao);
+                                setComissoesV(comissaoV);
+                                setTotalEntradaP(totalPP);
+                                setTotalEntradaV(totalVV);
+
+                            }
+                            document.getElementById("re").style.display = "block";
+                            document.getElementById("load").style.display = "none";
+                            setNomesBancas(bancas);
                             setNomeAux(nomesAux);
+
                         }
                     } catch (e) {
                         console.log(e);
@@ -457,7 +331,7 @@ export default function Dashboard() {
         }
 
         setNomesBancas(d);
-        setNomeAux(d);
+
         setDataCambista(d);
         setDataAux(d);
         getBancasAPI();
@@ -467,172 +341,96 @@ export default function Dashboard() {
 
 
     const getDatas = () => {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
-        let somaP = 0;
-        let soma = 0;
-        let entradasP = 0;
-        let abertosP = 0;
-        let saidaP = 0;
-        let totalP = 0;
-        let comissaoP = 0;
-        setBalanco(0);
-        setTotalEntradaP(0);
-        setEntradasAbertasP(0);
-        setSaidasP(0);
-        setTotalP(0);
-        setComissoesP(0);
-        let somaV = 0;
+        let entradas = 0;
+        let abertos = 0;
+        let ganhos = 0;
+        let comissao = 0;
         let entradasV = 0;
         let abertosV = 0;
-        let saidaV = 0;
-        let totalV = 0;
+        let ganhosV = 0;
         let comissaoV = 0;
-        setTotalEntradaV(0);
-        setEntradasAbertasV(0);
-        setSaidasV(0);
-        setTotalV(0);
-        setComissoesV(0);
+        let totalPP = 0;
+        let totalVV = 0;
+        setDone(0);
+        setTotalEntradaP(entradas);
+        setTotalEntradaV(entradasV);
+        setEntradasAbertasP(abertos);
+        setEntradasAbertasV(abertosV);
+        setSaidasP(ganhos);
+        setSaidasV(ganhosV);
+        setComissoesP(comissao);
+        setComissoesV(comissaoV);
+        setTotalEntradaP(totalPP);
+        setTotalEntradaV(totalVV);
 
         let n = '';
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
         if (new Date(auxDate1) <= new Date(auxDate2)) {
-            if (nome != '' && nome != 'Todas') {
 
-                nomesBancas.clear();
-                nomesBancas.add(nome);
-                n = nome;
-            } else {
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
 
-                [...nomesAux].map((b) => {
-                    nomesBancas.add(b);
-                });
-                n = 'empty';
-            }
-            [...nomesBancas].map((banca) => {
-
-                totalEntrada[banca] = entradas;
-
-                entradasAbertas[banca] = abertos;
-
-                saidas[banca] = ganhos;
-
-                comissoes[banca] = comissao;
-
-                total[banca] = ((entradas - ganhos - comissao));
-                setDone(total[banca]);
-
-
-            })
-
-
-            api.get('/api/getbilhetesgerentedates/' + sessionStorage.getItem('manage') + '/' + auxDate1 + '/' + auxDate2 + '/' + n)
+            api.get('/api/getbilhetesgerentedates/' + sessionStorage.getItem('manage') +
+                '/' + auxDate1 + '/' + auxDate2 + '/' + nome)
                 .then(res => {
+                    let bancas = [];
                     try {
-                        console.log(res.data);
+
 
                         if (res.data) {
 
-                            res.data.bilhetes.map((b) => {
-                                entradas = 0;
-                                abertos = 0;
-                                ganhos = 0;
-                                perdeu = 0;
-                                comissao = 0;
+                            for(let b in res.data.bilhetes) {
+                                console.log(res.data);
+                                bancas.push(b);
+                                nomesAux.add(b);
+                                totalEntrada[b] = res.data.bilhetes[b].totalEntrada[0]+res.data.bilhetes[b].totalEntrada[1];
+                                setTotalEntrada(totalEntrada);
+                                entradasAbertas[b] = res.data.bilhetes[b].entradasAberto[0]+res.data.bilhetes[b].entradasAberto[1];
+                                setEntradasAbertas(entradasAbertas);
+                                saidas[b] = res.data.bilhetes[b].saidas[0]+res.data.bilhetes[b].saidas[1];
+                                setSaidas(saidas);
+                                comissoes[b] = res.data.bilhetes[b].comissoes[0]+res.data.bilhetes[b].comissoes[1];
+                                setComissoes(comissoes);
+                                total[b] = res.data.bilhetes[b].total[0]+res.data.bilhetes[b].total[1];
+                                setTotal(total);
 
-                                let valor = b.status;
-
-
-                                if (valor != 'Cancelado') {
-                                    entradas += parseFloat(b.valorDeEntrada);
-                                    comissao += parseFloat(b.comissao);
-                                }
-                                if (valor == 'Aberto') {
-                                    abertos += parseFloat(b.valorDeEntrada);
-                                } else if (valor == 'Ganhou') {
-                                    ganhos += parseFloat(b.valorDeSaida);
-                                } else if (valor == 'Perdeu') {
-                                    perdeu += parseFloat(b.valorDeEntrada);
-
-                                }
-
-                                soma += ((entradas - ganhos - comissao));
-
-                                if ((totalEntrada[b.nomeBanca]) != undefined) {
-                                    totalEntrada[b.nomeBanca] = totalEntrada[b.nomeBanca] + entradas
-
-                                    entradasAbertas[b.nomeBanca] = entradasAbertas[b.nomeBanca] + abertos;
-
-                                    saidas[b.nomeBanca] = saidas[b.nomeBanca] + ganhos;
-
-                                    comissoes[b.nomeBanca] = comissoes[b.nomeBanca] + comissao
-
-                                    total[b.nomeBanca] = total[b.nomeBanca] + ((entradas - ganhos - comissao));
+                                entradas += res.data.bilhetes[b].totalEntrada[0];
+                                entradasV += res.data.bilhetes[b].totalEntrada[1];
 
 
-                                } else {
+                                abertos += res.data.bilhetes[b].entradasAberto[0];
+                                abertosV += res.data.bilhetes[b].entradasAberto[1];
 
-                                    totalEntrada[b.nomeBanca] = entradas;
+                                ganhos += res.data.bilhetes[b].saidas[0];
+                                ganhosV += res.data.bilhetes[b].saidas[1];
 
-                                    entradasAbertas[b.nomeBanca] = abertos;
+                                comissao += res.data.bilhetes[b].comissoes[0];
+                                comissaoV += res.data.bilhetes[b].comissoes[1];
 
-                                    saidas[b.nomeBanca] = ganhos;
+                                totalPP += res.data.bilhetes[b].total[0];
+                                totalVV += res.data.bilhetes[b].total[1];
 
-                                    comissoes[b.nomeBanca] = comissao;
-
-                                    total[b.nomeBanca] = ((entradas - ganhos - comissao));
-
-
-                                }
-
-                                setDone(soma);
-                                if (b.tipoDeJogo == 'Pre-Jogo') {
-                                    somaP += ((entradas - ganhos - comissao));
-                                    entradasP += entradas;
-                                    abertosP += abertos;
-                                    comissaoP += comissao;
-                                    saidaP += ganhos;
-
-                                    // setTotalEntradaP(entradasP);
-                                    // setEntradasAbertasP(abertosP);
-                                    // setSaidasP(saidaP);
-                                    // setTotalP(somaP);
-                                    // setComissoesP(comissaoP);
-                                    relatorios[0]['Pré-Jogo'] = entradasP;
-                                    relatorios[1]['Pré-Jogo'] = abertosP;
-                                    relatorios[2]['Pré-Jogo'] = saidaP;
-                                    relatorios[3]['Pré-Jogo'] = comissaoP;
-                                    relatorios[4]['Pré-Jogo'] = somaP;
-
-
-                                } else {
-                                    somaV += ((entradas - ganhos - comissao));
-                                    entradasV += entradas;
-                                    abertosV += abertos;
-                                    comissaoV += comissao;
-                                    saidaV += ganhos;
-                                    relatorios[0]['Ao Vivo'] = entradasV;
-                                    relatorios[1]['Ao Vivo'] = abertosV;
-                                    relatorios[2]['Ao Vivo'] = saidaV;
-                                    relatorios[3]['Ao Vivo'] = comissaoV;
-                                    relatorios[4]['Ao Vivo'] = somaV;
-
-                                    // setTotalEntradaV(entradasV);
-                                    // setEntradasAbertasV(abertosV);
-                                    // setSaidasV(saidaV);
-                                    // setTotalP(somaV);
-                                    // setComissoesV(comissaoV);
-                                }
-
-
-                            })
-                            setGraph(relatorios);
+                                setDone((((entradas + entradasV) -
+                                    (ganhos + ganhosV) -
+                                    (comissao + comissaoV))));
+                                setTotalEntradaP(entradas);
+                                setTotalEntradaV(entradasV);
+                                setEntradasAbertasP(abertos);
+                                setEntradasAbertasV(abertosV);
+                                setSaidasP(ganhos);
+                                setSaidasV(ganhosV);
+                                setComissoesP(comissao);
+                                setComissoesV(comissaoV);
+                                setTotalEntradaP(totalPP);
+                                setTotalEntradaV(totalVV);
+                            }
                         }
+                        document.getElementById("re").style.display = "block";
+                        document.getElementById("load").style.display = "none";
+                        setNomesBancas(bancas);
+                        setNomeAux(nomesAux);
                     } catch (e) {
                         console.log(e);
                     }
@@ -728,6 +526,7 @@ export default function Dashboard() {
                                             </Grid>
                                         </Paper>
                                         <br/>
+                                        <div id="re">
                                         {done < 0 ? <Typography variant="h5" align="center">
                                             Balanço: <b style={{color: 'red'}}>R$ {done.toFixed(2)}</b>
                                         </Typography> : <Typography variant="h5" align="center">
@@ -808,7 +607,7 @@ export default function Dashboard() {
                                                                     </StyledTableCell>
                                                                     <StyledTableCell align={"center"}
                                                                                      style={{width: '10px'}}>
-                                                                        {saidas[banca] > totalEntrada[banca] ?
+                                                                        {total[banca] < 0 ?
                                                                             <Typography variant="h5">
                                                                                 <b style={{color: 'red'}}>R$
                                                                                     -{Math.abs(total[banca]).toFixed(2)}</b>
@@ -824,7 +623,7 @@ export default function Dashboard() {
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
-                                        </Grid>
+                                        </Grid></div><div id="load" style={{textAlign: 'center'}}>Carregando...</div>
 
                                     </Grid>
 

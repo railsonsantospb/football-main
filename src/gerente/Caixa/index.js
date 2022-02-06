@@ -44,6 +44,11 @@ export default function Dashboard() {
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
     const [dataAux, setDataAux] = useState([]);
+    const [totalEntrada, setTotalEntrada] = useState({});
+    const [entradasAbertas, setEntradasAbertas] = useState({});
+    const [saidas, setSaidas] = useState({});
+    const [comissoes, setComissoes] = useState({});
+    const [total, setTotal] = useState({});
 
 
     const StyledTableRow = withStyles((theme) => ({
@@ -160,57 +165,7 @@ export default function Dashboard() {
     };
 
 
-    const onClickHandler = () => {
-        let init = 0;
 
-        let entradas = 0;
-        let abertos = 0;
-        let ganhos = 0;
-        let perdeu = 0;
-        let comissao = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
-
-        for (let datas of dataAux) {
-
-            let d = datas[2].split(' ')[0].split('/');
-            d.reverse();
-
-            let dateReverse = new Date(d.join('-'));
-
-            let valor = datas[3];
-
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-
-                if (valor != 'Cancelado') {
-                    entradas += parseFloat(datas[4]);
-                    comissao += parseFloat(datas[5]);
-                }
-
-                if (valor == 'Aberto') {
-                    abertos += parseFloat(datas[4]);
-                } else if (valor == 'Ganhou') {
-                    ganhos += parseFloat(datas[7]);
-                } else if (valor == 'Perdeu') {
-                    perdeu += parseFloat(datas[4]);
-                }
-
-                init = 1;
-                document.getElementById('entradas').innerText = 'R$ ' + entradas.toFixed(2);
-                document.getElementById('abertos').innerText = 'R$ ' + abertos.toFixed(2);
-                document.getElementById('ganhos').innerText = 'R$ ' + ganhos.toFixed(2);
-                document.getElementById('comissao').innerText = 'R$ ' + comissao.toFixed(2);
-                if (entradas > ganhos) {
-                    document.getElementById('total').innerHTML = '<span style="color: green">R$ ' +
-                        (entradas - ganhos - comissao).toFixed(2) + '</span>';
-                } else {
-                    document.getElementById('total').innerHTML = '<b style="color: red">R$ ' +
-                        (entradas - ganhos - comissao).toFixed(2) + '</b>';
-                }
-
-            }
-        }
-    };
 
 
 
@@ -223,71 +178,40 @@ export default function Dashboard() {
 
         let unmounted = false;
 
-        async function getDateAll() {
-            axios.get('http://worldclockapi.com/api/json/utc/now',
-                {}).then(res => {
-                try {
-
-                    let d1 = Date.parse(res.data.currentDateTime);
-                    d1 = new Date(d1);
-                    d1 = d1.setDate(d1.getDate());
-
-                    let d2 = Date.parse(res.data.currentDateTime);
-                    d2 = new Date(d2);
-                    d2 = d2.setDate(d2.getDate() + 1);
-
-                    d1 = new Date(d1);
-                    d2 = new Date(d2);
-
-
-                    date = [d1.getFullYear() + "-" + (d1.getMonth() + 1 < 10 ? "0" + (d1.getMonth() + 1) :
-                        d1.getMonth() + 1) + "-" + d1.getDate(), d2.getFullYear() + "-" +
-                    (d2.getMonth() + 1 < 10 ? "0" + (d2.getMonth() + 1) :
-                        d2.getMonth() + 1) + "-" + d2.getDate()];
-
-                    localStorage.setItem("date", date);
-
-
-                } catch (e) {
-                    console.log(e);
-                }
-            }).catch(error => {
-                console.log(error);
-            });
-        }
-
-        getDateAll();
-
 
         async function getBancasAPI() {
-
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
             api.get('/api/getbilhetesgerente/' + sessionStorage.getItem('manage'))
                 .then(res => {
                     try {
                         if (res.data) {
-                            //     ["SD76-KJ5G", "kakuzo", "07/04/2021 07:30:23", "Perdeu", "3.00", "0.30", "16.00",
-                            //         "260.00", "M", "Agendado", <Button variant="contained" color="secondary"><CancelIcon /></Button>,
-                            //         <Button variant="contained" color="primary"><PrintIcon /></Button>],
-                            // ];
-                            res.data.bilhetes.map((b) => {
+                            let total = (res.data.bilhetes.totalEntrada.toFixed(2) -
+                                res.data.bilhetes.saidas.toFixed(2) -
+                                res.data.bilhetes.comissoes.toFixed(2));
 
-                                dataAux.push([
-                                    b.codigo,
-                                    b.nomeCliente,
-                                    b.dataDaAposta,
-                                    b.status,
-                                    b.valorDeEntrada,
-                                    b.comissao,
-                                    b.cotacao,
-                                    b.valorDeSaida,
-                                    b.quantidadeJogos
-                                ])
-                            })
+                            document.getElementById('entradas').innerText = 'R$ ' +
+                                res.data.bilhetes.totalEntrada.toFixed(2);
+                            document.getElementById('abertos').innerText = 'R$ ' +
+                                res.data.bilhetes.entradasAberto.toFixed(2);
+                            document.getElementById('ganhos').innerText = 'R$ ' +
+                                res.data.bilhetes.saidas.toFixed(2);
+                            document.getElementById('comissao').innerText = 'R$ ' +
+                                res.data.bilhetes.comissoes.toFixed(2);
 
-                            setDataAux(dataAux);
+                            if(total >= 0){
+                                document.getElementById('total').innerHTML = '<b style="color: green">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            } else {
+                                document.getElementById('total').innerHTML = '<b style="color: red">R$ ' +
+                                    res.data.bilhetes.total.toFixed(2) + '</b>';
+                            }
+
 
 
                         }
+                        document.getElementById("re").style.display = "block";
+                        document.getElementById("load").style.display = "none";
                     } catch (e) {
                         console.log(e);
 
@@ -309,46 +233,6 @@ export default function Dashboard() {
 
     }, []);
 
-    let entradas = 0;
-    let abertos = 0;
-    let ganhos = 0;
-    let perdeu = 0;
-    let comissao = 0;
-    for (let datas of dataAux) {
-        let d1 = new Date(datas[2].split(' ')[0].split('/')[1] + '/' +
-            datas[2].split(' ')[0].split('/')[0] + '/' +
-            datas[2].split(' ')[0].split('/')[2] + " " + datas[2].split(' ')[1]);
-
-        let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
-            sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
-            sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
-            sessionStorage.getItem('date').split(' ')[1]);
-
-        var difference = d2.getTime() - d1.getTime();
-
-        let days = difference / (1000 * 3600 * 24);
-
-        d2.setDate(d2.getDate()-1);
-        d1.setDate(d1.getDate()-1);
-        if (days <= 6 && d2.getDay() >= d1.getDay()) {
-            let valor = datas[3];
-
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-        }
-    }
-
-
     return (
         <div className={classes.root} >
             <CssBaseline/>
@@ -368,43 +252,15 @@ export default function Dashboard() {
 
                                                 <Grid item sm container align="center">
                                                     <Grid item container direction="column" spacing={2}>
-                                                        <Grid item>
 
 
-                                                            <Grid container justify="space-around">
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
-                                                                                         locale={pt}>
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Início"
-                                                                        value={selectedDate1}
-                                                                        onChange={date1 => handleDateChange1(date1)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
 
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Final"
-                                                                        placeholder="2018/10/10"
-                                                                        value={selectedDate2}
-                                                                        onChange={date2 => handleDateChange2(date2)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-                                                                </MuiPickersUtilsProvider>
-
-
-                                                            </Grid>
-
-                                                            <br/>
-                                                            <Button onClick={onClickHandler} variant="contained"
-                                                                    color="primary">
-                                                                BUSCAR
-                                                            </Button>
-                                                            <br/><br/>
-                                                        </Grid>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
+                                            <div id="load" style={{textAlign: 'center'}}>Carregando...</div>
                                         </Paper>
-
+                                        <div id="re">
                                         <TableContainer component={Paper}>
 
                                             <Table stickyHeader aria-label="sticky table">
@@ -434,37 +290,33 @@ export default function Dashboard() {
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5" id="entradas">
-                                                                R$ {entradas.toFixed(2)}
+
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5" id="abertos">
-                                                                R$ {abertos.toFixed(2)}
+
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5" id="ganhos">
-                                                                R$ {ganhos.toFixed(2)}
+
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                             <Typography variant="h5" id="comissao">
-                                                                R$ {comissao.toFixed(2)}
+
                                                             </Typography>
                                                         </StyledTableCell>
                                                         <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                            {entradas < ganhos ? <Typography variant="h5" id="total">
-                                                                <b style={{color: 'red'}}>R$ {(entradas - ganhos - comissao).toFixed(2)}</b>
-                                                            </Typography> : <Typography variant="h5" id="total">
-                                                                <b style={{color: 'green'}}>R$ {(entradas - ganhos - comissao).toFixed(2)}</b>
-                                                            </Typography>}
-
+                                                            <Typography variant="h5" id="total">
+                                                            </Typography>
                                                         </StyledTableCell>
                                                     </StyledTableRow>
 
                                                 </TableBody>
                                             </Table>
-                                        </TableContainer>
+                                        </TableContainer></div>
 
                                     </Grid>
 

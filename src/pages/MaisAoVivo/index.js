@@ -25,6 +25,8 @@ import {useReactToPrint} from 'react-to-print';
 import {api, cc} from '../Constantes/index';
 import Menu from '../Menu/index';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
+import LockIcon from "@mui/icons-material/Lock";
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -134,8 +136,7 @@ export default function Dashboard(props) {
 
 
     function InitOdds() {
-        localStorage.setItem("retorno", "");
-        localStorage.setItem("valorIn", "");
+
         if (localStorage.getItem("betsAll") === null) {
             localStorage.setItem("betsAll", "");
             localStorage.setItem('displayBets', 'none');
@@ -369,7 +370,7 @@ export default function Dashboard(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -525,19 +526,17 @@ export default function Dashboard(props) {
                     ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                         ((cotacao * Number(value)).toFixed(2));
 
-                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
 
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-            localStorage.setItem("retorno", "");
-            localStorage.setItem('valorIn', "");
             handleCloseURL();
         }
 
-        localStorage.setItem('valorIn', value);
+        sessionStorage.setItem('valorIn', value);
 
     }
 
@@ -809,7 +808,7 @@ export default function Dashboard(props) {
     const onClickHandler = (e) => {
         document.getElementById('resetField1').value = '';
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
-            localStorage.removeItem("valorIn");
+
             if (apostasAoVivo == true) {
                 if (1) {
                     sessionStorage.setItem('minutos', new Date().getMinutes());
@@ -850,8 +849,7 @@ export default function Dashboard(props) {
                                 localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                                 localStorage.removeItem(betsGame.slice(-1)[0]);
                                 localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                                localStorage.removeItem("valorIn");
-                                localStorage.removeItem("retorno");
+
                                 betsAll = localStorage.getItem("betsAll");
                                 betsAll = betsAll.replace(
                                     betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -1159,7 +1157,7 @@ export default function Dashboard(props) {
                                                                                                          parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                                              (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
                                                                                                      : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                                     "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                                     "=" + nomeTime[3].replace(/ - /g, ': ') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
                                                                         <b  data-item={nome.titulo + ':' +   ((nome.titulo != 'Vencedor do Encontro') ?
                                                                                 (bet.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
@@ -1188,7 +1186,7 @@ export default function Dashboard(props) {
                                                                                                 parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                                     (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
                                                                                             : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                            "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                            "=" + nomeTime[3].replace(/ - /g, ': ') + "=" + new Date(parseInt(nomeTime[7])) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
                                                                             {(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
                                                                                 (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
@@ -1198,7 +1196,7 @@ export default function Dashboard(props) {
                                                                                             ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
                                                                                         parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                             (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
-                                                                                    : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>)}</b>
+                                                                                    : <LockIcon style={{fontSize: 15}}/>) : <LockIcon style={{fontSize: 15}}/>)}</b>
                                                                     </span>
                                                                         </td>
 
@@ -1237,10 +1235,7 @@ export default function Dashboard(props) {
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}>0.00</b><br/>
-                                        Valor da Aposta:<b>{localStorage.getItem("valorIn") != null &&
-                                    localStorage.getItem("valorIn") != "" ?
-                                        localStorage.getItem("valorIn") : ""
-                                    }</b><br/><br/>
+                                        Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
                                         <div id={"value"}>

@@ -44,7 +44,7 @@ export default function Dashboard(props) {
     let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
     const columns = [
         {
-            field: 'Banca', headerName: 'Banca', width: 200, align: 'center',
+            field: 'Banca', headerName: 'Banca', width: 150, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
@@ -56,12 +56,12 @@ export default function Dashboard(props) {
         },
 
         {
-            field: 'Cliente', headerName: 'Cliente', width: 80, align: 'center',
+            field: 'Cliente', headerName: 'Cliente', width: 100, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
         {
-            field: 'Data', headerName: 'Data', width: 140, align: 'center',
+            field: 'Data', headerName: 'Data', width: 150, align: 'center',
             renderCell: (params) => (<b>{params.value}</b>)
         },
 
@@ -181,38 +181,7 @@ export default function Dashboard(props) {
     }
 
 
-    const onClickHandler = () => {
-        let listAux = [];
-        let init = 0;
-        let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
-        let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
-
-        console.log(dataAux.length, count.length);
-        for (let datas of dataAux) {
-
-            let d = datas['Data'].split(' ')[0].split('/');
-            d.reverse();
-
-            let dateReverse = new Date(d.join('-'));
-
-            console.log(dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2));
-            if (dateReverse >= new Date(auxDate1) && dateReverse <= new Date(auxDate2)) {
-                listAux.push(datas);
-                init = 1;
-            }
-        }
-
-        if (init == 0) {
-            setAux(dataAux);
-        } else {
-            setAux(listAux);
-        }
-        if (dataAux.length != count.length) {
-            setAux(count);
-        }
-
-    };
 
     function custom_sort(a, b) {
         let d1 = new Date(a.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
@@ -231,11 +200,12 @@ export default function Dashboard(props) {
 
         async function getBilhetesAPI() {
 
-            api.get('/api/getbilhetes')
+            api.get('/api/getbilhetesg')
                 .then(res => {
                     let l = [];
                     let ax = [];
                     try {
+                        console.log(res.data);
                         let bh = res.data.bilhetes.slice();
                         bh.sort(custom_sort);
                         if (res.data) {
@@ -348,34 +318,8 @@ export default function Dashboard(props) {
 
 
                                                             <Typography variant="h5">BILHETES</Typography>
-                                                            <Grid container justify="space-around">
-
-                                                                <MuiPickersUtilsProvider utils={DateFnsUtils}
-                                                                                         locale={pt}>
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Início"
-                                                                        value={selectedDate1}
-                                                                        onChange={date1 => handleDateChange1(date1)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-
-                                                                    <KeyboardDatePicker
-                                                                        label="Data Final"
-                                                                        value={selectedDate2}
-                                                                        onChange={date2 => handleDateChange2(date2)}
-                                                                        format="dd/MM/yyyy"
-                                                                    />
-                                                                </MuiPickersUtilsProvider>
 
 
-                                                            </Grid>
-
-                                                            <br/>
-                                                            <Button onClick={onClickHandler} variant="contained"
-                                                                    color="primary">
-                                                                BUSCAR
-                                                            </Button>
-                                                            <br/><br/>
                                                         </Grid>
                                                     </Grid>
                                                 </Grid>

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {api} from '../Constantes/index';
@@ -27,7 +28,6 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Menu from '../Menu/index';
 
-let tab;
 let date = [];
 
 const StyledTableCell = withStyles((theme) => ({
@@ -55,7 +55,6 @@ export default function Dashboard() {
     const [openURL, setOpenURL] = React.useState(false);
     const [openLoading, setOpenLoading] = React.useState(false);
     const [drawerWidth, setdrawerWidth] = useState(240);
-    const [gerente, setGerente] = useState({});
     const [totalEntrada, setTotalEntrada] = useState({});
     const [totalEntradaP, setTotalEntradaP] = useState(0);
     const [totalEntradaV, setTotalEntradaV] = useState(0);
@@ -75,14 +74,15 @@ export default function Dashboard() {
     const [totalV, setTotalV] = useState(0);
     const [dataCambista, setDataCambista] = useState([]);
     const [dataAux, setDataAux] = useState([]);
-    const [done, setDone] = useState(0);
     const [dataAuxB, setDataAuxB] = useState([]);
     const [balanco, setBalanco] = useState(0);
+    const [gerentes, setGerentes] = useState({});
+    const [done, setDone] = useState(0);
     const [graph, setGraph] = useState(0);
     const [selectedDate1, handleDateChange1] = useState(new Date());
     const [selectedDate2, handleDateChange2] = useState(new Date());
 
-    const [nome, setNome] = React.useState('');
+    const [nome, setNome] = React.useState('Todas');
     const [openS, setOpenS] = React.useState(false);
 
     const handleChangeS = (event) => {
@@ -96,7 +96,6 @@ export default function Dashboard() {
     const handleOpenS = () => {
         setOpenS(true);
     };
-
 
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -190,7 +189,7 @@ export default function Dashboard() {
     const relatorios = [
         {
             "name": "Entradas",
-            "Pré-Jogo": 0,
+            "Pré-Jogo": totalEntradaP,
             "Ao Vivo": totalEntradaV,
 
         },
@@ -233,137 +232,6 @@ export default function Dashboard() {
         setOpenLoading(false);
     };
 
-
-    function loadBalanco() {
-
-
-    }
-
-    let b = 0;
-
-    let entradas = 0;
-    let abertos = 0;
-    let ganhos = 0;
-    let perdeu = 0;
-    let comissao = 0;
-    let entradasV = 0;
-    let abertosV = 0;
-    let ganhosV = 0;
-    let perdeuV = 0;
-    let comissaoV = 0;
-    for (let datas of dataAuxB) {
-
-        let valor =  datas[3];
-
-        if (datas[0] == 'Pre-Jogo') {
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-
-        } else {
-            if (valor != 'Cancelado') {
-                entradasV += parseFloat(datas[4]);
-                comissaoV += parseFloat(datas[5]);
-            }
-            if (valor == 'Aberto') {
-                abertosV += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhosV += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeuV += parseFloat(datas[4]);
-            }
-        }
-        relatorios[0]['Pré-Jogo'] = entradas.toFixed(2);
-        relatorios[0]['Ao Vivo'] = entradasV.toFixed(2);
-
-        relatorios[1]['Pré-Jogo'] = abertos.toFixed(2);
-        relatorios[1]['Ao Vivo'] = abertosV.toFixed(2);
-
-        relatorios[2]['Pré-Jogo'] = ganhos.toFixed(2);
-        relatorios[2]['Ao Vivo'] = ganhosV.toFixed(2);
-
-        relatorios[3]['Pré-Jogo'] = comissao.toFixed(2);
-        relatorios[3]['Ao Vivo'] = comissaoV.toFixed(2);
-
-        relatorios[4]['Pré-Jogo'] = ((((entradas - ganhos - comissao)))).toFixed(2);
-        relatorios[4]['Ao Vivo'] = ((((entradasV - ganhosV - comissaoV)))).toFixed(2);
-        b = (((entradas + entradasV) - (ganhos + ganhosV) - (comissao + comissaoV)));
-
-    }
-
-    entradas = 0;
-    abertos = 0;
-    ganhos = 0;
-    perdeu = 0;
-    comissao = 0;
-
-    function loadCaixa(banca) {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
-
-        for (let datas of dataAux) {
-
-            let valor = datas[3];
-
-            if (valor != 'Cancelado') {
-                entradas += parseFloat(datas[4]);
-                comissao += parseFloat(datas[5]);
-            }
-
-            if (valor == 'Aberto') {
-                abertos += parseFloat(datas[4]);
-            } else if (valor == 'Ganhou') {
-                ganhos += parseFloat(datas[7]);
-            } else if (valor == 'Perdeu') {
-                perdeu += parseFloat(datas[4]);
-            }
-
-        }
-
-        if ((totalEntrada[banca]) != undefined) {
-            totalEntrada[banca] = totalEntrada[banca] + entradas
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = entradasAbertas[banca] + abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = saidas[banca] + ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissoes[banca] + comissao
-            setComissoes(comissoes);
-            total[banca] = total[banca] + ((entradas - ganhos - comissao));
-            setTotal(total);
-        } else {
-            totalEntrada[banca] = entradas;
-            setTotalEntrada(totalEntrada);
-            entradasAbertas[banca] = abertos;
-            setEntradasAbertas(entradasAbertas);
-            saidas[banca] = ganhos;
-            setSaidas(saidas);
-            comissoes[banca] = comissao;
-            setComissoes(comissoes);
-            total[banca] = ((entradas - ganhos - comissao));
-            setTotal(total);
-        }
-
-        let v = 0;
-        for (let i in total) {
-            v += total[i];
-        }
-        setDone(v);
-
-    }
-
-
     function close(e) {
         try {
             if (e.clientX > 250) {
@@ -376,70 +244,87 @@ export default function Dashboard() {
 
 
     let d = [];
+
     useEffect(() => {
 
         if (sessionStorage.getItem('admin') == null || sessionStorage.getItem('admin') == "") {
             history.push('/adm')
         }
 
-
-        async function getGerentesAPI() {
-            let gerencia = {};
+        async function gerenteAPI(){
             api.get('/api/getgerencia')
                 .then(res => {
+                    if(res.data){
+                        res.data.gerencias.map((g) =>{
+                            gerentes[g.nome] = g.id;
+                            nomesAux.add(g.nome);
+                        })
+                    }
+                    setNomeAux(nomesAux);
+                }).catch(error => {
+                console.log(error)
+            });
+        }
+
+
+        async function getBancasAPI() {
+            document.getElementById("re").style.display = "none";
+            document.getElementById("tb").style.display = "none";
+            document.getElementById("load").style.display = "block";
+            api.get('/api/getbilhetesgerentecaixaAdmin')
+                .then(res => {
                     try {
+                        let bancas = [];
+                        let entradas = 0;
+                        let abertos = 0;
+                        let ganhos = 0;
+                        let comissao = 0;
+                        let entradasV = 0;
+                        let abertosV = 0;
+                        let ganhosV = 0;
+                        let comissaoV = 0;
+                        let totalPP = 0;
+                        let totalVV = 0;
+                        let b = 0;
                         if (res.data) {
-                            //    console.log(res.data);
-                            res.data.gerencias.map((g) => {
-                                gerencia[g.id] = g.nome;
-                                gerencia[g.nome] = g.id;
-                            });
-                            setGerente(gerencia);
-                            api.get('/api/getbilhetes')
-                                .then(res => {
-                                    try {
-                                        if (res.data) {
 
-                                            res.data.bilhetes.map((b) => {
-                                                nomesBancas.add(gerencia[b.gerenteId]);
-                                                nomesAux.add(gerencia[b.gerenteId]);
 
-                                                dataAux.push([
-                                                    b.tipoDeJogo,
-                                                    b.nomeCliente,
-                                                    b.dataDaAposta,
-                                                    b.status,
-                                                    b.valorDeEntrada,
-                                                    b.comissao,
-                                                    b.cotacao,
-                                                    b.valorDeSaida
-                                                ]);
-                                                dataAuxB.push([
-                                                    b.tipoDeJogo,
-                                                    b.nomeCliente,
-                                                    b.dataDaAposta,
-                                                    b.status,
-                                                    b.valorDeEntrada,
-                                                    b.comissao,
-                                                    b.cotacao,
-                                                    b.valorDeSaida
-                                                ]);
-                                                loadCaixa(gerencia[b.gerenteId]);
-                                                loadBalanco();
-                                                dataAux.pop();
-                                            })
-                                            setNomesBancas(nomesBancas);
-                                            setNomeAux(nomesAux);
-                                        }
-                                    } catch (e) {
-                                        console.log(e);
+                            entradas += res.data.bilhetes.totalEntrada[0];
+                            entradasV += res.data.bilhetes.totalEntrada[1];
 
-                                    }
-                                }).catch(error => {
-                                console.log(error)
-                            });
 
-                        }
+                            abertos += res.data.bilhetes.entradasAberto[0];
+                            abertosV += res.data.bilhetes.entradasAberto[1];
+
+                            ganhos += res.data.bilhetes.saidas[0];
+                            ganhosV += res.data.bilhetes.saidas[1];
+
+                            comissao += res.data.bilhetes.comissoes[0];
+                            comissaoV += res.data.bilhetes.comissoes[1];
+
+                            totalPP += res.data.bilhetes.total[0];
+                            totalVV += res.data.bilhetes.total[1];
+
+                            setDone((((entradas + entradasV) -
+                                (ganhos + ganhosV) -
+                                (comissao + comissaoV))));
+                            setTotalEntradaP(entradas);
+                            setTotalEntradaV(entradasV);
+                            setEntradasAbertasP(abertos);
+                            setEntradasAbertasV(abertosV);
+                            setSaidasP(ganhos);
+                            setSaidasV(ganhosV);
+                            setComissoesP(comissao);
+                            setComissoesV(comissaoV);
+                            setTotalEntradaP(totalPP);
+                            setTotalEntradaV(totalVV);
+
+                            }
+                            document.getElementById("re").style.display = "block";
+                            document.getElementById("load").style.display = "none";
+
+
+
                     } catch (e) {
                         console.log(e);
 
@@ -450,189 +335,106 @@ export default function Dashboard() {
 
         }
 
+        gerenteAPI();
 
-        async function getBancasAPI() {
+        getBancasAPI();
 
-
-        }
-
-        setNomesBancas(d);
-        setNomeAux(d);
-        setDataCambista(d);
-        setDataAux(d);
-        getGerentesAPI();
-        loadBalanco();
 
     }, []);
 
 
     const getDatas = () => {
-        entradas = 0;
-        abertos = 0;
-        ganhos = 0;
-        perdeu = 0;
-        comissao = 0;
-        let somaP = 0;
-        let soma = 0;
-        let entradasP = 0;
-        let abertosP = 0;
-        let saidaP = 0;
-        let totalP = 0;
-        let comissaoP = 0;
-        setBalanco(0);
-        setTotalEntradaP(0);
-        setEntradasAbertasP(0);
-        setSaidasP(0);
-        setTotalP(0);
-        setComissoesP(0);
-        let somaV = 0;
+        let entradas = 0;
+        let abertos = 0;
+        let ganhos = 0;
+        let comissao = 0;
         let entradasV = 0;
         let abertosV = 0;
-        let saidaV = 0;
-        let totalV = 0;
+        let ganhosV = 0;
         let comissaoV = 0;
-        setTotalEntradaV(0);
-        setEntradasAbertasV(0);
-        setSaidasV(0);
-        setTotalV(0);
-        setComissoesV(0);
+        let totalPP = 0;
+        let totalVV = 0;
+        setDone(0);
+        setTotalEntradaP(entradas);
+        setTotalEntradaV(entradasV);
+        setEntradasAbertasP(abertos);
+        setEntradasAbertasV(abertosV);
+        setSaidasP(ganhos);
+        setSaidasV(ganhosV);
+        setComissoesP(comissao);
+        setComissoesV(comissaoV);
+        setTotalEntradaP(totalPP);
+        setTotalEntradaV(totalVV);
 
         let n = '';
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
         let auxDate2 = selectedDate2.getFullYear() + "-" + (selectedDate2.getMonth() + 1) + "-" + selectedDate2.getDate();
 
         if (new Date(auxDate1) <= new Date(auxDate2)) {
-            if (nome != '' && nome != 'Todos') {
 
-                nomesBancas.clear();
-                nomesBancas.add(nome);
-                n = nome;
-            } else {
+            document.getElementById("re").style.display = "none";
+            document.getElementById("load").style.display = "block";
 
-                [...nomesAux].map((b) => {
-                    nomesBancas.add(b);
-                });
-                n = 'empty';
-            }
-            [...nomesBancas].map((banca) => {
-
-                totalEntrada[banca] = entradas;
-
-                entradasAbertas[banca] = abertos;
-
-                saidas[banca] = ganhos;
-
-                comissoes[banca] = comissao;
-
-                total[banca] = ((entradas - ganhos - comissao));
-                setDone(total[banca]);
-
-
-            })
-
-
-            api.get('/api/getbilhetesgerentedates2/' + (gerente[nome] == undefined ? 'all' : gerente[nome]) + '/' + auxDate1 + '/' + auxDate2 + '/' + n)
+            api.get('/api/getbilhetesgerentedatesA/' + gerentes[nome] +
+                '/' + auxDate1 + '/' + auxDate2 + '/all' )
                 .then(res => {
+                    let bancas = [];
                     try {
-                        console.log(res.data);
+
 
                         if (res.data) {
 
-                            res.data.bilhetes.map((b) => {
-                                entradas = 0;
-                                abertos = 0;
-                                ganhos = 0;
-                                perdeu = 0;
-                                comissao = 0;
+                            for(let b in res.data.bilhetes) {
+
+                                bancas.push(b);
+
+                                totalEntrada[b] = res.data.bilhetes[b].totalEntrada[0]+res.data.bilhetes[b].totalEntrada[1];
+                                setTotalEntrada(totalEntrada);
+                                entradasAbertas[b] = res.data.bilhetes[b].entradasAberto[0]+res.data.bilhetes[b].entradasAberto[1];
+                                setEntradasAbertas(entradasAbertas);
+                                saidas[b] = res.data.bilhetes[b].saidas[0]+res.data.bilhetes[b].saidas[1];
+                                setSaidas(saidas);
+                                comissoes[b] = res.data.bilhetes[b].comissoes[0]+res.data.bilhetes[b].comissoes[1];
+                                setComissoes(comissoes);
+                                total[b] = res.data.bilhetes[b].total[0]+res.data.bilhetes[b].total[1];
+                                setTotal(total);
+
+                                entradas += res.data.bilhetes[b].totalEntrada[0];
+                                entradasV += res.data.bilhetes[b].totalEntrada[1];
 
 
-                                let valor = b.status;
+                                abertos += res.data.bilhetes[b].entradasAberto[0];
+                                abertosV += res.data.bilhetes[b].entradasAberto[1];
 
-                                if (valor != 'Cancelado') {
-                                    entradas += parseFloat(b.valorDeEntrada);
-                                    comissao += parseFloat(b.comissao);
-                                }
-                                if (valor == 'Aberto') {
-                                    abertos += parseFloat(b.valorDeEntrada);
-                                } else if (valor == 'Ganhou') {
-                                    ganhos += parseFloat(b.valorDeSaida);
-                                } else if (valor == 'Perdeu') {
-                                    perdeu += parseFloat(b.valorDeEntrada);
+                                ganhos += res.data.bilhetes[b].saidas[0];
+                                ganhosV += res.data.bilhetes[b].saidas[1];
 
-                                }
+                                comissao += res.data.bilhetes[b].comissoes[0];
+                                comissaoV += res.data.bilhetes[b].comissoes[1];
 
-                                soma += ((entradas - ganhos - comissao));
+                                totalPP += res.data.bilhetes[b].total[0];
+                                totalVV += res.data.bilhetes[b].total[1];
 
-                                if ((totalEntrada[gerente[b.gerenteId]]) != undefined) {
-                                    totalEntrada[gerente[b.gerenteId]] = totalEntrada[gerente[b.gerenteId]] + entradas
-
-                                    entradasAbertas[gerente[b.gerenteId]] = entradasAbertas[gerente[b.gerenteId]] + abertos;
-
-                                    saidas[gerente[b.gerenteId]] = saidas[gerente[b.gerenteId]] + ganhos;
-
-                                    comissoes[gerente[b.gerenteId]] = comissoes[gerente[b.gerenteId]] + comissao
-
-                                    total[gerente[b.gerenteId]] = total[gerente[b.gerenteId]] + ((entradas - ganhos - comissao));
-
-
-                                } else {
-
-                                    totalEntrada[gerente[b.gerenteId]] = entradas;
-
-                                    entradasAbertas[gerente[b.gerenteId]] = abertos;
-
-                                    saidas[gerente[b.gerenteId]] = ganhos;
-
-                                    comissoes[gerente[b.gerenteId]] = comissao;
-
-                                    total[gerente[b.gerenteId]] = ((entradas - ganhos - comissao));
-
-
-                                }
-
-                                setDone(soma);
-                                if (b.tipoDeJogo == 'Pre-Jogo') {
-                                    somaP += ((entradas - ganhos - comissao));
-                                    entradasP += entradas;
-                                    abertosP += abertos;
-                                    comissaoP += comissao;
-                                    saidaP += ganhos;
-
-                                    // setTotalEntradaP(entradasP);
-                                    // setEntradasAbertasP(abertosP);
-                                    // setSaidasP(saidaP);
-                                    // setTotalP(somaP);
-                                    // setComissoesP(comissaoP);
-                                    relatorios[0]['Pré-Jogo'] = entradasP;
-                                    relatorios[1]['Pré-Jogo'] = abertosP;
-                                    relatorios[2]['Pré-Jogo'] = saidaP;
-                                    relatorios[3]['Pré-Jogo'] = comissaoP;
-                                    relatorios[4]['Pré-Jogo'] = somaP;
-
-
-                                } else {
-                                    somaV += ((entradas - ganhos - comissao));
-                                    entradasV += entradas;
-                                    abertosV += abertos;
-                                    comissaoV += comissao;
-                                    saidaV += ganhos;
-                                    relatorios[0]['Ao Vivo'] = entradasV;
-                                    relatorios[1]['Ao Vivo'] = abertosV;
-                                    relatorios[2]['Ao Vivo'] = saidaV;
-                                    relatorios[3]['Ao Vivo'] = comissaoV;
-                                    relatorios[4]['Ao Vivo'] = somaV;
-
-                                    // setTotalEntradaV(entradasV);
-                                    // setEntradasAbertasV(abertosV);
-                                    // setSaidasV(saidaV);
-                                    // setTotalP(somaV);
-                                    // setComissoesV(comissaoV);
-                                }
-
-
-                            })
-                            setGraph(relatorios);
+                                setDone((((entradas + entradasV) -
+                                    (ganhos + ganhosV) -
+                                    (comissao + comissaoV))));
+                                setTotalEntradaP(entradas);
+                                setTotalEntradaV(entradasV);
+                                setEntradasAbertasP(abertos);
+                                setEntradasAbertasV(abertosV);
+                                setSaidasP(ganhos);
+                                setSaidasV(ganhosV);
+                                setComissoesP(comissao);
+                                setComissoesV(comissaoV);
+                                setTotalEntradaP(totalPP);
+                                setTotalEntradaV(totalVV);
+                            }
                         }
+                        document.getElementById("re").style.display = "block";
+                        document.getElementById("tb").style.display = "block";
+                        document.getElementById("load").style.display = "none";
+                        setNomesBancas(bancas);
+
                     } catch (e) {
                         console.log(e);
                     }
@@ -650,7 +452,6 @@ export default function Dashboard() {
     return (
         <div className={classes.root} onClick={close}>
             <CssBaseline/>
-
             <Menu/>
             <main className={classes.content}>
                 <div className={classes.appBarSpacer}/>
@@ -694,7 +495,7 @@ export default function Dashboard() {
                                                             </Grid>
                                                             <FormControl className={classes.formControl}>
                                                                 <InputLabel id="demo-controlled-open-select-label">Selecione
-                                                                    um Gerente</InputLabel>
+                                                                    uma Gerencia</InputLabel>
                                                                 <Select
                                                                     labelId="demo-controlled-open-select-label"
                                                                     id="demo-controlled-open-select"
@@ -705,8 +506,8 @@ export default function Dashboard() {
                                                                     onChange={handleChangeS}
                                                                     style={{width: '280px'}}
                                                                 >
-                                                                    <MenuItem value="Todos">
-                                                                        <em>Todos</em>
+                                                                    <MenuItem value="Todas">
+                                                                        <em>Todas</em>
                                                                     </MenuItem>
                                                                     {[...nomesAux].map((n) => (
                                                                         <MenuItem value={n}>{n}</MenuItem>
@@ -729,102 +530,104 @@ export default function Dashboard() {
                                             </Grid>
                                         </Paper>
                                         <br/>
-                                        {done < 0 ? <Typography variant="h5" align="center">
-                                            Balanço: <b style={{color: 'red'}}>R$ {done.toFixed(2)}</b>
-                                        </Typography> : <Typography variant="h5" align="center">
-                                            Balanço: <b style={{color: 'green'}}>R$ {done.toFixed(2)}</b>
-                                        </Typography>}
-                                        <br/>
-                                        <Grid item>
+                                        <div id="re">
+                                            {done < 0 ? <Typography variant="h5" align="center">
+                                                Balanço: <b style={{color: 'red'}}>R$ {done.toFixed(2)}</b>
+                                            </Typography> : <Typography variant="h5" align="center">
+                                                Balanço: <b style={{color: 'green'}}>R$ {done.toFixed(2)}</b>
+                                            </Typography>}
+                                            <br/>
+                                            <Grid item>
 
-                                            <ResponsiveContainer width='100%' height={400}>
-                                                <BarChart data={graph == 0 ? relatorios : graph}>
-                                                    <CartesianGrid strokeDasharray="3 3"/>
-                                                    <XAxis dataKey="name"/>
-                                                    <YAxis/>
-                                                    <Tooltip/>
-                                                    <Legend/>
-                                                    <Bar dataKey="Pré-Jogo" fill="#8884d8"/>
-                                                    <Bar dataKey="Ao Vivo" fill="#82ca9d"/>
-                                                </BarChart>
-                                            </ResponsiveContainer>
+                                                <ResponsiveContainer width='100%' height={400}>
+                                                    <BarChart data={graph == 0 ? relatorios : graph}>
+                                                        <CartesianGrid strokeDasharray="3 3"/>
+                                                        <XAxis dataKey="name"/>
+                                                        <YAxis/>
+                                                        <Tooltip/>
+                                                        <Legend/>
+                                                        <Bar dataKey="Pré-Jogo" fill="#8884d8"/>
+                                                        <Bar dataKey="Ao Vivo" fill="#82ca9d"/>
+                                                    </BarChart>
+                                                </ResponsiveContainer>
 
-                                        </Grid>
-                                        <br/>
-                                        <br/>
-                                        <Grid item>
-                                            <TableContainer component={Paper}>
+                                            </Grid>
+                                            <br/>
+                                            <br/>
+                                            <Grid item>
+                                                <TableContainer component={Paper} id="tb">
 
-                                                <Table stickyHeader aria-label="sticky table">
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <StyledTableCell
-                                                                align={"center"}><b>GERENTE</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>TOTAL DE
-                                                                ENTRADAS</b></StyledTableCell>
-                                                            <StyledTableCell align={"center"}><b>ENTRADAS EM ABERTO</b></StyledTableCell>
-                                                            <StyledTableCell
-                                                                align={"center"}><b>SAÍDAS</b></StyledTableCell>
-                                                            <StyledTableCell
-                                                                align={"center"}><b>COMISSÕES</b></StyledTableCell>
-                                                            <StyledTableCell
-                                                                align={"center"}><b>TOTAL</b></StyledTableCell>
-                                                        </TableRow>
-                                                    </TableHead>
+                                                    <Table stickyHeader aria-label="sticky table">
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <StyledTableCell
+                                                                    align={"center"}><b>BANCA</b></StyledTableCell>
+                                                                <StyledTableCell align={"center"}><b>TOTAL DE
+                                                                    ENTRADAS</b></StyledTableCell>
+                                                                <StyledTableCell align={"center"}><b>ENTRADAS EM ABERTO</b></StyledTableCell>
+                                                                <StyledTableCell
+                                                                    align={"center"}><b>SAÍDAS</b></StyledTableCell>
+                                                                <StyledTableCell
+                                                                    align={"center"}><b>COMISSÕES</b></StyledTableCell>
+                                                                <StyledTableCell
+                                                                    align={"center"}><b>TOTAL</b></StyledTableCell>
+                                                            </TableRow>
+                                                        </TableHead>
 
-                                                    <TableBody>
+                                                        <TableBody>
 
-                                                        {[...nomesBancas].map((banca) => (
-                                                            <StyledTableRow>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    <Typography variant="h5">
-                                                                        {banca}
-                                                                    </Typography>
-                                                                </StyledTableCell>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    <Typography variant="h5">
-                                                                        R$ {totalEntrada[banca].toFixed(2)}
-                                                                    </Typography>
-                                                                </StyledTableCell>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    <Typography variant="h5">
-                                                                        R$ {entradasAbertas[banca].toFixed(2)}
-                                                                    </Typography>
-                                                                </StyledTableCell>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    <Typography variant="h5">
-                                                                        R$ {saidas[banca].toFixed(2)}
-                                                                    </Typography>
-                                                                </StyledTableCell>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    <Typography variant="h5">
-                                                                        R$ {comissoes[banca].toFixed(2)}
-                                                                    </Typography>
-                                                                </StyledTableCell>
-                                                                <StyledTableCell align={"center"}
-                                                                                 style={{width: '10px'}}>
-                                                                    {saidas[banca] > totalEntrada[banca] ?
-                                                                        <Typography variant="h5">
-                                                                            <b style={{color: 'red'}}>R$
-                                                                                -{Math.abs(total[banca]).toFixed(2)}</b>
-                                                                        </Typography> : <Typography variant="h5">
-                                                                            <b style={{color: 'green'}}>R$ {Math.abs(total[banca]).toFixed(2)}</b>
-                                                                        </Typography>}
+                                                            {[...nomesBancas].map((banca) => (
+                                                                console.log(saidas[banca], total[banca]),
+                                                                    <StyledTableRow>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            <Typography variant="h5">
+                                                                                {banca}
+                                                                            </Typography>
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            <Typography variant="h5">
+                                                                                R$ {totalEntrada[banca].toFixed(2)}
+                                                                            </Typography>
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            <Typography variant="h5">
+                                                                                R$ {entradasAbertas[banca].toFixed(2)}
+                                                                            </Typography>
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            <Typography variant="h5">
+                                                                                R$ {saidas[banca].toFixed(2)}
+                                                                            </Typography>
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            <Typography variant="h5">
+                                                                                R$ {comissoes[banca].toFixed(2)}
+                                                                            </Typography>
+                                                                        </StyledTableCell>
+                                                                        <StyledTableCell align={"center"}
+                                                                                         style={{width: '10px'}}>
+                                                                            {total[banca] < 0 ?
+                                                                                <Typography variant="h5">
+                                                                                    <b style={{color: 'red'}}>R$
+                                                                                        -{Math.abs(total[banca]).toFixed(2)}</b>
+                                                                                </Typography> : <Typography variant="h5">
+                                                                                    <b style={{color: 'green'}}>R$ {Math.abs(total[banca]).toFixed(2)}</b>
+                                                                                </Typography>}
 
-                                                                </StyledTableCell>
-                                                            </StyledTableRow>
-                                                        ))}
+                                                                        </StyledTableCell>
+                                                                    </StyledTableRow>
+                                                            ))}
 
 
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </Grid>
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </Grid></div><div id="load" style={{textAlign: 'center'}}>Carregando...</div>
 
                                     </Grid>
 

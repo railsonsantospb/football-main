@@ -25,6 +25,7 @@ import {useReactToPrint} from 'react-to-print';
 import {api, cc} from '../Constantes/index';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import Menu from '../Menu/index';
+import LockIcon from "@mui/icons-material/Lock";
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -149,8 +150,7 @@ export default function Dashboard(props) {
 
 
     function InitOdds() {
-        localStorage.setItem("retorno", "");
-        localStorage.setItem("valorIn", "");
+
         if (localStorage.getItem("betsAll2") === null) {
             localStorage.setItem("betsAll2", "");
             localStorage.setItem('displayBets2', 'none');
@@ -391,7 +391,7 @@ export default function Dashboard(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -545,7 +545,7 @@ export default function Dashboard(props) {
                     ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                         ((cotacao * Number(value)).toFixed(2));
 
-                localStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
                     ((cotacao * Number(value)).toFixed(2)));
 
 
@@ -553,12 +553,11 @@ export default function Dashboard(props) {
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-            localStorage.setItem("retorno", "");
-            localStorage.setItem('valorIn', "");
+
             handleCloseURL();
         }
 
-        localStorage.setItem('valorIn', value);
+        sessionStorage.setItem('valorIn', value);
 
     }
 
@@ -788,8 +787,10 @@ export default function Dashboard(props) {
                                                         let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
 
 
-                                                        if (500 >= parseFloat(localStorage.getItem('valorIn'))) {
+                                                        if (500 >= parseFloat(entrada)) {
                                                             //salvarBilhete();
+                                                            localStorage.setItem("valorIn", sessionStorage.getItem("valorIn"));
+                                                            localStorage.setItem("retorno", sessionStorage.getItem("retorno"));
                                                             let codigoPIn = Math.ceil(Math.random() * Math.pow(10, 6));
                                                             api.post('/api/addbilhetetemporario', {
                                                                 'codigoPin': codigoPIn,
@@ -799,7 +800,7 @@ export default function Dashboard(props) {
                                                                     if (res.data) {
                                                                         noneBets();
                                                                         clearOdds();
-                                                                        localStorage.removeItem("valorIn");
+
                                                                         localStorage.clear();
 
                                                                         document.getElementById("bilhete").innerHTML =
@@ -825,7 +826,6 @@ export default function Dashboard(props) {
                                                             handlePrint();
                                                             noneBets();
                                                             clearOdds();
-                                                            localStorage.setItem("valorIn", "");
                                                             geraBilhete();
 
                                                         } else {
@@ -873,7 +873,7 @@ export default function Dashboard(props) {
 
     const onClickHandler = (e) => {
         document.getElementById('resetField1').value = '';
-        localStorage.removeItem("valorIn");
+
         if (apostasPreJogo == true) {
 
 
@@ -914,8 +914,7 @@ export default function Dashboard(props) {
                             localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                             localStorage.removeItem(betsGame.slice(-1)[0]);
                             localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-                            localStorage.removeItem("valorIn");
-                            localStorage.removeItem("retorno");
+
                             betsAll = localStorage.getItem("betsAll2");
                             betsAll = betsAll.replace(
                                 betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -1038,6 +1037,7 @@ export default function Dashboard(props) {
 
             api.get('/api/getmaispre/' + idCamp)
                 .then(res => {
+                    document.getElementById('retorno').innerHTML = '';
                     let l = [];
 
 
@@ -1132,7 +1132,7 @@ export default function Dashboard(props) {
 
                                                         {nome.cotacoes.length != undefined && nome.cotacoes.length > 0 ? nome.cotacoes.map((bet) => (
                                                             (bet.subeventos != null ? bet.subeventos.map((n) => (
-                                                                console.log(),
+
                                                                     ( '+3 +4 +5 +6 +7 -3 -4 -5 -6 -7'.indexOf(n.nome) == -1 ? <tr  >
 
                                                                         <StyledTableCell id='font'>
@@ -1176,7 +1176,7 @@ export default function Dashboard(props) {
                                                                                                          parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                                              (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
                                                                                                      : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                                     "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(horario)) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                                     "=" + nomeTime[3].replace(/ - /g, ': ') + "=" + new Date(parseInt(horario)) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
                                                                         <b  data-item={nome.titulo + ':' +   ((nome.titulo != 'Vencedor do Encontro') ?
                                                                                 (bet.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
@@ -1205,7 +1205,7 @@ export default function Dashboard(props) {
                                                                                                 parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                                     (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
                                                                                             : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>) : parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2)) + "=" + nomeTime[0].replace(/,/g, '') +
-                                                                            "=" + nomeTime[3].replace(/,/g, '') + "=" + new Date(parseInt(horario)) + "=" + "Aberto" + "=" + nomeTime[1]}>
+                                                                            "=" + nomeTime[3].replace(/ - /g, ': ') + "=" + new Date(parseInt(horario)) + "=" + "Aberto" + "=" + nomeTime[1]}>
 
                                                                             {(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
                                                                                 (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :
@@ -1215,7 +1215,7 @@ export default function Dashboard(props) {
                                                                                             ? sessionStorage.getItem('cotaMax') : ((n.cotacao/100).toFixed(2))) +
                                                                                         parseFloat(cotacao[nome.titulo] != undefined ?
                                                                                             (((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100)) : 0)).toFixed(2)
-                                                                                    : <span style={{color:"red"}}>0</span>) : <span style={{color:"red"}}>0</span>)}</b>
+                                                                                    : <LockIcon style={{fontSize: 15}}/>) : <LockIcon style={{fontSize: 15}}/>)}</b>
                                                                     </span>
                                                                         </td>
 
@@ -1254,10 +1254,7 @@ export default function Dashboard(props) {
                                         Cotação: R$ <b id={"cotacao"}></b><br/>
                                         Possível Retorno:
                                         R$ <b id={"retorno"}>0.00</b><br/>
-                                        Valor da Aposta:<b >{localStorage.getItem("valorIn") != null &&
-                                    localStorage.getItem("valorIn") != "" ?
-                                        localStorage.getItem("valorIn") : ""
-                                    }</b><br/><br/>
+                                        Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
                                         <div id={"value"}>
