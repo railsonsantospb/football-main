@@ -241,23 +241,26 @@ export const GlobalStyle = createGlobalStyle `
     }
 
     #bets1 {
-      
+
       display: block;
-      padding: 10px 5px;
+      padding: -4px;
     }
 
     #bets2 {
       display: block;
-      padding: 10px 5px;
-      margin-top:-60px;
-      margin-left:20px;
+      margin-top: -55px;
+      margin-left: 205px;
+      position: relative;
     }
 
     #bets3 {
       display: block;
-      margin-top:-45px;
-      margin-left: -10px;
+      margin-top:-55px;
+      margin-left: 45px;
+      float: right;
+      position: relative;
     }
+
     #font {
       font-size: 12px;
     }
@@ -272,26 +275,29 @@ export const GlobalStyle = createGlobalStyle `
 
     .button {
       background-color: #2237CF;
-      border: none;
+      border: 2px solid white;
       color: white;
-      width: 60px;
-      padding: 8px;
+      min-width: 45px;
+      max-width: 45px;
+      padding: 12px;
       text-align: center;
       text-decoration: none;
-      display: inline-block;
       font-size: 12px;
       border-radius: 8px;
       cursor: pointer;
-      margin: 1px;
+      display: table-cell;
 
     }
 
+    #vcasa {
+      margin-left: -4px;
+    }
 
     .buttonPlus {
       background-color: #2237CF;
       border: none;
       color: white;
-      width: 100%;
+      width: 80px;
       padding: 10px 22px;
       text-align: center;
       text-decoration: none;

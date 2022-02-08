@@ -564,23 +564,28 @@ export default function Dashboard(props) {
                         try {
                             let nomes = [];
                             if (res.data) {
-                                setMessage(`Cliente cadastrado com sucesso!`);
-                                handleClickOpenURL();
-                                api.get('/api/getclientes/' + sessionStorage.getItem('login'))
-                                    .then(res => {
-                                        try {
-                                            if (res.data) {
-                                                res.data.clientes.map((c) =>{
-                                                    nomes.push(c.nome);
-                                                });
-                                            }
-                                        } catch (e) {
+                                if(res.data.clientes == false){
+                                    handleClickOpenURL();
+                                    setMessage(`Já possui um cliente com esse nome!`);
+                                } else {
+                                    handleClickOpenURL();
+                                    setMessage(`Cliente cadastrado com sucesso!`);
+                                    api.get('/api/getclientes/' + sessionStorage.getItem('login'))
+                                        .then(res => {
+                                            try {
+                                                if (res.data) {
+                                                    res.data.clientes.map((c) => {
+                                                        nomes.push(c.nome);
+                                                    });
+                                                }
+                                            } catch (e) {
 
-                                        }
-                                        setClientes((nomes));
-                                    }).catch(error => {
-                                    console.log(error);
-                                });
+                                            }
+                                            setClientes((nomes));
+                                        }).catch(error => {
+                                        console.log(error);
+                                    });
+                                }
                             }
                         } catch (e) {
 
@@ -1081,7 +1086,7 @@ setCotacoes(cotacao);
                                                             } else {
 
                                                                 document.getElementById('aoVivo')
-                                                                    .innerHTML += '<tr id="bets1">' +
+                                                                    .innerHTML += '<fieldset style="border: 1px solid black;"><tr id="bets1">' +
                                                                     '<td class="times"><a style="text-decoration: none; color: black" href="/#/maisaovivo/' + live.id + '"' +
                                                                     '>' + live.casa + ' X ' + live.fora + '</a><br/>' +
                                                                     c.pais + ': ' + c.nome + '<br/>' +
@@ -1090,16 +1095,16 @@ setCotacoes(cotacao);
                                                                     '</td>' +
                                                                     '<td id="bets2">' +
                                                                     '<span id="' + (valorCasa[0] == '&' ? '' : idCasa) + '" class="button" style="margin-left: 52px;" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
-                                                                    '<b>' + valorCasa + '</b></span>' +
+                                                                    '<b><p id="vcasa">' + valorCasa + '</p></b></span>' +
 
                                                                     '<span id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
-                                                                    '<b>' + valorEmpate + '</b></span>' +
+                                                                    '<b><p id="vcasa">' + valorEmpate + '</p></b></span>' +
 
 
                                                                     '<span id="' + (valorFora[0] == '&' ? '' : idFora) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
-                                                                    '<b>' + valorFora + '</b></span>' + '</td>' +
+                                                                    '<b><p id="vcasa">' + valorFora + '</p></b></span>' + '</td>' +
 
-                                                                    '</tr>'
+                                                                    '</tr></fieldset>'
                                                             }
                                                         }
 
@@ -1200,45 +1205,6 @@ setCotacoes(cotacao);
                                                     live.subeventos[2].aposta +
                                                     live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
 
-                                        let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
-                                            + live.subeventos[0].aposta + "=" +
-                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
-                                            (live.subeventos.length >= 3 ? (live.subeventos[0].cotacao / 100).toFixed(2) >
-                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[0].cotacao / 100).toFixed(2) : 0)
-                                            + "=" + (live.casa + ' x ' + live.fora) + "="
-                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
-                                        let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
-                                            + live.subeventos[1].aposta + "=" +
-                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
-                                            (live.subeventos.length >= 3 ? (live.subeventos[1].cotacao / 100).toFixed(2) >
-                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[1].cotacao / 100).toFixed(2) : 0)
-                                            + "=" + (live.casa + ' x ' + live.fora) + "="
-                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
-                                        let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                                live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
-                                            + live.subeventos[2].aposta + "=" +
-                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                                'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
-                                            (live.subeventos.length >= 3 ? (live.subeventos[2].cotacao / 100).toFixed(2) >
-                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (live.subeventos[2].cotacao / 100).toFixed(2) : 0)
-                                            + "=" + (live.casa + ' x ' + live.fora) + "="
-                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
-
                                         let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                             ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
                                             live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
@@ -1247,7 +1213,7 @@ setCotacoes(cotacao);
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                : html) : html)
 
                                         let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                             ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1257,7 +1223,7 @@ setCotacoes(cotacao);
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                : html) : html)
 
                                         let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                             ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1267,7 +1233,59 @@ setCotacoes(cotacao);
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0<b>') : '<b style="color:red">0<b>')
+                                                : html) : html)
+
+
+                                        let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa).toFixed(2) :
+                                            (live.subeventos[0].cotacao / 100).toFixed(2);
+
+                                        let casa = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[0].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? xcasa >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xcasa : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                        let xempate = Number.isInteger(parseInt(valorEmpate)) == true ? parseFloat(valorEmpate).toFixed(2) :
+                                            (live.subeventos[1].cotacao / 100).toFixed(2);
+
+                                        let empate = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[1].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? xempate >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xempate : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+                                        let xfora = Number.isInteger(parseInt(valorFora)) == true ? parseFloat(valorFora).toFixed(2) :
+                                            (live.subeventos[2].cotacao / 100).toFixed(2);
+
+                                        let fora = ('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
+                                                live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
+                                            + live.subeventos[2].aposta + "=" +
+                                            (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
+                                            + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
+                                                'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
+                                            (live.subeventos.length >= 3 ? xfora >
+                                            parseFloat(sessionStorage.getItem('cotaMax')) ?
+                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xfora : 0)
+                                            + "=" + (live.casa + ' x ' + live.fora) + "="
+                                            + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
+                                            "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
+
+
 
                                         let date = (new Date(live.data).getDate() < 10
                                                 ? "0" + new Date(live.data).getDate()
@@ -1313,7 +1331,7 @@ setCotacoes(cotacao);
                                         } else {
 
                                             document.getElementById('aoVivo')
-                                                .innerHTML += '<tr id="bets1">' +
+                                                .innerHTML += '<fieldset style="border: 1px solid black;"><tr id="bets1">' +
                                                 '<td class="times"><a style="text-decoration: none; color: black" href="/#/maisaovivo/' + live.id + '"' +
                                                 '>' + live.casa + ' X ' + live.fora + '</a><br/>' +
                                                 c.pais + ': ' + c.nome + '<br/>' +
@@ -1322,16 +1340,16 @@ setCotacoes(cotacao);
                                                 '</td>' +
                                                 '<td id="bets2">' +
                                                 '<span id="' + (valorCasa[0] == '&' ? '' : idCasa) + '" class="button" style="margin-left: 52px;" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + casa + '\')">' +
-                                                '<b>' + valorCasa + '</b></span>' +
+                                                '<b><p id="vcasa">' + valorCasa + '</p></b></span>' +
 
                                                 '<span id="' + (valorEmpate[0] == '&' ? '' : idEmpate) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + empate + '\')">' +
-                                                '<b>' + valorEmpate + '</b></span>' +
+                                                '<b><p id="vcasa">' + valorEmpate + '</p></b></span>' +
 
 
                                                 '<span id="' + (valorFora[0] == '&' ? '' : idFora) + '" class="button" onclick="localStorage.setItem(\'' + 'click' + '\', \'' + fora + '\')">' +
-                                                '<b>' + valorFora + '</b></span>' + '</td>' +
+                                                '<b><p id="vcasa">' + valorFora + '</p></b></span>' + '</td>' +
 
-                                                '</tr>'
+                                                '</tr></fieldset>'
                                         }
                                     }
 

@@ -316,8 +316,8 @@ export default function Dashboard() {
                             setSaidasV(ganhosV);
                             setComissoesP(comissao);
                             setComissoesV(comissaoV);
-                            setTotalEntradaP(totalPP);
-                            setTotalEntradaV(totalVV);
+                            setTotalP(totalPP);
+                            setTotalV(totalVV);
 
                             }
                             document.getElementById("re").style.display = "block";
@@ -355,16 +355,7 @@ export default function Dashboard() {
         let totalPP = 0;
         let totalVV = 0;
         setDone(0);
-        setTotalEntradaP(entradas);
-        setTotalEntradaV(entradasV);
-        setEntradasAbertasP(abertos);
-        setEntradasAbertasV(abertosV);
-        setSaidasP(ganhos);
-        setSaidasV(ganhosV);
-        setComissoesP(comissao);
-        setComissoesV(comissaoV);
-        setTotalEntradaP(totalPP);
-        setTotalEntradaV(totalVV);
+
 
         let n = '';
         let auxDate1 = selectedDate1.getFullYear() + "-" + (selectedDate1.getMonth() + 1) + "-" + selectedDate1.getDate();
@@ -374,9 +365,8 @@ export default function Dashboard() {
 
             document.getElementById("re").style.display = "none";
             document.getElementById("load").style.display = "block";
-
-            api.get('/api/getbilhetesgerentedatesA/' + gerentes[nome] +
-                '/' + auxDate1 + '/' + auxDate2 + '/all' )
+            api.get('/api/getbilhetesgerentedatesA' +
+                '/' + auxDate1 + '/' + auxDate2 + '/'  + nome )
                 .then(res => {
                     let bancas = [];
                     try {
@@ -415,6 +405,8 @@ export default function Dashboard() {
                                 totalPP += res.data.bilhetes[b].total[0];
                                 totalVV += res.data.bilhetes[b].total[1];
 
+
+
                                 setDone((((entradas + entradasV) -
                                     (ganhos + ganhosV) -
                                     (comissao + comissaoV))));
@@ -426,8 +418,8 @@ export default function Dashboard() {
                                 setSaidasV(ganhosV);
                                 setComissoesP(comissao);
                                 setComissoesV(comissaoV);
-                                setTotalEntradaP(totalPP);
-                                setTotalEntradaV(totalVV);
+                                setTotalP(totalPP);
+                                setTotalV(totalVV);
                             }
                         }
                         document.getElementById("re").style.display = "block";
@@ -447,6 +439,7 @@ export default function Dashboard() {
 
 
     }
+
 
 
     return (

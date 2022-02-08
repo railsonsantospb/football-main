@@ -45,6 +45,11 @@ export default function Dashboard(props) {
     const [nomeBanca, setNomeBanca] = useState("");
     const [count, setCount] = useState([]);
     const [dataAux, setDataAux] = useState([]);
+    const [totalEntrada, setTotalEntrada] = useState(0);
+    const [entradasAbertas, setEntradasAbertas] = useState(0);
+    const [saidas, setSaidas] = useState(0);
+    const [comissoes, setComissoes] = useState(0);
+    const [total, setTotal] = useState(0);
     // let dataAux = [];
 
     const StyledTableRow = withStyles((theme) => ({
@@ -147,23 +152,11 @@ export default function Dashboard(props) {
                                 res.data.bilhetes.saidas.toFixed(2) -
                                 res.data.bilhetes.comissoes.toFixed(2);
 
-                            document.getElementById('entradas').innerText = 'R$ ' +
-                                res.data.bilhetes.totalEntrada.toFixed(2);
-                            document.getElementById('abertos').innerText = 'R$ ' +
-                                res.data.bilhetes.entradasAberto.toFixed(2);
-                            document.getElementById('ganhos').innerText = 'R$ ' +
-                                res.data.bilhetes.saidas.toFixed(2);
-                            document.getElementById('comissao').innerText = 'R$ ' +
-                                res.data.bilhetes.comissoes.toFixed(2);
-
-                            if(total >= 0){
-                                document.getElementById('total').innerHTML = '<b style="color: green">R$ ' +
-                                    res.data.bilhetes.total.toFixed(2) + '</b>';
-                            } else {
-                                document.getElementById('total').innerHTML = '<b style="color: red">R$ ' +
-                                    res.data.bilhetes.total.toFixed(2) + '</b>';
-                            }
-
+                            setTotalEntrada(res.data.bilhetes.totalEntrada.toFixed(2));
+                            setEntradasAbertas(res.data.bilhetes.entradasAberto.toFixed(2));
+                            setSaidas(res.data.bilhetes.saidas.toFixed(2));
+                            setComissoes(res.data.bilhetes.comissoes.toFixed(2));
+                            setTotal(res.data.bilhetes.total.toFixed(2));
 
 
                         }
@@ -249,27 +242,32 @@ export default function Dashboard(props) {
                                                             </StyledTableCell>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5" id="entradas">
-
+                                                                    R$ {totalEntrada}
                                                                 </Typography>
                                                             </StyledTableCell>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5" id="abertos">
-
+                                                                    R$ {entradasAbertas}
                                                                 </Typography>
                                                             </StyledTableCell>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5" id="ganhos">
-
+                                                                    R$ {saidas}
                                                                 </Typography>
                                                             </StyledTableCell>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5" id="comissao">
-
+                                                                    R$ {comissoes}
                                                                 </Typography>
                                                             </StyledTableCell>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
-                                                                <Typography variant="h5" id="total">
-                                                                </Typography>
+                                                                {total < 0 ?
+                                                                <Typography variant="h5" style={{color: 'red'}}>
+                                                                    R$ {total}
+                                                                </Typography> :
+                                                                    <Typography variant="h5" style={{color: 'green'}}>
+                                                                        R$ {total}
+                                                                    </Typography>}
                                                             </StyledTableCell>
                                                         </StyledTableRow>
 

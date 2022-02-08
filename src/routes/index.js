@@ -45,6 +45,7 @@ import ManageCotacaoAoVivo from '../admin/CotacaoAoVivo';
 import ValidarBilhete from '../admin/ValidarBilhete';
 import ValidarDados from '../admin/Propriedades';
 import Bancas from '../admin/Bancas';
+import BancasReset from '../admin/BancasReset';
 import Regulamento from '../pages/Regulamento';
 
 
@@ -104,6 +105,7 @@ export default function Routes() {
             <Route exact path="/novasenhaadmin" component={NovaSenhaGerenteA}/>
             <Route exact path="/cadastrargerente" component={ManageHomeA}/>
             <Route exact path="/cadastrarbancadmin" component={Bancas}/>
+                <Route exact path="/bancareset" component={BancasReset}/>
 
         </HashRouter>
     );

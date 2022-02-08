@@ -265,7 +265,10 @@ export default function Dashboard(props) {
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                let data = Number.isInteger(
+                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[0];
                 let bets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[1];
                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
@@ -347,7 +350,10 @@ export default function Dashboard(props) {
         prejogo.split('=').slice(0, -1).map((b) => {
             let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
             let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-            let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+            let data = Number.isInteger(
+                parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+            ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
             let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
             let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
 
@@ -457,7 +463,10 @@ export default function Dashboard(props) {
                             prejogo.split('=').slice(0, -1).map((b) => {
                                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                                let data = Number.isInteger(
+                                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
                                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
                                 api.post('/api/addjogo',
@@ -579,23 +588,31 @@ export default function Dashboard(props) {
                         try {
                             let nomes = [];
                             if (res.data) {
-                                setMessage(`Cliente cadastrado com sucesso!`);
-                                handleClickOpenURL();
-                                api.get('/api/getclientes/' + sessionStorage.getItem('login'))
-                                    .then(res => {
-                                        try {
-                                            if (res.data) {
-                                                res.data.clientes.map((c) =>{
-                                                    nomes.push(c.nome);
-                                                });
-                                            }
-                                        } catch (e) {
 
-                                        }
-                                        setClientes((nomes));
-                                    }).catch(error => {
-                                    console.log(error);
-                                });
+                                if(res.data.clientes == false){
+                                    handleClickOpenURL();
+                                    setMessage(`Já possui um cliente com esse nome!`);
+                                } else {
+                                    handleClickOpenURL();
+                                    setMessage(`Cliente cadastrado com sucesso!`);
+
+
+                                    api.get('/api/getclientes/' + sessionStorage.getItem('login'))
+                                        .then(res => {
+                                            try {
+                                                if (res.data) {
+                                                    res.data.clientes.map((c) => {
+                                                        nomes.push(c.nome);
+                                                    });
+                                                }
+                                            } catch (e) {
+
+                                            }
+                                            setClientes((nomes));
+                                        }).catch(error => {
+                                        console.log(error);
+                                    });
+                                }
                             }
                         } catch (e) {
 

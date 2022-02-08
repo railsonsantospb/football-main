@@ -572,23 +572,28 @@ export default function Dashboard(props) {
                         try {
                             let nomes = [];
                             if (res.data) {
-                                setMessage(`Cliente cadastrado com sucesso!`);
-                                handleClickOpenURL();
-                                api.get('/api/getclientes/' + sessionStorage.getItem('login'))
-                                    .then(res => {
-                                        try {
-                                            if (res.data) {
-                                                res.data.clientes.map((c) =>{
-                                                    nomes.push(c.nome);
-                                                });
-                                            }
-                                        } catch (e) {
+                                if(res.data.clientes == false){
+                                    handleClickOpenURL();
+                                    setMessage(`Já possui um cliente com esse nome!`);
+                                } else {
+                                    handleClickOpenURL();
+                                    setMessage(`Cliente cadastrado com sucesso!`);
+                                    api.get('/api/getclientes/' + sessionStorage.getItem('login'))
+                                        .then(res => {
+                                            try {
+                                                if (res.data) {
+                                                    res.data.clientes.map((c) => {
+                                                        nomes.push(c.nome);
+                                                    });
+                                                }
+                                            } catch (e) {
 
-                                        }
-                                        setClientes((nomes));
-                                    }).catch(error => {
-                                    console.log(error);
-                                });
+                                            }
+                                            setClientes((nomes));
+                                        }).catch(error => {
+                                        console.log(error);
+                                    });
+                                }
                             }
                         } catch (e) {
 
@@ -1164,23 +1169,23 @@ export default function Dashboard(props) {
                                                             } else {
 
                                                                 document.getElementById('initJogos')
-                                                                    .innerHTML += '<tr id="bets1">' +
+                                                                    .innerHTML += '<fieldset style="border: 1px solid black;"><tr id="bets1">' +
                                                                     '<td class="times"><a style="text-decoration: none; color: black" href="/#/maispre/' + live.id + '-' + live.data + '"' +
                                                                     '>' + live.casa + '<br/>' + live.fora + '</a><br/>' +
-                                                                    '<p>' + date.split(' ')[0] + '</p>' +
-                                                                    '<p>' + date.split(' ')[1] + '</p>' +
+                                                                    '<p>' + date
+                                                                    + '</p>' +
                                                                     '</td>' +
                                                                     '<td id="bets3">' +
                                                                     '<span id="' + idCasa + '" class="button" style="margin-left: 112px;" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + casa + '\')">' +
-                                                                    '<b>' + valorCasa + '</b></span>' +
+                                                                    '<b><p id="vcasa">' + valorCasa + '</p></b></span>' +
 
                                                                     '<span id="' + idEmpate + '" class="button" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + empate + '\')">' +
-                                                                    '<b>' + valorEmpate + '</b></span>' +
+                                                                    '<b><p id="vcasa">' + valorEmpate + '</p></b></span>' +
 
                                                                     '<span id="' + idFora + '" class="button" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + fora + '\')">' +
-                                                                    '<b>' + valorFora + '</b></span>' +
+                                                                    '<b><p id="vcasa">' + valorFora + '</p></b></span>' +
                                                                     '</td>' +
-                                                                    '</tr>'
+                                                                    '</tr></fieldset>'
                                                             }
                                                         })
                                                     }
@@ -1385,23 +1390,23 @@ export default function Dashboard(props) {
                                         } else {
 
                                             document.getElementById('initJogos')
-                                                .innerHTML += '<tr id="bets1">' +
+                                                .innerHTML += '<fieldset style="border: 1px solid black;"><tr id="bets1">' +
                                                 '<td class="times"><a style="text-decoration: none; color: black" href="/#/maispre/' + live.id + '-' + live.data + '"' +
                                                 '>' + live.casa + '<br/>' + live.fora + '</a><br/>' +
-                                                '<p>' + date.split(' ')[0] + '</p>' +
-                                                '<p>' + date.split(' ')[1] + '</p>' +
+                                                '<p>' + date
+                                                + '</p>' +
                                                 '</td>' +
                                                 '<td id="bets3">' +
                                                 '<span id="' + idCasa + '" class="button" style="margin-left: 112px;" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + casa + '\')">' +
-                                                '<b>' + valorCasa + '</b></span>' +
+                                                '<b><p id="vcasa">' + valorCasa + '</p></b></span>' +
 
                                                 '<span id="' + idEmpate + '" class="button" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + empate + '\')">' +
-                                                '<b>' + valorEmpate + '</b></span>' +
+                                                '<b><p id="vcasa">' + valorEmpate + '</p></b></span>' +
 
                                                 '<span id="' + idFora + '" class="button" onclick="localStorage.setItem(\'' + 'click2' + '\', \'' + fora + '\')">' +
-                                                '<b>' + valorFora + '</b></span>' +
+                                                '<b><p id="vcasa">' + valorFora + '</p></b></span>' +
                                                 '</td>' +
-                                                '</tr>'
+                                                '</tr></fieldset>'
                                         }
                                     })
                                 }
