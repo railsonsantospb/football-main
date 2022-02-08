@@ -267,6 +267,13 @@ export default function Menu(props) {
                 <ListItemText primary="Caixa" />
             </ListItem>: ''}
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
+                <ListItem button component={Link} to={'/relatoriocliente'}>
+                    <ListItemIcon>
+                        <InboxIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Relatório" />
+                </ListItem>: ''}
+            {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
             <ListItem button component={Link} to={'/bilhetes'}>
                 <ListItemIcon>
                     <FileCopyIcon />

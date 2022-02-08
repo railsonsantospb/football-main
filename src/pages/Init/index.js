@@ -255,7 +255,10 @@ export default function Dashboard(props) {
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                let data = Number.isInteger(
+                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[0];
                 let bets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[1];
                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
@@ -337,7 +340,10 @@ export default function Dashboard(props) {
 
             let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
             let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-            let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+            let data = Number.isInteger(
+                parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+            ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
             let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
             let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
 
@@ -450,7 +456,10 @@ export default function Dashboard(props) {
                                 prejogo.split('=').slice(0, -1).map((b) => {
                                     let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                                     let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                                    let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                                    let data = Number.isInteger(
+                                        parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                                    ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                                        localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                                     let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
                                     let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
                                     api.post('/api/addjogo',
@@ -1025,7 +1034,12 @@ export default function Dashboard(props) {
 
 
                                                 c.momentos.map((j, l) => {
+                                                    let image = ''
+                                                    try{
+                                                        image = images[c.pais][0]
+                                                    } catch (e) {
 
+                                                    }
 
                                                     d1 = new Date(j.data);
                                                     d1 = (d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" +
@@ -1041,7 +1055,11 @@ export default function Dashboard(props) {
 
                                                         document.getElementById('initJogos')
                                                             .innerHTML += '<tr style="background-color: black;color:white;">' +
-                                                            '<th style="text-align: left; padding: 10px; ">' +
+                                                            '<th style="text-align: left; padding: 10px; ">' + '<img style="margin-right:10px;" src="' +
+                                                            image  + '"' +
+                                                            'width="30px"' +
+                                                            'height="22px"' +
+                                                            '/>' +
                                                             c.pais + ': ' + c.nome + '</th><th id="ocultar">CASA</th><th id="ocultar">EMPATE</th><th id="ocultar">FORA</th><th id="ocultar">MAIS</th></tr>';
 
                                                         c.momentos[l].eventos.map((live, k) => {
@@ -1257,6 +1275,12 @@ export default function Dashboard(props) {
 
 
                             c.momentos.map((j) => {
+                                let image = ''
+                                try{
+                                    image = images[c.pais][0]
+                                } catch (e) {
+
+                                }
 
                                 d1 = new Date(j.data);
                                 d1 = (d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" +
@@ -1271,7 +1295,11 @@ export default function Dashboard(props) {
 
                                     document.getElementById('initJogos')
                                         .innerHTML += '<tr style="background-color: black;color:white;">' +
-                                        '<th style="text-align: left; padding: 10px; ">' +
+                                        '<th style="text-align: left; padding: 10px; ">' + '<img style="margin-right:10px;" src="' +
+                                        image  + '"' +
+                                        'width="30px"' +
+                                        'height="22px"' +
+                                        '/>' +
                                         c.pais + ': ' + c.nome + '</th><th id="ocultar">CASA</th><th id="ocultar">EMPATE</th><th id="ocultar">FORA</th><th id="ocultar">MAIS</th></tr>';
 
                                     c.momentos[index].eventos.map((live, k) => {

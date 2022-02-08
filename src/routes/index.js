@@ -11,6 +11,7 @@ import Caixa from '../pages/Caixa';
 import Bilhetes from '../pages/Bilhetes';
 import Bilhete from '../pages/Bilhete';
 import RecuperarPin from '../pages/RecuperPin';
+import RelatorioCliente from '../pages/RelatorioCliente';
 import VerificarBilhete from '../pages/VerificarBilhete';
 import Clients from '../pages/Clients';
 import Login from '../pages/Login';
@@ -71,6 +72,7 @@ export default function Routes() {
             <Route exact path="/clientes" component={Clients}/>
             <Route exact path="/novasenha" component={NovaSenha}/>
             <Route exact path="/regulamento" component={Regulamento}/>
+                <Route exact path="/relatoriocliente" component={RelatorioCliente}/>
 
             <Route exact path="/gerente" component={ManageHome}/>
             <Route exact path="/cambista" component={ManageHome}/>

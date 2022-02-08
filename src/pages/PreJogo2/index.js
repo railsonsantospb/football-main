@@ -264,7 +264,10 @@ export default function Dashboard1(props) {
 
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                let data = Number.isInteger(
+                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[0];
                 let bets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1].split('--')[1];
                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
@@ -347,7 +350,10 @@ export default function Dashboard1(props) {
 
             let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
             let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-            let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+            let data = Number.isInteger(
+                parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+            ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
             let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
             let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
 
@@ -456,7 +462,10 @@ export default function Dashboard1(props) {
                             prejogo.split('=').slice(0, -1).map((b) => {
                                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                                let data = localStorage.getItem(b.split('-')[0] + 'x').split(',')[7];
+                                let data = Number.isInteger(
+                                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
                                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
                                 api.post('/api/addjogo',
