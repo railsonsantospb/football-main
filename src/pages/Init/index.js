@@ -996,15 +996,36 @@ export default function Dashboard(props) {
                                         let index = 0
                                         let camps = res.data.prejogo.campeonatos.slice();
                                         let l = []
-                                        // console.log(camps);
+                                        let d = 0;
+
                                         camps.map((c, i) => {
+                                            c.momentos.map((j, l) => {
+                                                let d1 = new Date(j.data);
+                                                d1 = (d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" +
+                                                        (Number(d1.getMonth()) + 1) : Number(d1.getMonth()) + 1) +
+                                                    "-" + ((Number(d1.getDate())) < 10 ? "0" + d1.getDate() : d1.getDate()));
+                                                let d2 = new Date();
+                                                d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
+                                                        (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
+                                                    "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
+                                                if(d1 == '2022-02-08'){
+                                                    c.momentos[l].eventos.map((live, k) => {
+                                                        console.log(live);
+                                                    })
+                                                }
+                                                d += 1;
+                                            })
+                                        })
+                                        camps.map((c, i) => {
+
                                             let d1 = [];
 
                                             index = 0;
                                             if (1) {
 
 
-                                                c.momentos.map((j) => {
+                                                c.momentos.map((j, l) => {
+
 
                                                     d1 = new Date(j.data);
                                                     d1 = (d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" +
@@ -1015,17 +1036,15 @@ export default function Dashboard(props) {
                                                             (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
                                                         "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
 
+
                                                     if (d1 == (dateId == undefined ? d2 : dateId)) {
 
                                                         document.getElementById('initJogos')
                                                             .innerHTML += '<tr style="background-color: black;color:white;">' +
-                                                            '<th style="text-align: left; padding: 10px; ">' + '<img style="margin-right:10px;" src="' + images[c.pais][0] + '"' +
-                                                            'width="30px"' +
-                                                            'height="22px"' +
-                                                            '/>' +
+                                                            '<th style="text-align: left; padding: 10px; ">' +
                                                             c.pais + ': ' + c.nome + '</th><th id="ocultar">CASA</th><th id="ocultar">EMPATE</th><th id="ocultar">FORA</th><th id="ocultar">MAIS</th></tr>';
 
-                                                        c.momentos[index].eventos.map((live, k) => {
+                                                        c.momentos[l].eventos.map((live, k) => {
 
 
                                                             let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
@@ -1211,7 +1230,7 @@ export default function Dashboard(props) {
                         }
 
                     } catch (e) {
-
+                        console.log(e);
                     }
                 }).catch(error => {
                 console.log(error)
@@ -1227,6 +1246,7 @@ export default function Dashboard(props) {
                 try {
                     let index = 0
                     let camps = res.data.prejogo.campeonatos.slice();
+                    console.log(camps);
                     let l = []
                     // console.log(camps);
                     camps.map((c, i) => {
