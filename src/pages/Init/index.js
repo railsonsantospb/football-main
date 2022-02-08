@@ -1271,10 +1271,7 @@ export default function Dashboard(props) {
 
                                     document.getElementById('initJogos')
                                         .innerHTML += '<tr style="background-color: black;color:white;">' +
-                                        '<th style="text-align: left; padding: 10px; ">' + '<img style="margin-right:10px;" src="' + images[c.pais][0] + '"' +
-                                        'width="30px"' +
-                                        'height="22px"' +
-                                        '/>' +
+                                        '<th style="text-align: left; padding: 10px; ">' +
                                         c.pais + ': ' + c.nome + '</th><th id="ocultar">CASA</th><th id="ocultar">EMPATE</th><th id="ocultar">FORA</th><th id="ocultar">MAIS</th></tr>';
 
                                     c.momentos[index].eventos.map((live, k) => {
