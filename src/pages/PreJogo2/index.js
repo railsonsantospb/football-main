@@ -24,6 +24,8 @@ import {useReactToPrint} from 'react-to-print';
 import {api, cc} from '../Constantes/index';
 import useWindowDimensions from '../Size/index';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
+import LockIcon from '@mui/icons-material/Lock';
+import ReactDOMServer from "react-dom/server";
 import Menu from '../Menu2/index';
 
 let date = [];
@@ -61,11 +63,12 @@ export default function Dashboard1(props) {
     const {height, width} = useWindowDimensions();
     const [inputValue, setInputValue] = React.useState('');
     const [value, setValue] = React.useState("");
+    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon style={{fontSize: 14}}/>);
 
 
     const [titulo, setTitulo] = useState([]);
-
     const [cotacoes, setCotacoes] = useState({});
+
     const drawerWidth = 240;
 
     const useStyles = makeStyles((theme) => ({
@@ -398,7 +401,7 @@ export default function Dashboard1(props) {
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Total Apostado:</span></div>\n' +
             '\n' +
-            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(localStorage.getItem('valorIn')).toFixed(2) + '</span></div>\n' +
+            '                            <div style="display: inline-block; width: 47%; text-align: right;"><span id="conteudo_txtTotalApostado" style="display: inline-block">R$ ' + parseFloat(entrada).toFixed(2) + '</span></div>\n' +
             '\n' +
             '                            <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">Poss. Retorno:</span></div>\n' +
             '\n' +
@@ -438,6 +441,7 @@ export default function Dashboard1(props) {
 
                     }
                 }
+
                 api.post('/api/addbilhete',
                     {
                         "codigo": codigo,
@@ -498,7 +502,6 @@ export default function Dashboard1(props) {
 
                             });
                             setEntrada(0);
-                            localStorage.setItem("retorno", "");
                             setClient("");
                             addVeiryClient("");
 
@@ -547,11 +550,9 @@ export default function Dashboard1(props) {
     function valueBetsHandler(e) {
         var value = e.target.value;
 
-
+        
         let cotacao = Number(document.getElementById('cotacao').innerHTML);
         if (1) {
-
-            
                 setEntrada(value);
 
                 document.getElementById('retorno').innerHTML =
@@ -565,7 +566,6 @@ export default function Dashboard1(props) {
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-
             handleCloseURL();
         }
 
@@ -658,14 +658,14 @@ export default function Dashboard1(props) {
 
     }
 
-    
+
     function validIn(){
 
         let valorMax = sessionStorage.getItem('valorDeSaida');                                                          let valorMin = sessionStorage.getItem('valorDeEntrada');                                                
         if (parseFloat(entrada) >= valorMin && parseFloat(entrada) <= valorMax) {                                               betsDone();                             
         } else if (parseFloat(entrada) < valorMin) {
 
-          document.getElementById('retorno').innerHTML = '0.00';
+        document.getElementById('retorno').innerHTML = '0.00';
                 setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2)
 );                                                                handleClickOpenURL();
         } else {                                                    setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2));
@@ -723,7 +723,6 @@ export default function Dashboard1(props) {
                                             c.subeventos.map((e) => {
                                                 if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
                                                     (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
-
 
                                                     try{
                                                         oddValue = true;
@@ -875,11 +874,13 @@ export default function Dashboard1(props) {
         } else {
             alert('Você selecionou ' + qtd + ' jogos, o máximo é ' + qtdJogos);
         }
+
     }
 
 
     function onClickHandler() {
         document.getElementById('resetField1').value = '';
+
 
         if (1) {
             document.getElementById('bilheteP').innerHTML = '';
@@ -887,6 +888,7 @@ export default function Dashboard1(props) {
             document.getElementById("retorno").innerHTML = '0.00';
             try {
                 let betsGame = team.split("=");
+
 
                 var date = new Date(Date.parse(betsGame[7].replace("Z", "+00:00")));
                 var hourMinute =
@@ -995,6 +997,7 @@ export default function Dashboard1(props) {
 
                                 api.get('/api/getprejogo').then(res => {
                                     document.getElementById('retorno').innerHTML = '';
+
                                     try {
                                         let l = [];
                                         let camp = [];
@@ -1007,6 +1010,7 @@ export default function Dashboard1(props) {
                                             })
                                             camp[0].momentos.map((e) => {
                                                 e.eventos.map((live) => {
+
 
                                                     let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
                                                         (live.subeventos.length >= 3 ?
@@ -1025,6 +1029,7 @@ export default function Dashboard1(props) {
                                                             ('VencedordoEncontro' +
                                                                 live.subeventos[2].aposta +
                                                                 live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '');
+
                                                     let valorCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                         ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
                                                         live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
@@ -1033,7 +1038,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                         ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1043,7 +1048,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                         ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1053,7 +1058,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa).toFixed(2) :
                                                         (live.subeventos[0].cotacao / 100).toFixed(2);
@@ -1102,6 +1107,7 @@ export default function Dashboard1(props) {
                                                         + "=" + (live.casa + ' x ' + live.fora) + "="
                                                         + (camp[0].pais + ': ' + camp[0].nome) + "=" + new Date(live.data) + "=" +
                                                         "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
+
 
 
                                                     let date = (new Date(live.data).getDate() < 10
@@ -1201,9 +1207,7 @@ export default function Dashboard1(props) {
         async function gamesLivres(){
             let cotacao = {};
             api.get('/api/getprejogo').then(res => {
-                document.getElementById('retorno').innerHTML =
-                    localStorage.getItem("retorno") != "" && localStorage.getItem("retorno") != null ?
-                        parseFloat(localStorage.getItem("retorno")) : "0.00";
+
 
                 try {
                     let l = [];
@@ -1283,7 +1287,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                     ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1293,7 +1297,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                     ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1303,7 +1307,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let date = (new Date(live.data).getDate() < 10
                                         ? "0" + new Date(live.data).getDate()

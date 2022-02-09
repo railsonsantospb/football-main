@@ -24,6 +24,8 @@ import {useReactToPrint} from 'react-to-print';
 import {api, cc} from '../Constantes/index';
 import useWindowDimensions from '../Size/index';
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
+import LockIcon from '@mui/icons-material/Lock';
+import ReactDOMServer from "react-dom/server";
 import Menu from '../Menu/index';
 
 let date = [];
@@ -61,6 +63,7 @@ export default function Dashboard1(props) {
     const {height, width} = useWindowDimensions();
     const [inputValue, setInputValue] = React.useState('');
     const [value, setValue] = React.useState("");
+    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon style={{fontSize: 14}}/>);
 
 
     const [titulo, setTitulo] = useState([]);
@@ -1035,7 +1038,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                         ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1045,7 +1048,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                         ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1055,7 +1058,7 @@ export default function Dashboard1(props) {
                                                                     ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                                 parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                     ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                     let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa).toFixed(2) :
                                                         (live.subeventos[0].cotacao / 100).toFixed(2);
@@ -1284,7 +1287,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                     ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1294,7 +1297,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                     ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1304,7 +1307,7 @@ export default function Dashboard1(props) {
                                                 ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                             parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                 ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                        : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                : html) : html)
 
                                 let date = (new Date(live.data).getDate() < 10
                                         ? "0" + new Date(live.data).getDate()

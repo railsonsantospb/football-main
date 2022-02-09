@@ -53,7 +53,7 @@ export default function Dashboard(props) {
     const [entrada, setEntrada] = useState(0)
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
     const [cotacoes, setCotacoes] = useState({});
-    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon/>);
+    const html = ReactDOMServer.renderToStaticMarkup(<LockIcon style={{fontSize: 14}}/>);
 
     const drawerWidth = 240;
 
@@ -708,7 +708,7 @@ export default function Dashboard(props) {
 
 
                                 i++;
-
+                                
 
                                 if (res.data) {
                                     res.data.mais.modalidades.map((m) => {
@@ -1007,30 +1007,13 @@ export default function Dashboard(props) {
                                         let l = []
                                         let d = 0;
 
-                                        camps.map((c, i) => {
-                                            c.momentos.map((j, l) => {
-                                                let d1 = new Date(j.data);
-                                                d1 = (d1.getFullYear() + "-" + (Number(d1.getMonth()) + 1 < 10 ? "0" +
-                                                        (Number(d1.getMonth()) + 1) : Number(d1.getMonth()) + 1) +
-                                                    "-" + ((Number(d1.getDate())) < 10 ? "0" + d1.getDate() : d1.getDate()));
-                                                let d2 = new Date();
-                                                d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
-                                                        (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
-                                                    "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
-                                                if(d1 == '2022-02-08'){
-                                                    c.momentos[l].eventos.map((live, k) => {
-                                                        console.log(live);
-                                                    })
-                                                }
-                                                d += 1;
-                                            })
-                                        })
+                                  
                                         camps.map((c, i) => {
 
                                             let d1 = [];
 
                                             index = 0;
-                                            if (1) {
+                                            if (1 && i < 20) {
 
 
                                                 c.momentos.map((j, l) => {
@@ -1091,7 +1074,7 @@ export default function Dashboard(props) {
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                            : html) : html)
 
                                                             let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                                 ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1101,7 +1084,7 @@ export default function Dashboard(props) {
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                            : html) : html)
 
                                                             let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                                                 ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1111,7 +1094,7 @@ export default function Dashboard(props) {
                                                                             ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                                         parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                                             ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                    : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                                    : html) : html)
 
                                                             let xcasa = Number.isInteger(parseInt(valorCasa)) == true ? parseFloat(valorCasa) :
                                                                 (live.subeventos[0].cotacao / 100).toFixed(2);
@@ -1269,11 +1252,11 @@ export default function Dashboard(props) {
                     // console.log(camps);
                     camps.map((c, i) => {
                         let d1 = [];
-
+                        
                         index = 0;
-                        if (1) {
+                        if (1 && i < 20) {
 
-
+                            
                             c.momentos.map((j) => {
                                 let image = ''
                                 try{
@@ -1370,7 +1353,7 @@ export default function Dashboard(props) {
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[0].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                        : html) : html)
 
                                         let valorEmpate = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                             ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1380,7 +1363,7 @@ export default function Dashboard(props) {
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[1].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                        : html) : html)
 
                                         let valorFora = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
                                             ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
@@ -1390,7 +1373,7 @@ export default function Dashboard(props) {
                                                         ? sessionStorage.getItem('cotaMax') : (live.subeventos[2].cotacao / 100)) +
                                                     parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
                                                         ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : '<b style="color:red">0</b>') : '<b style="color:red">0</b>')
+                                                        : html) : html)
 
                                         let date = (new Date(live.data).getDate() < 10
                                                 ? "0" + new Date(live.data).getDate()
@@ -1552,7 +1535,7 @@ export default function Dashboard(props) {
                                             </Grid>
                                         </Paper>
 
-                                        <TableContainer component={Paper}>
+                                        <TableContainer component={Paper} >
                                             <Table stickyHeader aria-label="sticky table" id='initJogos'>
                                                 <LinearProgress/>
                                             </Table>

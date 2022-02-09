@@ -120,8 +120,8 @@ const images = {
 
 const api = axios.create({
 
-    //baseURL: "http://localhost:8000",
-    baseURL: 'https://footballdjango.herokuapp.com/',
+    baseURL: "http://localhost:8000",
+    //baseURL: 'https://footballdjango.herokuapp.com/',
 
 
     //baseURL: "http://107.22.133.172:8000/"
@@ -177,8 +177,8 @@ async function getAdminAPI() {
 
             }
         }).catch(error => {
-        console.log(error)
-    });
+            console.log(error)
+        });
 
 }
 sessionStorage.setItem('minutos', new Date().getMinutes());
@@ -202,4 +202,4 @@ async function getDateAll() {
 getDateAll();
 
 
-export {auxCountry, weeks, images, auxItens, cc, regions, api, nome_cotacoes};
+export { auxCountry, weeks, images, auxItens, cc, regions, api, nome_cotacoes };
