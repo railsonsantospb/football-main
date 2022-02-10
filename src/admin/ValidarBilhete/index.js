@@ -130,7 +130,7 @@ export default function ValidarBilhete() {
     }));
 
     const options = {
-        rowsPerPage: 50,
+        rowsPerPage: 100,
         filter: true,
         filterType: "dropdown",
         responsive,
