@@ -182,8 +182,12 @@ export default function Dashboard(props) {
 
     setInterval(() => {
         if (localStorage.getItem('delete2') !== null) {
+            document.getElementById("resetField1").value = '';
+        
+            document.getElementById("retorno").innerHTML = '0.00';
             let team = localStorage.getItem('delete2');
             try {
+                document.getElementById("resetField1").value = '';
                 document.getElementById(team.split('-')[1] + team.split('-')[0]).style.background = "";
             } catch (e) {
                 localStorage.setItem(team.split('-')[0], "");
@@ -203,6 +207,7 @@ export default function Dashboard(props) {
             betsAll = betsAll.replace(team.split('-')[0] + "-" + team.split('-')[1] + "=", "");
             localStorage.setItem("betsAll2", betsAll);
             geraBilhete();
+            document.getElementById("resetField1").value = '';
         }
         localStorage.removeItem('delete2');
         if (localStorage.getItem('click2') != null && localStorage.getItem('click2') != '') {
@@ -254,6 +259,7 @@ export default function Dashboard(props) {
                 document.getElementById("retorno").innerHTML = sessionStorage.getItem("retorno");
                 sessionStorage.setItem("pin", "");
             }
+            
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
@@ -915,7 +921,6 @@ export default function Dashboard(props) {
                     localStorage.setItem(betsGame.slice(-1)[0] + "x", "");
                     localStorage.removeItem(betsGame.slice(-1)[0]);
                     localStorage.removeItem(betsGame.slice(-1)[0] + "x");
-
                     betsAll = localStorage.getItem("betsAll2");
                     betsAll = betsAll.replace(
                         betsGame.slice(-1)[0] + "-" + betsGame[2] + "=",
@@ -1011,19 +1016,23 @@ export default function Dashboard(props) {
                         let ativaAposta = res.data.bancas.ativarApostasPreJogo;
 
                         let c = {};
-                        api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.id).then(res => {
-
+                        api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.nome).then(res => {
+                          
                             try {
 
                                 res.data.cotacoes.map((o) => {
-
+                                    
                                     c[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                 })
+                                
                             } catch (e) {
-                                console.log(e);
+                                c[res.data.cotacoes.tipoDeCotacao] = 
+                                [res.data.cotacoes.status, res.data.cotacoes.porcentagem];
+                                
                             }
-                            console.log(c);
                             setCotacoes(c);
+                     
+                            
                          sessionStorage.setItem("cotacao", JSON.stringify(c));
                          if (ativaAposta) {
                             
@@ -1065,8 +1074,8 @@ export default function Dashboard(props) {
 
     function getJogos(){
             let qtd = sessionStorage.getItem("qtd");
-            let cotacao = JSON.parse(sessionStorage.getItem("cotacao"));
-            console.log(qtd);
+            let cotacao = JSON.parse(sessionStorage.getItem("cotacao")) == null ? '' :  JSON.parse(sessionStorage.getItem("cotacao"));
+
             try {
                 
                 let index = 0

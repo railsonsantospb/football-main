@@ -200,6 +200,8 @@ export default function Dashboard1(props) {
     setInterval(() => {
         if (localStorage.getItem('delete2') !== null) {
             let team = localStorage.getItem('delete2');
+            document.getElementById("resetField1").value = '';
+            document.getElementById("retorno").innerHTML = '0.00';
             try {
                 document.getElementById(team.split('-')[1] + team.split('-')[0]).style.background = "";
             } catch (e) {
@@ -210,6 +212,7 @@ export default function Dashboard1(props) {
                 betsAll = localStorage.getItem("betsAll2");
                 betsAll = betsAll.replace(team.split('-')[0] + "-" + team.split('-')[1] + "=", "");
                 localStorage.setItem("betsAll2", betsAll);
+                document.getElementById("resetField1").value = '';
                 geraBilhete();
             }
             localStorage.setItem(team.split('-')[0], "");
@@ -220,6 +223,7 @@ export default function Dashboard1(props) {
             betsAll = betsAll.replace(team.split('-')[0] + "-" + team.split('-')[1] + "=", "");
             localStorage.setItem("betsAll2", betsAll);
             geraBilhete();
+            document.getElementById("resetField1").value = '';
         }
         localStorage.removeItem('delete2');
         if (localStorage.getItem('click2') != null && localStorage.getItem('click2') != '') {
@@ -966,7 +970,7 @@ export default function Dashboard1(props) {
         try {
             let camp = [];
             let camps = JSON.parse(sessionStorage.getItem("jogos")).prejogo.campeonatos.slice();
-            let cotacao = JSON.parse(sessionStorage.getItem("cotacao"));
+            let cotacao = JSON.parse(sessionStorage.getItem("cotacao")) == null ? '' :  JSON.parse(sessionStorage.getItem("cotacao"));
             document.getElementById('preJogos').innerHTML = '';
             if (camps.length > 0) {
                 camps.map((c) => {
@@ -1179,16 +1183,19 @@ export default function Dashboard1(props) {
                         let ativaAposta = res.data.bancas.ativarApostasPreJogo;
 
                         let c = {};
-                        api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.id).then(res => {
+                        api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.nome).then(res => {
 
                             try {
 
                                 res.data.cotacoes.map((o) => {
-
+                                    
                                     c[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                 })
+                                
                             } catch (e) {
-                                console.log(e);
+                                c[res.data.cotacoes.tipoDeCotacao] = 
+                                [res.data.cotacoes.status, res.data.cotacoes.porcentagem];
+                                
                             }
                             setCotacoes(c);
                          sessionStorage.setItem("cotacao", JSON.stringify(c));
@@ -1226,6 +1233,8 @@ export default function Dashboard1(props) {
     async function getLoginAPIoFF() {
         document.getElementById('preJogos')
                 .innerHTML = '';
+        document.getElementById('load')
+                .innerHTML = load;
    
                 try {
                    

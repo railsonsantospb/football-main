@@ -998,20 +998,23 @@ export default function Dashboard(props) {
                             setBancaId(res.data.bancas.id);
                             setApostasPreJogo(res.data.bancas.ativarApostasPreJogo);
 
-                            api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.id).then(res => {
+                            api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.nome).then(res => {
 
                                 try {
                                     res.data.cotacoes.map((o) => {
                                         c[o.tipoDeCotacao] = [o.status, o.porcentagem];
-                                    })
+                                    })  
                                     setCotacao(c);
                                     if(sessionStorage.getItem('login') == null ||
                                         sessionStorage.getItem('login') == "") {
                                         setCotacao({});
                                     }
                                 } catch (e) {
-                                    console.log(e);
+                                    c[res.data.cotacoes.tipoDeCotacao] = 
+                                    [res.data.cotacoes.status, res.data.cotacoes.porcentagem];
+                                    setCotacao(c);
                                 }
+                                
                             }).catch(error => {
                                 console.log(error)
                             });
