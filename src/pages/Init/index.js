@@ -22,6 +22,7 @@ import {api, cc, images} from "../Constantes/index";
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import useWindowDimensions from '../Size/index';
 import Menu from '../Menu/index';
+import axios from 'axios';
 import ReactDOM from "react-dom";
 import ReactDOMServer from "react-dom/server";
 import LockIcon from '@mui/icons-material/Lock';
@@ -968,39 +969,14 @@ export default function Dashboard(props) {
         }
     };
 
-    async function getLoginAPIoFF() {
-        document.getElementById('initJogos')
-                .innerHTML = '';
-        document.getElementById('load')
-                .innerHTML = load;
-
-                try {
-                   
-        
-                            api.get('/api/getprejogo').then(res => {
-                                sessionStorage.setItem("jogos", JSON.stringify(res.data));
-                                sessionStorage.setItem("qtd", 10);
-                                getJogos();
-                                 
-                                
-                            }).catch(error => {
-                                console.log(error)
-                            });
-
-                    
-
-                } catch (e) {
-                    console.log(e);
-                }
-   
-
-    }
+    
 
     async function getLoginAPI() {
         document.getElementById('initJogos')
                 .innerHTML = '';
         document.getElementById('load')
                 .innerHTML = load;
+                
 
         api.get('/api/getbanca/' + sessionStorage.getItem('login'))
             .then(res => {
@@ -1035,8 +1011,11 @@ export default function Dashboard(props) {
                             
                          sessionStorage.setItem("cotacao", JSON.stringify(c));
                          if (ativaAposta) {
-                            
-                            api.get('/api/getprejogo').then(res => {
+                            let d2 = new Date();
+                            d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
+                                    (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
+                                "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
+                            api.get('/api/getprejogodata/'+(dateId == undefined ? d2 : dateId)).then(res => {
                                 sessionStorage.setItem("jogos", JSON.stringify(res.data));
                                 sessionStorage.setItem("qtd", 10);
                                 getJogos();
@@ -1073,13 +1052,15 @@ export default function Dashboard(props) {
     }
 
     function getJogos(){
+        
             let qtd = sessionStorage.getItem("qtd");
             let cotacao = JSON.parse(sessionStorage.getItem("cotacao")) == null ? '' :  JSON.parse(sessionStorage.getItem("cotacao"));
-
+           
             try {
                 
                 let index = 0
                 let camps = JSON.parse(sessionStorage.getItem("jogos")).prejogo.campeonatos.slice();
+                
                 let l = []
                 let d = 0;
 
@@ -1320,10 +1301,44 @@ export default function Dashboard(props) {
     
 
     useEffect(() => {
-
+        async function getLoginAPIoFF() {
+            document.getElementById('initJogos')
+                    .innerHTML = '';
+            document.getElementById('load')
+                    .innerHTML = load;
+    
+                    try {
+                        let d2 = new Date();
+                            d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
+                                    (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
+                                "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
+            
+                        api.get('/api/getprejogodata/'+(dateId == undefined ? d2 : dateId)).then(res => {
+                            
+                                    sessionStorage.setItem("jogos", JSON.stringify(res.data));
+                                    
+                                    sessionStorage.setItem("qtd", 10);
+                                    getJogos();
+                                    
+                                     
+                                    
+                                }).catch(error => {
+                                    console.log(error)
+                                });
+    
+                        
+    
+                    } catch (e) {
+                        console.log(e);
+                    }
+       
+    
+        }
         if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
-     
+          
             getLoginAPIoFF();
+            
+            
         }
    
 

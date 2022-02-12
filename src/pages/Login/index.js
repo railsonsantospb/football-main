@@ -186,7 +186,7 @@ export default function SignInSide() {
   }, [])
 
   localStorage.clear();
-
+  sessionStorage.setItem("cotacao", null)
   function gerente(){
     history.push('/login');
   }
