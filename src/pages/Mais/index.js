@@ -262,6 +262,13 @@ export default function Dashboard(props) {
 
         try {
             document.getElementById("bilhete").innerHTML = '';
+            document.getElementById("bilhete").innerHTML = '';
+            if(sessionStorage.getItem("pin") != "" && sessionStorage.getItem("pin") != null) {
+                document.getElementById("resetField1").value = sessionStorage.getItem("valorIn");
+                setEntrada(sessionStorage.getItem("valorIn"));
+                document.getElementById("retorno").innerHTML = sessionStorage.getItem("retorno");
+                sessionStorage.setItem("pin", "");
+            }
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
@@ -562,7 +569,7 @@ export default function Dashboard(props) {
         } else {
             document.getElementById('retorno').innerHTML = '0.00';
             setEntrada(0);
-
+            sessionStorage.removeItem("retorno")
             handleCloseURL();
         }
 

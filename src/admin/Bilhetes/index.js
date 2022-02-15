@@ -1,7 +1,7 @@
 import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import {Dialog, DialogActions, DialogContent, DialogTitle} from '@material-ui/core';
@@ -37,7 +37,6 @@ export default function Dashboard(props) {
     const [openLoading, setOpenLoading] = React.useState(false);
     const [bilhetes, setBilhetes] = useState("");
     const [dataAux, setAux] = useState([]);
-    const [count, setCount] = useState([]);
     const [dateAfter, setDateAfter] = useState('');
 
 
@@ -148,8 +147,6 @@ export default function Dashboard(props) {
 
         appBarSpacer: theme.mixins.toolbar,
     }));
-    const [selectedDate1, handleDateChange1] = useState(new Date());
-    const [selectedDate2, handleDateChange2] = useState(new Date());
 
     const classes = useStyles();
 
@@ -203,7 +200,7 @@ export default function Dashboard(props) {
             api.get('/api/getbilhetesg')
                 .then(res => {
                     let l = [];
-                    let ax = [];
+
                     try {
                         console.log(res.data);
                         let bh = res.data.bilhetes.slice();
@@ -229,27 +226,14 @@ export default function Dashboard(props) {
                                         Aposta: b.tipoDeJogo, Cancelar: b.codigo,
                                     });
 
-                                ax.push({
-                                    id: b.id, Cupom: b.codigo,
-                                    Banca: b.nomeBanca,
-                                    Cliente: b.nomeCliente,
-                                    Data: b.dataDaAposta,
-                                    Situacao: b.status,
-                                    Entrada: b.valorDeEntrada.toFixed(2),
-                                    Comissao: b.comissao.toFixed(2),
-                                    Cotacao: b.cotacao.toFixed(2),
-                                    Retorno: b.valorDeSaida.toFixed(2),
-                                    Tipo: b.tipoSimplesouMultiplo,
-                                    Aposta: b.tipoDeJogo, Cancelar: b.codigo,
-                                });
-
+                        
                             });
 
 
                         }
                         l.reverse();
                         setAux(l);
-                        setCount(ax);
+                 
 
 
                     } catch (e) {
