@@ -969,16 +969,11 @@ export default function Dashboard1(props) {
     function getJogos(){
         try {
             let camp = [];
-            let camps = JSON.parse(sessionStorage.getItem("jogos")).prejogo.campeonatos.slice();
+            let camps = JSON.parse(sessionStorage.getItem("jogos")).prejogo.campeonatos;
             let cotacao = JSON.parse(sessionStorage.getItem("cotacao")) == null ? '' :  JSON.parse(sessionStorage.getItem("cotacao"));
             document.getElementById('preJogos').innerHTML = '';
-            if (camps.length > 0) {
-                camps.map((c) => {
-                    if (c.id == campId) {
-                        camp.push(c);
-                    }
-                })
-                camp[0].momentos.map((e) => {
+           
+                camps.momentos.map((e) => {
                     e.eventos.map((live) => {
                         document.getElementById("load").innerHTML = '';
 
@@ -1049,7 +1044,7 @@ export default function Dashboard1(props) {
                             parseFloat(sessionStorage.getItem('cotaMax')) ?
                                 parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xcasa : 0)
                             + "=" + (live.casa + ' x ' + live.fora) + "="
-                            + (camp[0].pais + ': ' + camp[0].nome) + "=" + new Date(live.data) + "=" +
+                            + (camps.pais + ': ' + camps.nome) + "=" + new Date(live.data) + "=" +
                             "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
 
                         let xempate = Number.isInteger(parseInt(valorEmpate)) == true ? parseFloat(valorEmpate).toFixed(2) :
@@ -1065,7 +1060,7 @@ export default function Dashboard1(props) {
                             parseFloat(sessionStorage.getItem('cotaMax')) ?
                                 parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xempate : 0)
                             + "=" + (live.casa + ' x ' + live.fora) + "="
-                            + (camp[0].pais + ': ' + camp[0].nome) + "=" + new Date(live.data) + "=" +
+                            + (camps.pais + ': ' + camps.nome) + "=" + new Date(live.data) + "=" +
                             "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
 
                         let xfora = Number.isInteger(parseInt(valorFora)) == true ? parseFloat(valorFora).toFixed(2) :
@@ -1081,7 +1076,7 @@ export default function Dashboard1(props) {
                             parseFloat(sessionStorage.getItem('cotaMax')) ?
                                 parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : xfora : 0)
                             + "=" + (live.casa + ' x ' + live.fora) + "="
-                            + (camp[0].pais + ': ' + camp[0].nome) + "=" + new Date(live.data) + "=" +
+                            + (camps.pais + ': ' + camps.nome) + "=" + new Date(live.data) + "=" +
                             "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')
 
 
@@ -1150,12 +1145,10 @@ export default function Dashboard1(props) {
                 })
 
 
-                setTitulo([camp[0].pais, camp[0].nome]);
+                setTitulo([camps.pais, camps.nome]);
 
 
-            } else {
-                setCampeonato([]);
-            }
+            
 
         } catch (e) {
             console.log(e);
@@ -1201,7 +1194,7 @@ export default function Dashboard1(props) {
                          sessionStorage.setItem("cotacao", JSON.stringify(c));
                          if (ativaAposta) {
                             
-                            api.get('/api/getprejogo').then(res => {
+                            api.get('/api/getprejogo/'+campId).then(res => {
                                 sessionStorage.setItem("jogos", JSON.stringify(res.data));
                        
                                 getJogos();
@@ -1239,9 +1232,8 @@ export default function Dashboard1(props) {
                 try {
                    
         
-                            api.get('/api/getprejogo').then(res => {
+                            api.get('/api/getprejogo/'+campId).then(res => {
                                 sessionStorage.setItem("jogos", JSON.stringify(res.data));
-                                sessionStorage.setItem("qtd", 10);
                                 getJogos();
                                  
                                 
@@ -1365,7 +1357,7 @@ export default function Dashboard1(props) {
                                                 </TableHead>
                                                 <div id="load"></div>
                                                 <TableBody id='preJogos'>
-                                                    
+                                                    <LinearProgress/>
                                                 </TableBody>
 
                                             </Table>

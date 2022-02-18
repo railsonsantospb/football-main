@@ -240,6 +240,11 @@ export const GlobalStyle = createGlobalStyle `
       display: none;
     }
 
+    #timeA {
+      content: "\a";
+      white-space: pre;
+    }
+
     #bets1 {
 
       display: block;

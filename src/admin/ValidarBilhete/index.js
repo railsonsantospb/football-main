@@ -213,6 +213,7 @@ export default function ValidarBilhete() {
         return Date.parse(d1) - Date.parse(d2);
     }
 
+ 
     let d = [];
     useEffect(() => {
 
@@ -231,6 +232,8 @@ export default function ValidarBilhete() {
 
                         let bh = res.data.jogos.slice();
                         bh.sort(custom_sort);
+            
+                        
                         console.log(bh);
                         if (res.data) {
                             bh.map((b) => {
@@ -239,7 +242,9 @@ export default function ValidarBilhete() {
                                 dict[valor] = [
 
                                     <Typography style={{cursor: 'pointer'}}
-                                                onClick={() => window.open('https://www.google.com/search?q=' + b.nomeDosTimes)}>{b.nomeDosTimes}</Typography>,
+                                                onClick={() => window.open('https://www.google.com/search?q=' + b.nomeDosTimes + " " +
+                                                 new Date().getDate() + "." + (new Date().getMonth()+1) + "." + new Date().getFullYear())}>
+                                                 {b.nomeDosTimes}</Typography>,
                                     b.dataDoJogo,
                                     b.tipoDeCotacao,
                                     <Checkbox  style={{color: 'green'}} onClick={() => addJogo(b.nomeDosTimes, b.tipoDeCotacao, 'Ganhou')}/>,

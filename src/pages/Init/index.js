@@ -1,13 +1,8 @@
-import {makeStyles, withStyles} from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {makeStyles} from "@material-ui/core/styles";
+
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import React, {useEffect, useRef, useState, memo} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import clsx from "clsx";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -26,29 +21,16 @@ import {api, cc, images} from "../Constantes/index";
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
 import useWindowDimensions from '../Size/index';
 import Menu from '../Menu/index';
-import axios from 'axios';
-import ReactDOM from "react-dom";
+import Jogos from './Jogos/index';
 import ReactDOMServer from "react-dom/server";
 import LockIcon from '@mui/icons-material/Lock';
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-        padding: 5,
-    },
-    body: {
-        fontSize: 12,
-        
 
-    },
-}))(TableCell);
 
 let date = [];
 
 export default function Dashboard(props) {
     const codigo = cc.generate().split('-').slice(1).join('-');
-    let history = useHistory();
     let {dateId} = useParams();
     var betsAll = "";
     const [message, setMessage] = useState("");
@@ -62,11 +44,8 @@ export default function Dashboard(props) {
     const [saldoGeral, setSaldoGeral] = useState(0);
     const [nomeBanca, setNomeBanca] = useState("");
     const [datas, setDatas] = useState([]);
-    const [count, setCount] = useState(20);
     const [clientes, setClientes] = useState([]);
-    const [jogos, setJogos] = useState([]);
     const [campeonato, setCampeonato] = useState([]);
-    const {height, width} = useWindowDimensions();
     const [inputValue, setInputValue] = React.useState('');
     const [value, setValue] = React.useState("");
     const [entrada, setEntrada] = useState(0)
@@ -228,10 +207,7 @@ export default function Dashboard(props) {
             document.getElementById("resetField1").value = '';
         }
         localStorage.removeItem('delete2');
-        if (localStorage.getItem('click2') != null && localStorage.getItem('click2') != '') {
-            onClickHandler();
-            localStorage.removeItem('click2');
-        }
+
         InitOdds();
         //console.log(localStorage.getItem('delete'));
     }, 200);
@@ -1027,16 +1003,14 @@ export default function Dashboard(props) {
                             setCotacoes(c);
                      
                             
-                         sessionStorage.setItem("cotacao", JSON.stringify(c));
                          if (ativaAposta) {
                             let d2 = new Date();
                             d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
                                     (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
                                 "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
                             api.get('/api/getprejogodata/'+(dateId == undefined ? d2 : dateId)).then(res => {
-                                sessionStorage.setItem("jogos", JSON.stringify(res.data));
-                                sessionStorage.setItem("qtd", 10);
-                                getJogos();
+                         
+                                setCampeonato(res.data);
                                  
                                 
                             }).catch(error => {
@@ -1063,25 +1037,6 @@ export default function Dashboard(props) {
     }
 
 
-    function getJogos(){
-        
-                 
-            try {
-                
-                let index = 0
-                let camps = JSON.parse(sessionStorage.getItem("jogos")).prejogo.campeonatos.slice();
-                
-                let l = []
-                let d = 0;
-                
-
-
-                
-            } catch (e) {
-                console.log(e);
-            }
-        
-    }
   
 
     
@@ -1108,6 +1063,8 @@ export default function Dashboard(props) {
                                 }).catch(error => {
                                     console.log(error)
                                 });
+
+                                
     
                         
     
@@ -1147,6 +1104,7 @@ export default function Dashboard(props) {
                 console.log(error);
             });
 
+            
         }
 
         
@@ -1157,294 +1115,9 @@ export default function Dashboard(props) {
             getClienteAPI();
         }
         geraBilhete();
-
     }, []);
-     React.memo(function MyComponent(props) {
-        /* renderize usando props */
-      });
-      function Jogos() {
-        return (
-            <TableContainer component={Paper} >
-                                          
-
-                                        
-
-                                    
-                                          
-                {campeonato.length != 0 ? campeonato.prejogo.campeonatos.map((c, i) => (
-                
-                c.momentos.map((j) => (
-                    
-                    <Table stickyHeader aria-label="sticky table" >
-                    {<TableHead >
-                        <TableRow>
-                            <StyledTableCell
-                                                id='font'><b><img src={images[c.pais]} style={{marginRight: 3}} width='30' height='22' />{c.pais}</b><br/></StyledTableCell>
-                            <StyledTableCell align={"center"} style={{width: 15}}
-                                                id='ocultar'><b>CASA</b></StyledTableCell>
-                            <StyledTableCell align={"center"} style={{width: 15}}
-                                                id='ocultar'><b>EMPATE</b></StyledTableCell>
-                            <StyledTableCell align={"center"} style={{width: 15}}
-                                                id='ocultar'><b>FORA</b></StyledTableCell>
-                            <StyledTableCell align={"center"} style={{width: 15}}
-                                                id='ocultar'><b>MAIS</b></StyledTableCell>
-                        </TableRow>
-                    </TableHead>}
-                    <TableBody>
-                    
-                    <b style={{color: 'blue'}}>{c.nome}</b>
-                    {j.eventos.map((live, k) => (
-                    <TableRow id="zebra" key={k}> 
-                    <td class="times">  {live.casa}  X  {live.fora}
-                    <p>  {((new Date(live.data).getDate() < 10
-                ? "0" + new Date(live.data).getDate()
-                : new Date(live.data).getDate()) +
-                "/" +
-                (Number(new Date(live.data).getMonth()) + 1 < 10
-                    ? "0" +
-                    (Number(new Date(live.data).getMonth()) + 1)
-                    : Number(new Date(live.data).getMonth()) + 1) +
-                "/" +
-                new Date(live.data).getFullYear() +
-                " " +
-                (new Date(live.data).getHours() < 10
-                    ? "0" + new Date(live.data).getHours()
-                    : new Date(live.data).getHours()) +
-                ":" +
-                (Number(new Date(live.data).getMinutes() + "") === 0
-                    ? "00"
-                    : Number(new Date(live.data).getMinutes() + "") >=
-                    10
-                    ? new Date(live.data).getMinutes() + ""
-                    : "0" + (new Date(live.data).getMinutes() + "")))}  </p> 
-                    </td>
-                    <td id="ocultar" > 
-                    <b class="button" onClick={onClickHandler} data-item={('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                            live.subeventos[0].aposta : '') + "=" + "Vencedor do Encontro--"
-                                        + live.subeventos[0].aposta + "=" +
-                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[0].aposta + live.subeventos[0].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                            'VencedordoEncontro' + live.subeventos[0].aposta : '') + "=" +
-                                        (live.subeventos.length >= 3 ? (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[0].cotacao / 100) ?
-                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                        parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                            ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                            live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
-                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                        ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[0].cotacao / 100)) +
-                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                        ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                        : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[0].cotacao / 100) ?
-                                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                        parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                            ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                            live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
-                                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                        ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[0].cotacao / 100)) +
-                                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                        ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                        : html) : html)) :
-                                        (live.subeventos[0].cotacao / 100).toFixed(2)) >
-                                        parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[0].cotacao / 100) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                            parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
-                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                    (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                            ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[0].cotacao / 100)) +
-                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                            ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[0].cotacao / 100) ?
-                                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                            parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                                ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                                live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
-                                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                    (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                            ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[0].cotacao / 100)) +
-                                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                            ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                            : html) : html)) :
-                                        (live.subeventos[0].cotacao / 100).toFixed(2)) : 0)
-                                        + "=" + (live.casa + ' x ' + live.fora) + "="
-                                        + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')}
-
-
-                                        
-                     id={(parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
-                    (live.subeventos.length >= 3 ?
-                    ('VencedordoEncontro' +
-                    live.subeventos[0].aposta +
-                    live.subeventos[0].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '')}> {(parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[0].cotacao / 100) ?
-                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                    parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                        ((live.subeventos[0].cotacao / 100) - (((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                        live.subeventos.length >= 3 && live.subeventos[0].cotacao > 0
-                        && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                            (parseFloat((live.subeventos[0].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                    ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[0].cotacao / 100)) +
-                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                    ((live.subeventos[0].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                    : html) : html)}  </b></td> 
-
-                    <td id="ocultar" >
-                    <b class="button" onClick={onClickHandler} data-item={('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                            live.subeventos[1].aposta : '') + "=" + "Vencedor do Encontro--"
-                                        + live.subeventos[1].aposta + "=" +
-                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[1].aposta + live.subeventos[1].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                            'VencedordoEncontro' + live.subeventos[1].aposta : '') + "=" +
-                                        (live.subeventos.length >= 3 ? (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[1].cotacao / 100) ?
-                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                        parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                            ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                            live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
-                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                        ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[1].cotacao / 100)) +
-                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                        ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                        : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[1].cotacao / 100) ?
-                                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                        parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                            ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                            live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
-                                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                        ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[1].cotacao / 100)) +
-                                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                        ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                        : html) : html)) :
-                                        (live.subeventos[1].cotacao / 100).toFixed(2)) >
-                                        parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[1].cotacao / 100) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                            parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
-                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                    (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                            ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[1].cotacao / 100)) +
-                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                            ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[1].cotacao / 100) ?
-                                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                            parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                                ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                                live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
-                                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                                    (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                            ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[1].cotacao / 100)) +
-                                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                            ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                                            : html) : html)) :
-                                        (live.subeventos[1].cotacao / 100).toFixed(2)) : 0)
-                                        + "=" + (live.casa + ' x ' + live.fora) + "="
-                                        + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')}
-
-                    id={(parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ?
-                    (live.subeventos.length >= 3 ?
-                    ('VencedordoEncontro' +
-                    live.subeventos[1].aposta +
-                    live.subeventos[1].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '')}>  {(parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[1].cotacao / 100) ?
-                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                    parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[1].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                        ((live.subeventos[1].cotacao / 100) - (((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                        live.subeventos.length >= 3 && live.subeventos[1].cotacao > 0
-                        && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                            (parseFloat((live.subeventos[1].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                    ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[1].cotacao / 100)) +
-                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                    ((live.subeventos[1].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                    : html) : html)}  </b></td>
-
-                    <td id="ocultar" > 
-                    <b class="button" onClick={onClickHandler} data-item={('Vencedor do Encontro:' + (live.subeventos.length >= 3 ?
-                                            live.subeventos[2].aposta : '') + "=" + "Vencedor do Encontro--"
-                                        + live.subeventos[2].aposta + "=" +
-                                        (live.subeventos.length >= 3 ? ('VencedordoEncontro' + live.subeventos[2].aposta + live.subeventos[2].idOpcao).replace(/[^0-9a-z]/gi, '') : '')
-                                        + "=" + live.id + "-" + (live.subeventos.length >= 3 ?
-                                            'VencedordoEncontro' + live.subeventos[2].aposta : '') + "=" +
-                                        (live.subeventos.length >= 3 ? (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[2].cotacao / 100) ?
-                                        parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                        parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                            ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                            live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
-                                            && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                        ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[2].cotacao / 100)) +
-                                                    parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                        ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[2].cotacao / 100) ?
-                                                parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                    ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                    live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
-                                                    && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                        (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[2].cotacao / 100)) +
-                                                            parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                        : html) : html)) :
-                                        (live.subeventos[2].cotacao / 100).toFixed(2)) >
-                                        parseFloat(sessionStorage.getItem('cotaMax')) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) : (Number.isInteger(parseInt((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[2].cotacao / 100) ?
-                                            parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                            parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
-                                                && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                    (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                            ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[2].cotacao / 100)) +
-                                                        parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                            ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                    : html) : html))) == true ? parseFloat((parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[2].cotacao / 100) ?
-                                                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                                                    parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                                                        ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                                                        live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
-                                                        && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                                                            (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                                                    ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[2].cotacao / 100)) +
-                                                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                                                    ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                                                            : html) : html)) :
-                                            (live.subeventos[2].cotacao / 100).toFixed(2)) : 0)
-                                        + "=" + (live.casa + ' x ' + live.fora) + "="
-                                        + (c.pais + ': ' + c.nome) + "=" + new Date(live.data) + "=" +
-                                        "Aberto" + "=" + 'Vencedor do Encontro' + "=" + live.id).replace(/'/g, '')}
-
-                     id={(parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ?
-                    (live.subeventos.length >= 3 ?
-                    ('VencedordoEncontro' +
-                    live.subeventos[2].aposta +
-                    live.subeventos[2].idOpcao + live.id).replace(/[^0-9a-z]/gi, '') : '') : '')}> {(parseFloat(sessionStorage.getItem('cotaMax')) < parseFloat(live.subeventos[2].cotacao / 100) ?
-                    parseFloat(sessionStorage.getItem('cotaMax')).toFixed(2) :
-                    parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[2].cotacao / 100) ? (cotacao['Vencedor do Encontro'] != undefined && cotacao['Vencedor do Encontro'] < 0 ?
-                        ((live.subeventos[2].cotacao / 100) - (((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) * -1)) :
-                        live.subeventos.length >= 3 && live.subeventos[2].cotacao > 0
-                        && (cotacao['Vencedor do Encontro'] != undefined ? cotacao['Vencedor do Encontro'][0] : true) == true ?
-                            (parseFloat((live.subeventos[2].cotacao / 100) > parseFloat(sessionStorage.getItem('cotaMax'))
-                                    ? parseFloat(sessionStorage.getItem('cotaMax')) : (live.subeventos[2].cotacao / 100)) +
-                                parseFloat(cotacao['Vencedor do Encontro'] != undefined ?
-                                    ((live.subeventos[2].cotacao / 100) * (cotacao['Vencedor do Encontro'][1] / 100)) : 0)).toFixed(2)
-                            : html) : html)} </b></td> 
-
-                    <td id="ocultar" ><a href={"/#/maispre/" + live.id + '-' + live.data}
-                    class="buttonM"><p style={{fontSize: 26}}> + </p></a></td>
-                    </TableRow>))}</TableBody></Table>)))): 'Loading...'}
-                    
-                
-                
-            </TableContainer>
-        );
-    }
+    
+      
 
     const fixedHeightPaper = clsx(classes.paper);
     return (
@@ -1486,7 +1159,7 @@ export default function Dashboard(props) {
                                             </Grid>
                                         </Paper>
                                         
-                                        <Jogos/>
+                                        <Jogos campeonato={campeonato} cotacao={cotacao} onClickHandler={onClickHandler}/>
 
 
                                     </Grid>

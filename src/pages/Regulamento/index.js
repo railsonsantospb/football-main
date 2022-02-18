@@ -14,9 +14,6 @@ import Box from '@mui/material/Box';
 //let openNavA = [];
 export default function Dashboard(props) {
 
-    const [openNav, setOpenNav] = useState(false);
-    const [openNavA, setOpenNavA] = useState("");
-    const [openNavB, setOpenNavB] = useState("");
 
 
 

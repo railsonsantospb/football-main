@@ -263,6 +263,7 @@ export default function Dashboard() {
                             }
 
                             setNomesBancas(bancas);
+                           
 
                         }
                     } catch (e) {
@@ -320,7 +321,6 @@ export default function Dashboard() {
 
 
                                                             </Grid>
-
                                                             <br/>
                                                             <Button onClick={getDatas} variant="contained"
                                                                     color="primary">
@@ -353,7 +353,7 @@ export default function Dashboard() {
 
                                                 <TableBody>
 
-                                                    {nomesBancas.map((banca) => (
+                                                    {nomesBancas.sort().map((banca) => (
                                                         <StyledTableRow>
                                                             <StyledTableCell align={"center"} style={{width: '10px'}}>
                                                                 <Typography variant="h5">

@@ -61,12 +61,68 @@ export default function Dashboard(props) {
     // const columns = ["CUPOM", "CLIENTE", "DATA", "SITUAÇÃO", "ENTRADA", "COMISSÕES", "COTAÇÃO", "RETORNO",
     //     "TIPO", "APOSTA"];
 	
-    function setStatusBilhete(codigoBilhete) {                                                                          api.put('/api/updatebilhete/' + codigoBilhete,  { status: 'Cancelado'})                                               .then(res => {
-                try {                                                       if (res.data) {                                             history.go(0);                                      }                                                   } catch (e) {                                                                                                   }
-            }).catch(error => {                                     console.log(error)
-        });                                                                                                         }
+    function setStatusBilhete(codigoBilhete) {
+        api.get('/api/getdate').then(res => {
+            let valid = true;
+            try {
+                sessionStorage.setItem('date', res.data.date);
+            api.get('/api/getjogo/' + codigoBilhete)
+            .then(res => {
+                try {                                                       
+                    if (res.data) {                                             
+                        res.data.jogo.map((b) => {
+                            let d1 = new Date(b.dataDoJogo.split(' ')[0].split('/')[1] + '/' +
+                            b.dataDoJogo.split(' ')[0].split('/')[0] + '/' +
+                            b.dataDoJogo.split(' ')[0].split('/')[2] + " " + b.dataDoJogo.split('  ')[1] );
+                            console.log(d1)
 
+                            let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
+                                sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
+                                sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
+                                sessionStorage.getItem('date').split(' ')[1]);
 
+     
+
+                            let minutes = Math.floor((d2 - d1) / 1000 / 60);
+             
+                            if(minutes >= 0){
+                                valid = false;
+                            }
+                        });
+                        if(valid){
+                            api.put('/api/updatebilhete/' + codigoBilhete,  { status: 'Cancelado'})
+                                .then(res => {
+                                    try {                                                       
+                                        if (res.data) {                                             
+                                            history.go(0);                                      
+                                        }                                                   
+                                    } catch (e) {                                                                                                  
+
+                                    }
+                                }).catch(error => {                                     
+                                    console.log(error)
+                            }); 
+                        } else {
+                            alert("Alguns jogos já começaram!")
+                        }
+                                                          
+                    }                                                   
+                } catch (e) {                                                                                                  
+                    console.log(e)
+                }
+            }).catch(error => {                                     
+                console.log(error)
+        });   
+    
+            } catch (e) {
+                console.log(e);
+            }
+        }).catch(error => {
+            console.log(error)
+        });
+                                                                              
+          
+    }
 
     let s = {'Perdeu': 'red', 'Ganhou': 'green', 'Cancelado': 'gold', 'Aberto': 'blue'}
     const columns = [
@@ -122,7 +178,16 @@ export default function Dashboard(props) {
             renderCell: (params) => (<b>{params.value}</b>)
         },
 	
-	{                                                           field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',                                         renderCell: (params) => (params.value != 0 ? <Button onClick={() =>                                                 setStatusBilhete(params.value)}                                                                          variant="contained" color="secondary">                         <CancelIcon/></Button> : <Button disabled                                                                                                        variant="contained" color="secondary"> <CancelIcon/></Button>)         },
+	    {    
+         
+            field: 'Cancelar', headerName: 'Cancelar', width: 100, align: 'center',                                         
+            renderCell: (params) => (params.value != 0 ? <Button onClick={() => 
+            setStatusBilhete(params.value)}     
+            variant="contained" color="secondary">                         
+                
+            <CancelIcon/></Button> : 
+            <Button disabled variant="contained" color="secondary"> <CancelIcon/></Button>)         
+        },
 
     ];
 

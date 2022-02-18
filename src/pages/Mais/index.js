@@ -732,7 +732,8 @@ export default function Dashboard(props) {
                                                 c.subeventos.map((e) => {
 
                                                     if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
-                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                        (e.titulo + ' (' + e.nome + ')').replace(nomeTime[0], '') :
+                                                         e.nome.replace(nomeTime[0], '')) == auxBets[1]) {
 
 
                                                         try{
@@ -1164,7 +1165,7 @@ export default function Dashboard(props) {
 
                                                                         <StyledTableCell id='font'>
                                                                             <b >{((nome.titulo != 'Vencedor do Encontro') ?
-                                                                                (bet.titulo + ' (' + n.nome + ')') : n.nome)}</b>
+                                                                                (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], ''))}</b>
                                                                         </StyledTableCell>
 
                                                                         <td align="right" id='font'>
@@ -1172,18 +1173,18 @@ export default function Dashboard(props) {
 
                                                                                  variant="contained" color={"primary"} class="buttonPlus"
                                                                                  id={(parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ?
-											((nome.titulo + ((nome.titulo != 'Vencedor do Encontro') ?
-                                                (bet.titulo + ' (' + n.nome + ')') : n.nome))
+                                                                        ((nome.titulo + ((nome.titulo != 'Vencedor do Encontro') ?
+                                                                            (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], '')))
                                                                                      .replace(/[^0-9a-z]/gi, '')+n.idOpcao+nomeTime[1]):'')}
 
                                                                                  data-item={nome.titulo + ':' +   ((nome.titulo != 'Vencedor do Encontro') ?
-                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome) + '=' + nome.titulo + "--" +
+                                                                                         (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], '')) + '=' + nome.titulo + "--" +
                                                                                      ((nome.titulo != 'Vencedor do Encontro') ?
-                                                                                     (bet.titulo + ' (' + n.nome + ')') : n.nome) + "=" +
+                                                                                     (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], '')) + "=" +
                                                                                      ((nome.titulo+((nome.titulo != 'Vencedor do Encontro') ?
-                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
+                                                                                         (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], ''))).replace(/[^0-9a-z]/gi, '')+n.idOpcao) +
                                                                                      "=" + nomeTime[1] + "-" + (nome.titulo+((nome.titulo != 'Vencedor do Encontro')  ?
-                                                                                         (bet.titulo + ' (' + n.nome + ')') : n.nome)).replace(/[^0-9a-z]/gi, '') + "=" +
+                                                                                         (bet.titulo + ' (' + n.nome + ')').replace(nomeTime[0], '') : n.nome.replace(nomeTime[0], ''))).replace(/[^0-9a-z]/gi, '') + "=" +
                                                                                      (
                                                                                          (parseFloat(sessionStorage.getItem('cotaMin')) < (n.cotacao/100).toFixed(2) ? (cotacao[nome.titulo] != undefined && cotacao[nome.titulo] < 0 ?
                                                                                              (((n.cotacao/100).toFixed(2)) - ((((n.cotacao/100).toFixed(2)) * (cotacao[nome.titulo][1]/100))*-1)) :

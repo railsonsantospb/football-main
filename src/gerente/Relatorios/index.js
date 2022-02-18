@@ -505,7 +505,7 @@ export default function Dashboard() {
                                                                     <MenuItem value="Todas">
                                                                         <em>Todas</em>
                                                                     </MenuItem>
-                                                                    {[...nomesAux].map((n) => (
+                                                                    {[...nomesAux].sort().map((n) => (
                                                                         <MenuItem value={n}>{n}</MenuItem>
                                                                     ))}
 
@@ -572,7 +572,7 @@ export default function Dashboard() {
 
                                                     <TableBody>
 
-                                                        {[...nomesBancas].map((banca) => (
+                                                        {[...nomesBancas].sort().map((banca) => (
                                                             console.log(saidas[banca], total[banca]),
                                                                 <StyledTableRow>
                                                                     <StyledTableCell align={"center"}

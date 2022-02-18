@@ -113,6 +113,9 @@ const images = {
     "Costa do Marfim": ["https://www.countryflags.com/wp-content/uploads/cote-d-ivoire-flag-png-large.png"],
     "Senegal": ["https://www.countryflags.com/wp-content/uploads/senegal-flag-png-large.png"],
     "Etiópia": ["https://www.countryflags.com/wp-content/uploads/ethiopia-flag-png-large.png"],
+    "Finlândia": ["https://www.countryflags.com/wp-content/uploads/finland-flag-png-large.png"],
+    "Perú": ["https://www.countryflags.com/wp-content/uploads/peru-flag-png-large.png"],
+    "Bangladesh": ["https://www.countryflags.com/wp-content/uploads/flag-jpg-xl-14-1536x922.jpg"],
 
     "Internacional": [World],
 };
@@ -171,7 +174,6 @@ async function getAdminAPI() {
                     sessionStorage.setItem('cotaMax', res.data.admin[0].cotaMax);
                     sessionStorage.setItem('qtdJogos', res.data.admin[0].qtdJogos);
                     sessionStorage.setItem('configTime', res.data.admin[0].configTime);
-
                 }
             } catch (e) {
 
