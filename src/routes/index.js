@@ -52,6 +52,7 @@ import Regulamento from '../pages/Regulamento';
 
 export default function Routes() {
 
+
     return (
         <HashRouter>
             <Route exact path="/" component={Init}/>

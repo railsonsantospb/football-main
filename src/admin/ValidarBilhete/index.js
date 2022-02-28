@@ -131,6 +131,7 @@ export default function ValidarBilhete() {
 
     const options = {
         rowsPerPage: 100,
+
         filter: true,
         filterType: "dropdown",
         responsive,
@@ -140,7 +141,8 @@ export default function ValidarBilhete() {
         onRowClick: (rowData, rowMeta) => {
             const dataToState = rowData;
             console.log(dataToState);
-        }
+        },
+
     };
 
 
@@ -225,6 +227,7 @@ export default function ValidarBilhete() {
 
 
         async function getBancasAPI() {
+
             let dict = {};
             api.get('/api/getjogos')
                 .then(res => {
@@ -232,8 +235,8 @@ export default function ValidarBilhete() {
 
                         let bh = res.data.jogos.slice();
                         bh.sort(custom_sort);
-            
-                        
+
+
                         console.log(bh);
                         if (res.data) {
                             bh.map((b) => {
@@ -260,6 +263,7 @@ export default function ValidarBilhete() {
                             setDataAux(dataAux);
 
                         }
+                     
                     } catch (e) {
                         console.log(e);
 
@@ -293,7 +297,7 @@ export default function ValidarBilhete() {
                 <Container maxWidth="lg" className={classes.container}>
 
                     <br/>
-                    {dataAux.length > 0 ?
+
                         <React.Fragment>
                             <MUIDataTable
                                 title={<Grid container direction={'row'}>
@@ -305,16 +309,14 @@ export default function ValidarBilhete() {
                                             PROCESSAR JOGOS
                                         </Button>
                                     </Grid>
+
                                 </Grid>}
                                 data={dataAux}
                                 columns={columns}
                                 options={options}
 
                             />
-                        </React.Fragment> :
-                        <Typography component="h1" variant="h6" align="center">
-                            Nenhum Jogo Disponível!
-                        </Typography>}
+                        </React.Fragment>
                 </Container>
 
                 <div>

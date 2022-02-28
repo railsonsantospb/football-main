@@ -180,6 +180,7 @@ export default function Dashboard(props) {
 
 
 
+
     function custom_sort(a, b) {
         let d1 = new Date(a.dataDaAposta.split(' ')[0].split('/')[1] + '/' +
             a.dataDaAposta.split(' ')[0].split('/')[0] + '/' +
@@ -361,9 +362,7 @@ export default function Dashboard(props) {
                 <ThemeProvider theme={themeG}>
                     <div style={{height: 900, width: '100%',}}>
                         <DataGrid
-                            components={{
-                                Toolbar: GridToolbar,
-                            }}
+
                             density="compact"
                             rows={dataAux}
                             columns={columns}

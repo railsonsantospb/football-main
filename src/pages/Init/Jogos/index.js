@@ -28,19 +28,33 @@ const StyledTableCell = withStyles((theme) => ({
     },
 }))(TableCell);
 
+const StyledTableCell2 = withStyles((theme) => ({
+    head: {
+        backgroundColor: 'red',
+        color: theme.palette.common.white,
+        padding: 5,
+    },
+    body: {
+        fontSize: 12,
+
+
+    },
+}))(TableCell);
+
 
 const Jogos = memo(function Jogos(props) {
-    let country = Object.keys(images);
-    const {height, width} = useWindowDimensions();
+
+    const {width} = useWindowDimensions();
+
     return (
         <TableContainer component={Paper} >
                                       
                                       
-            {props.campeonato.length != 0 ? props.campeonato.prejogo.campeonatos.map((c) => (
+            {props.campeonato.length != 0 ? props.campeonato.prejogo.map((c) => (
 
             c.momentos.map((j) => ( 
                 <Table stickyHeader aria-label="sticky table" >
-                {width < 600 ? <TableHead >
+                {width < 600 && c.countrys != '' ? <TableHead >
                     <TableRow>
                         <StyledTableCell
                                             id='font'><b><img src={images[c.pais]} style={{marginRight: 3}} width='30' height='22' />{c.pais}</b><br/></StyledTableCell>
@@ -53,7 +67,20 @@ const Jogos = memo(function Jogos(props) {
                              
                         
                     </TableRow>
-                </TableHead> : <TableHead>
+                </TableHead> : width < 600 ? <TableHead >
+                    <TableRow>
+                        <StyledTableCell2
+                            id='font'><b>{c.nome}</b><br/></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+
+
+                    </TableRow>
+                </TableHead> : c.countrys != '' ? <TableHead>
                     <TableRow>
                         <StyledTableCell
                                             id='font'><b><img src={images[c.pais]} style={{marginRight: 3}} width='30' height='22' />{c.pais}</b><br/></StyledTableCell>
@@ -66,13 +93,56 @@ const Jogos = memo(function Jogos(props) {
                         <StyledTableCell align={"center"} style={{width: 15}}
                                             ><b>MAIS</b></StyledTableCell>
                     </TableRow> 
-                </TableHead> }
+                </TableHead> : <TableHead >
+                    <TableRow>
+                        <StyledTableCell2
+                                            id='font'><b>{c.nome}</b><br/></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                    </TableRow> 
+                </TableHead>}
+
+                {c.countrys != '' && width > 600 ?  <TableHead >
+                    <TableRow>
+                        <StyledTableCell2
+                                            id='font' ><b>{c.nome}</b><br/></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} 
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 15}}
+                                            ><b></b></StyledTableCell2>
+                    </TableRow> 
+                </TableHead> : ''}
+
+                {c.countrys != '' && width < 600 ?  <TableHead >
+                    <TableRow>
+                        <StyledTableCell2
+                            id='font'><b>{c.nome}</b><br/></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+                        <StyledTableCell2 align={"center"} style={{width: 5}}
+                        ><b></b></StyledTableCell2>
+
+
+                    </TableRow>
+                </TableHead> : ''}
                 
                 
              
                 <TableBody>
                 
-                <b style={{color: 'blue'}}>{c.nome}</b>
+       
                 {j.eventos.map((live, k) => (
                 <TableRow id="zebra" key={k}> 
                 <td class="times">  <a style={{textDecoration: 'none', color: 'black'}}

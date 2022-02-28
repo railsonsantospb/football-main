@@ -476,6 +476,7 @@ export default function Dashboard1(props) {
                                     localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
                                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
+                                console.log(b.split('-')[0], 1222222)
                                 api.post('/api/addjogo',
                                     {
                                         "codigoBilhete": codigo,
@@ -485,6 +486,7 @@ export default function Dashboard1(props) {
                                         "tipoDeCotacao": typeBets,
                                         "cotacao": parseFloat(value),
                                         "status": "Aberto",
+                                        "idEvento": b.split('-')[0],
                                     })
                                     .then(res => {
                                         try {
@@ -642,7 +644,6 @@ export default function Dashboard1(props) {
         let r = false;
         if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
             clientes.map((f) => {
-                console.log(f);
                 if (f == client) {
                     r = true;
                 }
@@ -727,7 +728,7 @@ export default function Dashboard1(props) {
                                             c.subeventos.map((e) => {
                                                 if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
                                                     (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
-
+                                                    let cotacoes = JSON.parse(sessionStorage.getItem("cotacao"));
                                                     try{
                                                         oddValue = true;
                                                         valid2 = false;
@@ -1255,7 +1256,7 @@ export default function Dashboard1(props) {
 
 
     useEffect(() => {
-
+        window.scrollTo(0, 0);
 
         if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == ""){
 

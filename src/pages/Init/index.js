@@ -10,21 +10,18 @@ import {Dialog, DialogActions, DialogContent, DialogTitle,} from "@material-ui/c
 import Divider from "@material-ui/core/Divider";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import {useHistory} from "react-router-dom";
 import {useParams} from "react-router";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {useReactToPrint} from "react-to-print";
-import {api, cc, images} from "../Constantes/index";
+import {api, cc} from "../Constantes/index";
 import {CircleArrow as ScrollUpButton} from "react-scroll-up-button";
-import useWindowDimensions from '../Size/index';
 import Menu from '../Menu/index';
 import Jogos from './Jogos/index';
 import ReactDOMServer from "react-dom/server";
 import LockIcon from '@mui/icons-material/Lock';
-
 
 
 let date = [];
@@ -50,9 +47,9 @@ export default function Dashboard(props) {
     const [value, setValue] = React.useState("");
     const [entrada, setEntrada] = useState(0)
     const [apostasPreJogo, setApostasPreJogo] = useState(false);
-    const [cotacao, setCotacoes] = useState({});
+    const [cotacoes, setCotacoes] = useState({});
     const html = <LockIcon style={{fontSize: 14}}/>;
-    const load = ReactDOMServer.renderToStaticMarkup(<LinearProgress />);
+    const load = ReactDOMServer.renderToStaticMarkup(<LinearProgress/>);
 
     const drawerWidth = 240;
 
@@ -136,7 +133,6 @@ export default function Dashboard(props) {
             let bets = localStorage.getItem("betsAll2");
 
 
-
             for (var n in bets.split('=').slice(0, bets.split('=').length - 1)) {
                 try {
 
@@ -180,7 +176,7 @@ export default function Dashboard(props) {
     setInterval(() => {
         if (localStorage.getItem('delete2') !== null) {
             document.getElementById("resetField1").value = '';
-        
+
             document.getElementById("retorno").innerHTML = '0.00';
             let team = localStorage.getItem('delete2');
             try {
@@ -247,14 +243,14 @@ export default function Dashboard(props) {
 
         try {
             document.getElementById("bilhete").innerHTML = '';
-            if(sessionStorage.getItem("pin") != "" && sessionStorage.getItem("pin") != null) {
+            if (sessionStorage.getItem("pin") != "" && sessionStorage.getItem("pin") != null) {
                 document.getElementById("resetField1").value = sessionStorage.getItem("valorIn");
                 setEntrada(sessionStorage.getItem("valorIn"));
                 document.getElementById("retorno").innerHTML = sessionStorage.getItem("retorno");
-                
+
                 sessionStorage.setItem("pin", "");
             }
-            
+
             localStorage.getItem('betsAll2').split('=').slice(0, -1).map((b) => {
                 let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
                 let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
@@ -296,7 +292,7 @@ export default function Dashboard(props) {
         } catch (e) {
             // setBilhetes("");
         }
-        if(sessionStorage.getItem('login') == null ||  sessionStorage.getItem('login') == "") {
+        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
 
             document.getElementById('clients').style.display = 'none';
             document.getElementById('fieldClient').style.display = 'none';
@@ -435,77 +431,79 @@ export default function Dashboard(props) {
                 }
 
 
-                    api.post('/api/addbilhete',
-                        {
-                            "codigo": codigo,
-                            "bancaId": bancaId,
-                            "gerenteId": gerenteId,
-                            "nomeCliente": client,
-                            "nomeBanca": nomeBanca,
-                            "dataDaAposta": d,
-                            "valorDeEntrada": parseFloat(entrada),
-                            "valorDeSaida": parseFloat(document.getElementById('retorno').innerHTML),
-                            "cotacao": parseFloat(document.getElementById('cotacao').innerHTML),
-                            "tipoDeJogo": "Pre-Jogo",
-                            "quantidadeJogos": qtd,
-                            "tipoSimplesouMultiplo": qtd > 1 ? "M" : "S",
-                            "comissao": (parseFloat(entrada) * comissaoValor).toFixed(2),
-                            "status": "Aberto"
+                api.post('/api/addbilhete',
+                    {
+                        "codigo": codigo,
+                        "bancaId": bancaId,
+                        "gerenteId": gerenteId,
+                        "nomeCliente": client,
+                        "nomeBanca": nomeBanca,
+                        "dataDaAposta": d,
+                        "valorDeEntrada": parseFloat(entrada),
+                        "valorDeSaida": parseFloat(document.getElementById('retorno').innerHTML),
+                        "cotacao": parseFloat(document.getElementById('cotacao').innerHTML),
+                        "tipoDeJogo": "Pre-Jogo",
+                        "quantidadeJogos": qtd,
+                        "tipoSimplesouMultiplo": qtd > 1 ? "M" : "S",
+                        "comissao": (parseFloat(entrada) * comissaoValor).toFixed(2),
+                        "status": "Aberto",
 
-                        })
-                        .then(res => {
-                            let prejogo = localStorage.getItem('betsAll2');
-                            try {
-                                prejogo.split('=').slice(0, -1).map((b) => {
-                                    let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
-                                    let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
-                                    let data = Number.isInteger(
-                                        parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
-                                    ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
-                                        localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
-                                    let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
-                                    let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
-                                    api.post('/api/addjogo',
-                                        {
-                                            "codigoBilhete": codigo,
-                                            "dataDoJogo": data,
-                                            "nomeDoCampeonato": campeonato,
-                                            "nomeDosTimes": times,
-                                            "tipoDeCotacao": typeBets,
-                                            "cotacao": parseFloat(value),
-                                            "status": "Aberto",
-                                        })
-                                        .then(res => {
-                                            try {
-                                                if (res.data) {
-                                                    localStorage.removeItem(b.split('-')[0] + 'x');
-                                                    localStorage.removeItem(b.split('-')[0]);
-                                                    clearOdds();
-                                                    localStorage.setItem('betsAll2', localStorage.getItem('betsAll2').replace(b + '=', ''));
-                                                    geraBilhete();
-                                                    document.getElementById("retorno").innerHTML = '0.00';
-                                                }
-                                            } catch (e) {
-                                                console.log(e);
+
+                    })
+                    .then(res => {
+                        let prejogo = localStorage.getItem('betsAll2');
+                        try {
+                            prejogo.split('=').slice(0, -1).map((b) => {
+                                let campeonato = localStorage.getItem(b.split('-')[0] + 'x').split(',')[6];
+                                let times = localStorage.getItem(b.split('-')[0] + 'x').split(',')[5].replace('-', 'x');
+                                let data = Number.isInteger(
+                                    parseInt(localStorage.getItem(b.split('-')[0] + 'x').split(',')[7][0])
+                                ) ? localStorage.getItem(b.split('-')[0] + 'x').split(',')[7] :
+                                    localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
+                                let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
+                                let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
+                                api.post('/api/addjogo',
+                                    {
+                                        "codigoBilhete": codigo,
+                                        "dataDoJogo": data,
+                                        "nomeDoCampeonato": campeonato,
+                                        "nomeDosTimes": times,
+                                        "tipoDeCotacao": typeBets,
+                                        "cotacao": parseFloat(value),
+                                        "status": "Aberto",
+                                        "idEvento": b.split('-')[0],
+                                    })
+                                    .then(res => {
+                                        try {
+                                            if (res.data) {
+                                                localStorage.removeItem(b.split('-')[0] + 'x');
+                                                localStorage.removeItem(b.split('-')[0]);
+                                                clearOdds();
+                                                localStorage.setItem('betsAll2', localStorage.getItem('betsAll2').replace(b + '=', ''));
+                                                geraBilhete();
+                                                document.getElementById("retorno").innerHTML = '0.00';
                                             }
+                                        } catch (e) {
+                                            console.log(e);
+                                        }
 
-                                        }).catch(error => {
-                                        console.log(error);
-                                    });
-
+                                    }).catch(error => {
+                                    console.log(error);
                                 });
-                                setEntrada(0);
-                                setClient("");
-                                addVeiryClient("");
+
+                            });
+                            setEntrada(0);
+                            setClient("");
+                            addVeiryClient("");
 
 
-                            } catch (e) {
+                        } catch (e) {
 
-                            }
+                        }
 
-                        }).catch(error => {
-                        console.log(error);
-                    });
+                    }).catch(error => {
+                    console.log(error);
+                });
 
 
             }).catch(error => {
@@ -545,14 +543,14 @@ export default function Dashboard(props) {
         let cotacao = Number(document.getElementById('cotacao').innerHTML);
         if (value) {
 
-                setEntrada(value);
+            setEntrada(value);
 
-                document.getElementById('retorno').innerHTML =
-                    ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
-                        ((cotacao * Number(value)).toFixed(2));
+            document.getElementById('retorno').innerHTML =
+                ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                    ((cotacao * Number(value)).toFixed(2));
 
-                sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
-                    ((cotacao * Number(value)).toFixed(2)));
+            sessionStorage.setItem("retorno", ((cotacao * Number(value)).toFixed(2)) > parseFloat("10000") ? parseFloat("10000").toFixed(2) :
+                ((cotacao * Number(value)).toFixed(2)));
 
 
         } else {
@@ -584,7 +582,7 @@ export default function Dashboard(props) {
                         try {
                             let nomes = [];
                             if (res.data) {
-                                if(res.data.clientes == false){
+                                if (res.data.clientes == false) {
                                     handleClickOpenURL();
                                     setMessage(`Já possui um cliente com esse nome!`);
                                 } else {
@@ -628,7 +626,7 @@ export default function Dashboard(props) {
 
     function getClient() {
         let r = false;
-        if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
+        if (sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
             clientes.map((f) => {
 
                 if (f == client) {
@@ -651,24 +649,29 @@ export default function Dashboard(props) {
     }
 
 
-    function validIn(){
-	
-	let valorMax = sessionStorage.getItem('valorDeSaida');                                                          let valorMin = sessionStorage.getItem('valorDeEntrada');
-	    
-	if (parseFloat(entrada) >= valorMin && parseFloat(entrada) <= valorMax) {                                               betsDone();                                                                                             } else if (parseFloat(entrada) < valorMin) {
-	
-		document.getElementById('retorno').innerHTML = '0.00';                                                          setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));                         
-          handleClickOpenURL();
-	} else {                                                    setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2)); 
-          handleClickOpenURL();
-	}
+    function validIn() {
+
+        let valorMax = sessionStorage.getItem('valorDeSaida');
+        let valorMin = sessionStorage.getItem('valorDeEntrada');
+
+        if (parseFloat(entrada) >= valorMin && parseFloat(entrada) <= valorMax) {
+            betsDone();
+        } else if (parseFloat(entrada) < valorMin) {
+
+            document.getElementById('retorno').innerHTML = '0.00';
+            setMessage("O valor mínimo permitido<br/> por aposta é de R$ " + parseFloat(valorMin).toFixed(2));
+            handleClickOpenURL();
+        } else {
+            setMessage("O valor máximo permitido<br/> por aposta é de R$ " + parseFloat(valorMax).toFixed(2));
+            handleClickOpenURL();
+        }
     }
 
 
     function betsDone() {
-        let qtd = localStorage.getItem('betsAll2').split("=").length-1;
+        let qtd = localStorage.getItem('betsAll2').split("=").length - 1;
         let qtdJogos = sessionStorage.getItem("qtdJogos");
-        if(qtd <= qtdJogos) {
+        if (qtd <= qtdJogos) {
             handleClickOpenLoading();
 
 
@@ -711,7 +714,7 @@ export default function Dashboard(props) {
 
 
                                 i++;
-                                
+
 
                                 if (res.data) {
                                     res.data.mais.modalidades.map((m) => {
@@ -720,29 +723,30 @@ export default function Dashboard(props) {
                                                 c.subeventos.map((e) => {
                                                     if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
                                                         (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                        let cotacoes = JSON.parse(sessionStorage.getItem("cotacoes"));
+                                                        try {
+                                                            oddValue = true;
+                                                            valid2 = false;
+                                                            let cot = (Number(e.cotacao / 100) +
+                                                                (Number(e.cotacao / 100) *
+                                                                    (cotacoes[m.titulo][1] / 100))).toFixed(2);
+                                                            if (Number(auxBets[4]) == 15 &&
+                                                                Number(auxBets[4]) > cot) {
+                                                                valid1 = true;
+                                                                auxBets[4] = cot;
+                                                                localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                    auxBets.join(','));
+                                                                geraBilhete();
+                                                            } else if (Number(auxBets[4]) != cot) {
+                                                                valid1 = true;
+                                                                auxBets[4] = cot;
+                                                                localStorage.setItem((bets.split('-')[0] + "x"),
+                                                                    auxBets.join(','));
+                                                                geraBilhete();
+                                                            }
 
-                                                        try{
-                                                        oddValue = true;
-                                                        valid2 = false;
-                                                        let cot =  (Number(e.cotacao / 100) +
-                                                            (Number(e.cotacao / 100) *
-                                                                (cotacoes[m.titulo][1] / 100))).toFixed(2);
-                                                        if (Number(auxBets[4]) == 15 &&
-                                                            Number(auxBets[4]) > cot) {
-                                                            valid1 = true;
-                                                            auxBets[4] = cot;
-                                                            localStorage.setItem((bets.split('-')[0] + "x"),
-                                                                auxBets.join(','));
-                                                            geraBilhete();
-                                                        } else if (Number(auxBets[4]) != cot) {
-                                                            valid1 = true;
-                                                            auxBets[4] = cot;
-                                                            localStorage.setItem((bets.split('-')[0] + "x"),
-                                                                auxBets.join(','));
-                                                            geraBilhete();
-                                                        }
-                                                        }catch (e) {
-
+                                                        } catch (e) {
+                                                            console.log(e)
                                                         }
                                                     }
                                                 })
@@ -776,7 +780,7 @@ export default function Dashboard(props) {
                                                         resultCotaca = 0;
                                                     }
                                                     let r = parseFloat(document.getElementById('retorno').innerHTML);
-                                                    if(resultCotaca != r && resultCotaca <= 10000){
+                                                    if (resultCotaca != r && resultCotaca <= 10000) {
                                                         document.getElementById('retorno').innerHTML = ' ' +
                                                             Number(resultCotaca * Number(document.getElementById('resetField1').value)).toFixed(2);
                                                         setMessage(`A cotação escolhida alterou de: R$ ${cotacaoAux.toFixed(2)} <br/> para: R$ ${resultCotaca.toFixed(2)} . Clique novamente para confirmar a aposta!`);
@@ -874,12 +878,12 @@ export default function Dashboard(props) {
 
             }, 0);
         } else {
-                alert('Você selecionou ' + qtd + ' jogos, o máximo é ' + qtdJogos);
+            alert('Você selecionou ' + qtd + ' jogos, o máximo é ' + qtdJogos);
         }
     }
 
     function onClickHandler(e) {
-    
+
         document.getElementById('resetField1').value = '';
 
 
@@ -962,15 +966,13 @@ export default function Dashboard(props) {
         } else {
             alert('Você passou o número máximo de 20 jogos por apostas!');
         }
-    };
+    }
 
-    
 
     async function getLoginAPI() {
         // document.getElementById('initJogos')
         //         .innerHTML = '';
-  
-                
+
 
         api.get('/api/getbanca/' + sessionStorage.getItem('login'))
             .then(res => {
@@ -987,44 +989,44 @@ export default function Dashboard(props) {
 
                         let c = {};
                         api.get('/api/getcotacaoprejogo/' + res.data.bancas.gerente + '/' + res.data.bancas.nome).then(res => {
-                          
+
                             try {
 
                                 res.data.cotacoes.map((o) => {
-                                    
+
                                     c[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                 })
                                 setCotacoes(c);
                             } catch (e) {
-                                c[res.data.cotacoes.tipoDeCotacao] = 
-                                [res.data.cotacoes.status, res.data.cotacoes.porcentagem];
-                                
-                            }
-                            setCotacoes(c);
-                     
-                            
-                         if (ativaAposta) {
-                            let d2 = new Date();
-                            d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
-                                    (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
-                                "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
-                            api.get('/api/getprejogodata/'+(dateId == undefined ? d2 : dateId)).then(res => {
-                         
-                                setCampeonato(res.data);
-                                 
-                                
-                            }).catch(error => {
-                                console.log(error)
-                            });
+                                c[res.data.cotacoes.tipoDeCotacao] =
+                                    [res.data.cotacoes.status, res.data.cotacoes.porcentagem];
 
-                        } else {
-                            document.getElementById('preJogos')
-                                .innerHTML = '<center>Apostas Pre-Jogo Desativadas. Fale com seu gerente!</center>';
-                        }
+                            }
+                            sessionStorage.setItem("cotacoes", JSON.stringify(c))
+
+
+                            if (ativaAposta) {
+                                let d2 = new Date();
+                                d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
+                                        (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
+                                    "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
+                                api.get('/api/getprejogodata/' + (dateId == undefined ? d2 : dateId)).then(res => {
+
+                                    setCampeonato(res.data);
+
+
+                                }).catch(error => {
+                                    console.log(error)
+                                });
+
+                            } else {
+                                document.getElementById('preJogos')
+                                    .innerHTML = '<center>Apostas Pre-Jogo Desativadas. Fale com seu gerente!</center>';
+                            }
                         }).catch(error => {
                             console.log(error)
                         });
-                        
+
                     }
 
                 } catch (e) {
@@ -1037,50 +1039,39 @@ export default function Dashboard(props) {
     }
 
 
-  
-
-    
-
     useEffect(() => {
+
         async function getLoginAPIoFF() {
             // document.getElementById('initJogos')
             //         .innerHTML = '';
 
+            try {
+                let d2 = new Date();
+                d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
+                        (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
+                    "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
+                console.log(d2)
+                api.get('/api/getprejogodata/' + (dateId == undefined ? d2 : dateId)).then(res => {
+                    console.log(res.data)
+                    setCampeonato(res.data);
 
-                    
-                    try {
-                        let d2 = new Date();
-                            d2 = (d2.getFullYear() + "-" + (Number(d2.getMonth()) + 1 < 10 ? "0" +
-                                    (Number(d2.getMonth()) + 1) : Number(d2.getMonth()) + 1) +
-                                "-" + ((Number(d2.getDate())) < 10 ? "0" + d2.getDate() : d2.getDate()));
-                                console.log(d2)
-                        api.get('/api/getprejogodata/'+(dateId == undefined ? d2 : dateId)).then(res => {
-                                    console.log(res.data)
-                                    setCampeonato(res.data);
-                                    
-                                     
-                                    
-                                }).catch(error => {
-                                    console.log(error)
-                                });
 
-                                
-    
-                        
-    
-                    } catch (e) {
-                        console.log(e);
-                    }
-       
-    
+                }).catch(error => {
+                    console.log(error)
+                });
+
+
+            } catch (e) {
+                console.log(e);
+            }
+
+
         }
-        if(sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
-          
+
+        if (sessionStorage.getItem('login') == null || sessionStorage.getItem('login') == "") {
             getLoginAPIoFF();
-            
-            
         }
-   
+
 
         async function getClienteAPI() {
             let nomes = [];
@@ -1090,7 +1081,7 @@ export default function Dashboard(props) {
 
                         if (res.data) {
 
-                            res.data.clientes.map((c) =>{
+                            res.data.clientes.map((c) => {
                                 nomes.push(c.nome);
 
                             })
@@ -1104,20 +1095,18 @@ export default function Dashboard(props) {
                 console.log(error);
             });
 
-            
+
         }
 
-        
 
         setDatas([]);
-        if(sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
+        if (sessionStorage.getItem('login') != null && sessionStorage.getItem('login') != "") {
             getLoginAPI();
             getClienteAPI();
         }
         geraBilhete();
     }, []);
-    
-      
+
 
     const fixedHeightPaper = clsx(classes.paper);
     return (
@@ -1158,8 +1147,9 @@ export default function Dashboard(props) {
                                                 </Grid>
                                             </Grid>
                                         </Paper>
-                                        
-                                        <Jogos campeonato={campeonato} cotacao={cotacao} onClickHandler={onClickHandler}/>
+
+                                        <Jogos campeonato={campeonato} cotacao={cotacoes}
+                                               onClickHandler={onClickHandler}/>
 
 
                                     </Grid>
@@ -1189,23 +1179,23 @@ export default function Dashboard(props) {
                                         Valor da Aposta:<br/><br/>
                                     </Typography>
                                     <center>
-                                            <div id={"value"}>
-                                                <TextField
-                                                    fullWidth
-                                                    id={"resetField1"}
+                                        <div id={"value"}>
+                                            <TextField
+                                                fullWidth
+                                                id={"resetField1"}
 
-                                                    label="Digite um Valor"
-                                                    type="number"
+                                                label="Digite um Valor"
+                                                type="number"
 
-                                                    onChange={valueBetsHandler}
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value
-                                                    }}
-                                                    variant="filled"
-                                                /></div>
+                                                onChange={valueBetsHandler}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                onInput={(e) => {
+                                                    e.target.value = e.target.value
+                                                }}
+                                                variant="filled"
+                                            /></div>
                                     </center>
 
                                     <br style={{marginBottom: '10px'}}/>
@@ -1295,7 +1285,7 @@ export default function Dashboard(props) {
                             style={{color: "red"}}
                         ></DialogTitle>
                         <DialogContent>
-                            <div >
+                            <div>
                                 <CircularProgress color="secondary"/>
                             </div>
                         </DialogContent>

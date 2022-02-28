@@ -470,6 +470,7 @@ export default function Dashboard(props) {
                                         "tipoDeCotacao": typeBets,
                                         "cotacao": parseFloat(value),
                                         "status": "Aberto",
+                                        "idEvento": b.split('-')[0],
                                     })
                                     .then(res => {
                                         try {
@@ -910,7 +911,7 @@ export default function Dashboard(props) {
     };
 
     useEffect(() => {
-
+        window.scrollTo(0, 0);
         let cancel = true;
 
 
@@ -947,7 +948,7 @@ export default function Dashboard(props) {
                                                         cotacao[o.tipoDeCotacao] = [o.status, o.porcentagem];
                                                     })
 
-setCotacoes(cotacao);
+                                                    setCotacoes(cotacao);
                                                     c.eventos.map((live) => {
 
                                                         if (live.periodo != "Não Iniciado") {
