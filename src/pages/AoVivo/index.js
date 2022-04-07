@@ -470,7 +470,7 @@ export default function Dashboard(props) {
                                         "tipoDeCotacao": typeBets,
                                         "cotacao": parseFloat(value),
                                         "status": "Aberto",
-                                        "idEvento": b.split('-')[0],
+                                        // "idEvento": b.split('-')[0],
                                     })
                                     .then(res => {
                                         try {
@@ -702,8 +702,10 @@ export default function Dashboard(props) {
                                     m.cotacoes.map((c) => {
                                         if (c.subeventos != null) {
                                             c.subeventos.map((e) => {
+                                                let aux = (m.titulo + "--" + ' (' + e.nome + ')')
                                                 if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
-                                                    (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1] ||
+                                                    aux == auxBets[1]) {
 
 
                                                     try{

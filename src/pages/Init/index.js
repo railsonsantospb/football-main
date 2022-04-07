@@ -22,6 +22,7 @@ import Menu from '../Menu/index';
 import Jogos from './Jogos/index';
 import ReactDOMServer from "react-dom/server";
 import LockIcon from '@mui/icons-material/Lock';
+import {useHistory} from "react-router-dom";
 
 
 let date = [];
@@ -30,6 +31,7 @@ export default function Dashboard(props) {
     const codigo = cc.generate().split('-').slice(1).join('-');
     let {dateId} = useParams();
     var betsAll = "";
+    let history = useHistory();
     const [message, setMessage] = useState("");
     const [client, setClient] = useState("");
     const [openURL, setOpenURL] = React.useState(false);
@@ -471,7 +473,7 @@ export default function Dashboard(props) {
                                         "tipoDeCotacao": typeBets,
                                         "cotacao": parseFloat(value),
                                         "status": "Aberto",
-                                        "idEvento": b.split('-')[0],
+                                        // "idEvento": b.split('-')[0],
                                     })
                                     .then(res => {
                                         try {
@@ -721,8 +723,11 @@ export default function Dashboard(props) {
                                         m.cotacoes.map((c) => {
                                             if (c.subeventos != null) {
                                                 c.subeventos.map((e) => {
+                                                    let aux = (m.titulo + "--" + ' (' + e.nome + ')')
                                                     if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
-                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1] ||
+                                                        aux == auxBets[1]) {
+
                                                         let cotacoes = JSON.parse(sessionStorage.getItem("cotacoes"));
                                                         try {
                                                             oddValue = true;
@@ -883,8 +888,26 @@ export default function Dashboard(props) {
     }
 
     function onClickHandler(e) {
+        let d = new Date()
+
+        let d1 = new Date(parseInt(d.getMonth())+1 + '/' + d.getDate() + '/' + d.getFullYear() + " " +
+            (d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()));
+
+        let d2 = new Date(sessionStorage.getItem('date').split(' ')[0].split('/')[1] + '/' +
+            sessionStorage.getItem('date').split(' ')[0].split('/')[0] + '/' +
+            sessionStorage.getItem('date').split(' ')[0].split('/')[2] + " " +
+            sessionStorage.getItem('date').split(' ')[1]);
+
+        var difference = d2.getTime() - d1.getTime();
+
+        let minutes = Math.abs(Math.floor((d2 - d1) / 1000 / 60));
+        console.log(minutes)
+        if(minutes >= 30){
+            history.push("/banca")
+        }
 
         document.getElementById('resetField1').value = '';
+
 
 
         if (1) {
@@ -968,6 +991,19 @@ export default function Dashboard(props) {
         }
     }
 
+    async function getDateAll() {
+        api.get('/api/getdate').then(res => {
+
+            try {
+                sessionStorage.setItem('date', res.data.date);
+
+            } catch (e) {
+                console.log(e);
+            }
+        }).catch(error => {
+            console.log(error)
+        });
+    }
 
     async function getLoginAPI() {
         // document.getElementById('initJogos')
@@ -1040,6 +1076,8 @@ export default function Dashboard(props) {
 
 
     useEffect(() => {
+
+        getDateAll();
 
         async function getLoginAPIoFF() {
             // document.getElementById('initJogos')
@@ -1185,7 +1223,7 @@ export default function Dashboard(props) {
                                                 id={"resetField1"}
 
                                                 label="Digite um Valor"
-                                                type="number"
+                                                type="text"
 
                                                 onChange={valueBetsHandler}
                                                 InputLabelProps={{

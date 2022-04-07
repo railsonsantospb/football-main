@@ -476,7 +476,7 @@ export default function Dashboard1(props) {
                                     localStorage.getItem(b.split('-')[0] + 'x').split(',')[8];
                                 let typeBets = localStorage.getItem(b.split('-')[0] + 'x').split(',')[1]
                                 let value = localStorage.getItem(b.split('-')[0] + 'x').split(',')[4];
-                                console.log(b.split('-')[0], 1222222)
+
                                 api.post('/api/addjogo',
                                     {
                                         "codigoBilhete": codigo,
@@ -486,7 +486,7 @@ export default function Dashboard1(props) {
                                         "tipoDeCotacao": typeBets,
                                         "cotacao": parseFloat(value),
                                         "status": "Aberto",
-                                        "idEvento": b.split('-')[0],
+                                        // "idEvento": b.split('-')[0],
                                     })
                                     .then(res => {
                                         try {
@@ -726,8 +726,10 @@ export default function Dashboard1(props) {
                                     m.cotacoes.map((c) => {
                                         if (c.subeventos != null) {
                                             c.subeventos.map((e) => {
+                                                let aux = (m.titulo + "--" + ' (' + e.nome + ')')
                                                 if (m.titulo + "--" + ((m.titulo != 'Vencedor do Encontro') ?
-                                                    (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1]) {
+                                                        (e.titulo + ' (' + e.nome + ')') : e.nome) == auxBets[1] ||
+                                                    aux == auxBets[1]) {
                                                     let cotacoes = JSON.parse(sessionStorage.getItem("cotacao"));
                                                     try{
                                                         oddValue = true;
@@ -884,6 +886,7 @@ export default function Dashboard1(props) {
 
 
     function onClickHandler() {
+
         document.getElementById('resetField1').value = '';
 
 
@@ -1399,7 +1402,7 @@ export default function Dashboard1(props) {
                                                 id={"resetField1"}
 
                                                 label="Digite um Valor"
-                                                type="number"
+                                                type="text"
 
                                                 onChange={valueBetsHandler}
                                                 InputLabelProps={{
