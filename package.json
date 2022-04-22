@@ -25,6 +25,7 @@
         "@testing-library/user-event": "^12.1.10",
         "axios": "^0.21.0",
         "bit": "^1.0.20",
+        "caniuse-lite": "^1.0.30001332",
         "cors": "^2.8.5",
         "coupon-code": "^0.4.5",
         "crypto-js": "^4.1.1",
