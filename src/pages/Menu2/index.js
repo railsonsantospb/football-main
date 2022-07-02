@@ -174,7 +174,7 @@ export default function Menu(props) {
 
     const drw = (<div >
         <Divider />
-        <fieldset><List>
+        <fieldset><List style={{backgroundColor: '#3f51b5', color: 'white'}}>
             <ListItem alignItems={"center"}>
                 <ListItemIcon  >
                     <img src={football} width={160}
@@ -192,19 +192,19 @@ export default function Menu(props) {
             <Divider />
             <ListItem button component={Link} to={'/inicio'}>
                 <ListItemIcon>
-                    <HomeIcon />
+                    <HomeIcon style={{color: 'white'}}/>
                 </ListItemIcon>
                 <ListItemText primary="Início" />
             </ListItem>
             <ListItem button component={Link} to={'/aovivo'}>
                 <ListItemIcon>
-                    <LiveTvIcon />
+                    <LiveTvIcon style={{color: 'white'}}/>
                 </ListItemIcon>
                 <ListItemText primary="Ao Vivo" />
             </ListItem>
             <ListItem button onClick={handleClick}>
                 <ListItemIcon>
-                    <SportsSoccerIcon />
+                    <SportsSoccerIcon style={{color: 'white'}}/>
                 </ListItemIcon>
                 <ListItemText primary="Futebol" />
                 {openNav ? <ExpandLess /> : <ExpandMore />}
@@ -261,28 +261,28 @@ export default function Menu(props) {
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                 <ListItem button component={Link} to={'/caixa'}>
                     <ListItemIcon>
-                        <InboxIcon />
+                        <InboxIcon style={{color: 'white'}}/>
                     </ListItemIcon>
                     <ListItemText primary="Caixa" />
                 </ListItem>: ''}
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                 <ListItem button component={Link} to={'/relatoriocliente'}>
                     <ListItemIcon>
-                        <InboxIcon />
+                        <InboxIcon style={{color: 'white'}}/>
                     </ListItemIcon>
                     <ListItemText primary="Relatório" />
                 </ListItem>: ''}
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                 <ListItem button component={Link} to={'/bilhetes'}>
                     <ListItemIcon>
-                        <FileCopyIcon />
+                        <FileCopyIcon style={{color: 'white'}}/>
                     </ListItemIcon>
                     <ListItemText primary="Bilhetes" />
                 </ListItem> : ''}
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                 <ListItem button component={Link} to={'/clientes'}>
                     <ListItemIcon>
-                        <PersonIcon />
+                        <PersonIcon style={{color: 'white'}}/>
                     </ListItemIcon>
                     <ListItemText primary="Clientes" />
                 </ListItem> : ''}
@@ -294,14 +294,14 @@ export default function Menu(props) {
             </ListItem>
             <ListItem button component={Link} to={'/bilhete/all'}>
                 <ListItemIcon>
-                    <DescriptionIcon />
+                    <DescriptionIcon style={{color: 'white'}}/>
                 </ListItemIcon>
                 <ListItemText primary="Conferir Bilhetes" />
             </ListItem>
             {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                 <ListItem button component={Link} to={'/recuperarpin'}>
                     <ListItemIcon>
-                        <VpnKeyIcon />
+                        <VpnKeyIcon style={{color: 'white'}}/>
                     </ListItemIcon>
                     <ListItemText primary="Recuperar Pin" />
                 </ListItem> : ''}
@@ -309,18 +309,18 @@ export default function Menu(props) {
 
             <Divider />
 
-            <List>
+            <List style={{backgroundColor: '#3f51b5', color: 'white'}}>
                 {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                     <ListItem button component={Link} to={"/novasenha"}>
                         <ListItemIcon>
-                            <VpnKeyIcon />
+                            <VpnKeyIcon style={{color: 'white'}}/>
                         </ListItemIcon>
                         <ListItemText primary="Alterar Senha" />
                     </ListItem> :  ''}
                 {sessionStorage.getItem('login') != null &&  sessionStorage.getItem('login') != "" ?
                     <ListItem button onClick={exit}>
                         <ListItemIcon>
-                            <ExitToAppIcon />
+                            <ExitToAppIcon style={{color: 'white'}}/>
                         </ListItemIcon>
                         <ListItemText primary="Sair" />
                     </ListItem> : <Button onClick={exit} style={{width: 230}}

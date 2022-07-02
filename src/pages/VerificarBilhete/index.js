@@ -114,6 +114,7 @@ export default function Dashboard(props) {
 
     let nb = 0;
     function bilhete(codigo) {
+
         document.getElementById('status').innerHTML = '';
         try {
             api.get('/api/getbilhete/' + codigo)
@@ -165,6 +166,7 @@ export default function Dashboard(props) {
                         if (res.data) {
                             res.data.jogo.map((jogo) => {
                                 nb = jogo.length;
+
                                 statusB.push(jogo.status);
 
                                 
@@ -301,7 +303,6 @@ export default function Dashboard(props) {
         }
 
         getLoginAPI();
-
         if (codigoBilhete != 'all') {
             bilhete(codigoBilhete);
         } else {

@@ -353,13 +353,13 @@ export default function Dashboard(props) {
                 '<div id="conteudo_divBilheteImpressao">\n' +
                 '<div>\n' +
                 '\n' +
-                '                                    <b><span>Futebol - ' + data + '</span></b><br>\n' +
+                '                                    <b><span style="display: inline-block; text-align: left;">Futebol - ' + data + '</span></b><br>\n' +
                 '\n' +
-                '                                    <span>' + campeonato + '</span><br>\n' +
+                '                                    <span style="display: inline-block; text-align: left;">' + campeonato + '</span><br>\n' +
                 '\n' +
-                '                                    <span>' + times + '</span><br>\n' +
+                '                                    <span style="display: inline-block; text-align: left;">' + times + '</span><br>\n' +
                 '\n' +
-                '                                    <b><span>' + typeBets.split('--')[0] + '</span></b><br>\n' +
+                '                                    <b><span style="display: inline-block; text-align: left;">' + typeBets.split('--')[0] + '</span></b><br>\n' +
                 '\n' +
                 '                                    <div style="display: inline-block; width: 47%; text-align: left;"><span style="display: inline-block">' + typeBets.split('--')[1] + '</span></div>\n' +
                 '\n' +
@@ -692,13 +692,17 @@ export default function Dashboard(props) {
 
 
                         try {
+                            let getlive = res.data.mais
+                            if(parseInt(getlive.tempoDecorridoMin) > 75){
+                                getlive = {}
+                            }
 
 
                             i++;
 
 
                             if (res.data) {
-                                res.data.mais.modalidades.map((m) => {
+                                getlive.modalidades.map((m) => {
                                     m.cotacoes.map((c) => {
                                         if (c.subeventos != null) {
                                             c.subeventos.map((e) => {
@@ -780,10 +784,54 @@ export default function Dashboard(props) {
 
                                                 if (auxSaldo >= parseFloat(entrada)) {
                                                     salvarBilhete();
-                                                    handlePrint();
+
                                                     noneBets();
                                                     clearOdds();
                                                     geraBilhete();
+                                                    var top = window.screen.height - 300;
+                                                    top = top > 0 ? top/2 : 0;
+
+                                                    var left = window.screen.width - 400;
+                                                    left = left > 0 ? left/2 : 0;
+
+                                                    const WinPrint = window.open('', '_blank', 'width=800,height=900,scrollbars=0, top=' + top + ',left=' + left + '' );
+                                                    WinPrint.document.write('<button class="block2" onclick="whatsapp()" id="print1"><b>WHATSAPP</b></button><br>' +
+                                                        '<button class="block1" onclick="imprimir()" id="print2"><b>IMPRIMIR</b></button>' + document.getElementById("dialogBilhete").innerHTML+'<style>' +
+                                                        'body {background-color: rgb(248, 236, 194); color: black;  font-size: 12px}' +
+                                                        'span {font-size: 12px}' +
+                                                        '.block1 {' +
+                                                        'display: block;' +
+                                                        'width: 100%;' +
+                                                        'border: none;' +
+                                                        'background-color: #3f51b5;' +
+                                                        'color: white;' +
+                                                        'padding: 14px 28px;' +
+                                                        'font-size: 26px;' +
+                                                        'cursor: pointer;' +
+                                                        'text-align: center;' +
+                                                        '}' +
+                                                        '.block2 {' +
+                                                        'display: block;' +
+                                                        'width: 100%;' +
+                                                        'border: none;' +
+                                                        'background-color: #04AA6D;' +
+                                                        'color: white;' +
+                                                        'padding: 14px 28px;' +
+                                                        'font-size: 26px;' +
+                                                        'cursor: pointer;' +
+                                                        'text-align: center;' +
+                                                        '}' +
+                                                        '</style>'+
+
+                                                        '<script>' +
+                                                        'function imprimir(){document.getElementById("print1").style.display = "none";' +
+                                                        'document.getElementById("print2").style.display = "none";' +
+                                                        'setTimeout(function () { window.print(); }, 500);window.onfocus = function () { ' +
+                                                        'setTimeout(function () { window.close(); }, 500); };' +
+                                                        '};' +
+                                                        'function whatsapp(){window.location.href=' +
+                                                        '"whatsapp://send?text=Link+para+seu+bilhete%3a%0d%0a%0d%0' +
+                                                        'ahttps%3A%2F%2Fwww.sonhobets.com.br%2F%23%2FverificarBilhete%2F' + codigo + '";}</script>');
                                                 } else {
                                                     alert('Sem limite para apostar!');
                                                 }
@@ -953,7 +1001,7 @@ export default function Dashboard(props) {
                                                     setCotacoes(cotacao);
                                                     c.eventos.map((live) => {
 
-                                                        if (live.periodo != "Não Iniciado") {
+                                                        if (live.periodo != "Não Iniciado" && parseInt(live.tempoDecorridoMin) <= 75) {
                                                             let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
                                                                 (live.subeventos.length >= 3 ?
                                                                     ('VencedordoEncontro' +
@@ -1197,8 +1245,7 @@ export default function Dashboard(props) {
 
 
                                 c.eventos.map((live) => {
-
-                                    if (live.periodo != "Não Iniciado") {
+                                    if (live.periodo != "Não Iniciado" && parseInt(live.tempoDecorridoMin) <= 75) {
                                         let idCasa = (parseFloat(sessionStorage.getItem('cotaMin')) <= (live.subeventos[0].cotacao / 100) ?
                                             (live.subeventos.length >= 3 ?
                                                 ('VencedordoEncontro' +
@@ -1642,7 +1689,7 @@ export default function Dashboard(props) {
                             backgroundColor: 'rgb(248, 236, 194)',
                             color: 'black',
                             boxSizing: 'border-box'
-                        }} ref={componentRef}>
+                        }} ref={componentRef} id="dialogBilhete">
                             <div id="header"></div>
                             <div id="bilheteP"></div>
                             <div id="footer"></div>

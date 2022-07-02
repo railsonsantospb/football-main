@@ -181,6 +181,7 @@ export default function Dashboard(props) {
                             jg.sort(custom_sort);
                             jg.map((jogo) => {
                                 nb = jogo.length;
+
                                 statusB.push(jogo.status);
 
 
@@ -225,9 +226,11 @@ export default function Dashboard(props) {
             try {
 
                 api.get('/api/getbilhete/' + codigo)
+
                     .then(res => {
                         try {
                             if (res.data) {
+
                                 document.getElementById('footer').innerHTML = '                            \n' +
                                     '                                \n' +
                                     '                            \n' +

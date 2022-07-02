@@ -123,8 +123,8 @@ const images = {
 
 const api = axios.create({
 
-    baseURL: "http://localhost:8000",
-    //baseURL: 'https://footballdjango.herokuapp.com/',
+    //baseURL: "http://localhost:8000",
+    baseURL: 'https://footballdjango.herokuapp.com/',
 
 
     //baseURL: "http://107.22.133.172:8000/"
