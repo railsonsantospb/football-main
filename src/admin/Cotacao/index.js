@@ -51,7 +51,6 @@ export default function Dashboard() {
         selectableRows: false,
         onRowClick: (rowData, rowMeta) => {
             const dataToState = rowData;
-            console.log(dataToState);
         }
     };
 
@@ -197,7 +196,6 @@ export default function Dashboard() {
         }
 
 
-        console.log(bancasAux);
         setBancas(c);
 
     }
@@ -242,7 +240,6 @@ export default function Dashboard() {
         api.delete('/api/deletecotacao/' + id)
             .then(res => {
                 try {
-                    console.log(res.data);
                     history.go(0);
                 } catch (e) {
 
@@ -266,7 +263,6 @@ export default function Dashboard() {
                 "nomeBanca": nomeBanca,
             }).then(res => {
                 try {
-                    console.log(res.data);
                     history.go(0);
                 } catch (e) {
 
@@ -293,7 +289,6 @@ export default function Dashboard() {
                 .then(res => {
                     try {
                         let l = [];
-                        console.log(bancasAux);
                         res.data.cotacoes.map((c) => {
                             l.push([c.tipoDeCotacao, c.porcentagem == 1 ?
                                 <b style={{color: 'red'}}>{'Bloqueada'}</b> :

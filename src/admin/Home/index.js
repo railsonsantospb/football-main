@@ -234,7 +234,6 @@ export default function Dashboard() {
 
 
                 setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                console.log([d.getDay(), d1.getDay(), d2.getDay()]);
 
 
             } catch (e) {
@@ -250,7 +249,7 @@ export default function Dashboard() {
                 .then(res => {
                     try {
                         if (res.data) {
-                            console.log(res.data);
+
                             res.data.gerencias.map((b) => {
                                 dataAux.push([
                                     b.nome,

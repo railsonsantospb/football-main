@@ -570,7 +570,6 @@ export default function Dashboard() {
                                                         <TableBody>
 
                                                             {[...nomesBancas].map((banca) => (
-                                                                console.log(saidas[banca], total[banca]),
                                                                     <StyledTableRow>
                                                                         <StyledTableCell align={"center"}
                                                                                          style={{width: '10px'}}>

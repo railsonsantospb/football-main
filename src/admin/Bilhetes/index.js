@@ -203,7 +203,6 @@ export default function Dashboard(props) {
                     let l = [];
 
                     try {
-                        console.log(res.data);
                         let bh = res.data.bilhetes.slice();
                         bh.sort(custom_sort);
                         if (res.data) {

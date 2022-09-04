@@ -125,7 +125,6 @@ export default function Dashboard() {
         selectableRows: false,
         onRowClick: (rowData, rowMeta) => {
             const dataToState = rowData;
-            console.log(dataToState);
         }
     };
 

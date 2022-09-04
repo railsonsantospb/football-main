@@ -239,12 +239,12 @@ export default function MenuAdmin(props) {
                         </ListItemIcon>
                         <ListItemText primary="Validar Dados"/>
                     </ListItem>
-                    <ListItem button component={Link} to={'/validarDados'}>
-                        <ListItemIcon>
-                            <SportsSoccerIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Bloquear Jogos"/>
-                    </ListItem>
+                    {/*<ListItem button component={Link} to={'/validarDados'}>*/}
+                    {/*    <ListItemIcon>*/}
+                    {/*        <SportsSoccerIcon/>*/}
+                    {/*    </ListItemIcon>*/}
+                    {/*    <ListItemText primary="Bloquear Jogos"/>*/}
+                    {/*</ListItem>*/}
                     <ListItem button component={Link} to={'/clientesA'}>
                         <ListItemIcon>
                             <PersonIcon/>

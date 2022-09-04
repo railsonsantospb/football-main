@@ -205,15 +205,7 @@ export default function SignInSideManage() {
                             <Copyright/>
                         </Box>
                     </form>
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        className={classes.submit}
-                        onClick={banca}
-                    >
-                        BANCA
-                    </Button>
+
                 </div>
             </Grid>
         </Grid>

@@ -123,7 +123,7 @@ const images = {
 
 const api = axios.create({
 
-    //baseURL: "http://localhost:8000",
+    // baseURL: "http://localhost:8000",
     baseURL: 'https://footballdjango.herokuapp.com/',
 
 
@@ -190,7 +190,6 @@ async function getDateAll() {
     api.get('/api/getdate').then(res => {
 
         try {
-            console.log(res.data);
             sessionStorage.setItem('date', res.data.date);
 
         } catch (e) {

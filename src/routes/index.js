@@ -55,25 +55,25 @@ export default function Routes() {
 
     return (
         <HashRouter>
-            <Route exact path="/" component={Init}/>
-            <Route exact path="/banca" component={Login}/>
-            <Route exact path="/login" component={LoginMange}/>
-            <Route exact path="/campeonato/:campId" component={PreJogo}/>
-            <Route exact path="/pre/campeonato/:campId" component={PreJogo2}/>
-            <Route exact path="/date/:dateId" component={Init}/>
-            <Route exact path="/inicio" component={Home}/>
-            <Route exact path="/aovivo" component={AoVivo}/>
-            <Route exact path="/maisAoVivo/:id" component={MaisAoVivo}/>
-            <Route exact path="/maispre/:id" component={Mais}/>
-            <Route exact path="/caixa" component={Caixa}/>
-            <Route exact path="/bilhetes" component={Bilhetes}/>
-            <Route exact path="/bilhete/:codigoBilhete" component={Bilhete}/>
-            <Route exact path="/recuperarpin" component={RecuperarPin}/>
+            <Route exact path="/" component={LoginMange}/>
+
+            {/*<Route exact path="/login" component={LoginMange}/>*/}
+            {/*<Route exact path="/campeonato/:campId" component={PreJogo}/>*/}
+            {/*<Route exact path="/pre/campeonato/:campId" component={PreJogo2}/>*/}
+            {/*<Route exact path="/date/:dateId" component={Init}/>*/}
+            {/*<Route exact path="/inicio" component={Home}/>*/}
+            {/*<Route exact path="/aovivo" component={AoVivo}/>*/}
+            {/*<Route exact path="/maisAoVivo/:id" component={MaisAoVivo}/>*/}
+            {/*<Route exact path="/maispre/:id" component={Mais}/>*/}
+            {/*<Route exact path="/caixa" component={Caixa}/>*/}
+            {/*<Route exact path="/bilhetes" component={Bilhetes}/>*/}
+            {/*<Route exact path="/bilhete/:codigoBilhete" component={Bilhete}/>*/}
+            {/*<Route exact path="/recuperarpin" component={RecuperarPin}/>*/}
             <Route exact path="/verificarBilhete/:codigoBilhete" component={VerificarBilhete}/>
-            <Route exact path="/clientes" component={Clients}/>
-            <Route exact path="/novasenha" component={NovaSenha}/>
-            <Route exact path="/regulamento" component={Regulamento}/>
-                <Route exact path="/relatoriocliente" component={RelatorioCliente}/>
+            {/*<Route exact path="/clientes" component={Clients}/>*/}
+            {/*<Route exact path="/novasenha" component={NovaSenha}/>*/}
+            {/*<Route exact path="/regulamento" component={Regulamento}/>*/}
+            {/*    <Route exact path="/relatoriocliente" component={RelatorioCliente}/>*/}
 
             <Route exact path="/gerente" component={ManageHome}/>
             <Route exact path="/cambista" component={ManageHome}/>

@@ -382,7 +382,6 @@ export default function Dashboard() {
                         if (res.data) {
 
                             for(let b in res.data.bilhetes) {
-                                console.log(res.data);
                                 bancas.push(b);
                                 nomesAux.add(b);
                                 totalEntrada[b] = res.data.bilhetes[b].totalEntrada[0]+res.data.bilhetes[b].totalEntrada[1];
@@ -573,7 +572,6 @@ export default function Dashboard() {
                                                     <TableBody>
 
                                                         {[...nomesBancas].sort().map((banca) => (
-                                                            console.log(saidas[banca], total[banca]),
                                                                 <StyledTableRow>
                                                                     <StyledTableCell align={"center"}
                                                                                      style={{width: '10px'}}>

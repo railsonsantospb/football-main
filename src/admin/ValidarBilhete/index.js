@@ -140,7 +140,6 @@ export default function ValidarBilhete() {
         selectableRows: false,
         onRowClick: (rowData, rowMeta) => {
             const dataToState = rowData;
-            console.log(dataToState);
         },
 
     };
@@ -236,8 +235,6 @@ export default function ValidarBilhete() {
                         let bh = res.data.jogos.slice();
                         bh.sort(custom_sort);
 
-
-                        console.log(bh);
                         if (res.data) {
                             bh.map((b) => {
                                 let valor = (b.nomeDosTimes + "" + b.tipoDeCotacao);

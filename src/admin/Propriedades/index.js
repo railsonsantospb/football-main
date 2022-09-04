@@ -230,7 +230,6 @@ export default function ValidarDados() {
 
                 if (!unmounted) {
                     setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                    console.log([d.getDay(), d1.getDay(), d2.getDay()]);
                 }
 
 
@@ -246,7 +245,6 @@ export default function ValidarDados() {
                 .then(res => {
                     try {
                         if (res.data) {
-                            console.log(res.data);
                             setValorDeSaida(res.data.admin[0].valorDeSaida);
                             setValorDeEntrada(res.data.admin[0].valorDeEntrada);
                             setLimitG(res.data.admin[0].limiteApostaGeral);

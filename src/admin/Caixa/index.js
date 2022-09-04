@@ -200,7 +200,6 @@ export default function Dashboard() {
                 .then(res => {
                     try {
                         if (res.data) {
-                            console.log(res.data)
                             let total = (res.data.bilhetes.totalEntrada.toFixed(2) -
                                 res.data.bilhetes.saidas.toFixed(2) -
                                 res.data.bilhetes.comissoes.toFixed(2));

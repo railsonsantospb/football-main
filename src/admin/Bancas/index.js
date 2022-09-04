@@ -19,7 +19,7 @@ export default function Dashboard() {
     let history = useHistory();
     const [date, setDate] = useState([]);
     const [dataAux, setDataAux] = useState([]);
-    const [day, setDay] = useState([]);
+
     const [drawerWidth, setdrawerWidth] = useState(240);
     const [responsive, setResponsive] = useState("horizontal");
     const [tableBodyHeight, setTableBodyHeight] = useState("400px");
@@ -122,10 +122,9 @@ export default function Dashboard() {
         responsive,
         tableBodyHeight,
         tableBodyMaxHeight,
-        selectableRows: false,
+        selectableRows: 'none',
         onRowClick: (rowData, rowMeta) => {
             const dataToState = rowData;
-            console.log(dataToState);
         }
     };
 
@@ -184,8 +183,8 @@ export default function Dashboard() {
                 d2.getDate()]);
 
 
-                setDay([d.getDay(), d1.getDay(), d2.getDay()]);
-                console.log([d.getDay(), d1.getDay(), d2.getDay()]);
+
+
 
 
             } catch (e) {
